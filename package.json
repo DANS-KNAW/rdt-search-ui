@@ -1,0 +1,33 @@
+{
+  "name": "rdt-search-ui",
+  "version": "1.0.0",
+  "description": "",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "scripts": {
+    "watch": "./scripts/watch.sh",
+    "watch:types": "tsc --emitDeclarationOnly --declaration -w"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "echarts": "^5.4.2",
+    "lodash.debounce": "^4.0.8",
+    "ngeohash": "^0.6.3",
+    "ol": "^7.3.0"
+  },
+  "devDependencies": {
+    "@types/lodash.debounce": "^4.0.7",
+    "@types/ngeohash": "^0.6.4",
+    "@types/react": "^18.0.33",
+    "@types/styled-components": "^5.1.26",
+    "esbuild": "^0.17.15",
+    "tslib": "^2.5.0",
+    "typescript": "^5.0.3"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "styled-components": "^5.3.10"
+  },
+  "type": "module"
+}

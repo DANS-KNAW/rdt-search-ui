@@ -1,0 +1,20 @@
+{
+	"compilerOptions": {
+		"target": "esnext",
+		"allowJs": false,
+		"strict": true,
+		"noImplicitReturns": true,
+		"esModuleInterop": false,
+		"experimentalDecorators": true,
+		"jsx": "react",
+		"moduleResolution": "node",
+		"allowSyntheticDefaultImports": true,
+		"isolatedModules": true,
+		"lib": ["DOM", "ES2015", "DOM.Iterable"],
+		"skipLibCheck": true,
+		"downlevelIteration": true,
+		"useDefineForClassFields": false,
+		"outDir": "build"
+	},
+	"include": ["src/index.tsx", "src/facets/*/index.ts"]
+}
