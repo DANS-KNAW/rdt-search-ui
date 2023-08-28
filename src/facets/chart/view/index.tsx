@@ -13,42 +13,58 @@ const BodyWrapper = styled.div`
 	height: 160px;
 `
 
+const defaultSeriesOptions = {
+	type: 'pie',
+	data: [],
+	radius: '60%'
+}
+
 export interface ChartFacetProps {
 	facet: Facet<ChartFacetConfig, ChartFacetState>
 	facetState: ChartFacetState
 	values: KeyCount[]
 }
 export function ChartFacetView(props: ChartFacetProps) {
-	const myChart = React.useRef<echarts.ECharts | null>(null)
-	const chartRef = React.useRef<HTMLDivElement>(null)
+	// Ref to the chart instance
+	const chart = React.useRef<echarts.ECharts | null>(null)
 
+	// Ref to the container element
+	const containerRef = React.useRef<HTMLDivElement>(null)
+
+	// Initialize the chart
 	React.useEffect(() => {
-		myChart.current = echarts.init(chartRef.current!)
-		myChart.current.setOption({
+		if (containerRef.current == null) return
+
+		// Initialize the chart and set the container element
+		chart.current = echarts.init(containerRef.current)
+
+		// Set the options
+		chart.current.setOption({
 			tooltip: {},
-			series: [
-				{
-					name: props.facet.config.title,
-					type: 'pie',
-					data: [],
-					radius: '60%'
-				}
-			]
+			series: [{
+				...defaultSeriesOptions,
+				name: props.facet.config.title,
+			}]
 		})
 
-		myChart.current.on('click', (params) => {
+		// Add click event listener
+		chart.current.on('click', (params) => {
 			props.facet.actions.setFilter(params.name)
 		})
 
-		return () => myChart.current?.dispose()
+		return () => chart.current?.dispose()
 	}, [])
 
+	// Update the chart when the values change
 	React.useEffect(() => {
-		if (props.values == null) return
-		myChart.current?.setOption({
+		if (
+			props.values == null ||
+			chart.current == null
+		) return
+
+		chart.current.setOption({
 			series: [
 				{
-					name: props.facet.config.title,
 					data: props.values.map((value) => ({
 						value: value.count,
 						name: value.key
@@ -62,7 +78,7 @@ export function ChartFacetView(props: ChartFacetProps) {
 		<FacetWrapper
 			{...props}
 		>
-			<BodyWrapper ref={chartRef}>
+			<BodyWrapper ref={containerRef}>
 			</BodyWrapper>
 		</FacetWrapper>
 	)

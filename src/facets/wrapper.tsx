@@ -2,6 +2,7 @@ import type { BaseFacetConfig, BaseFacetState } from '../common'
 
 import React from 'react'
 import styled from "styled-components"
+import clsx from 'clsx'
 
 import { FacetHeader } from './header'
 import { Facet } from '.'
@@ -25,7 +26,14 @@ const Wrapper = styled.div`
 		}
 	}
 
+	.facet__body--collapsed {
+		display: none;
+	}
+
 `
+
+// TODO add a div around children and show/hide using display: none
+//      this makes it possible to keep state of children
 
 interface Props<FacetConfig extends BaseFacetConfig, FacetState extends BaseFacetState> {
 	children: React.ReactNode
@@ -38,7 +46,7 @@ interface Props<FacetConfig extends BaseFacetConfig, FacetState extends BaseFace
 function FacetWrapper<FacetConfig extends BaseFacetConfig, FacetState extends BaseFacetState>(props: Props<FacetConfig, FacetState>) {
 	return (
 		<Wrapper
-			className={props.className}
+			className={clsx("facet", props.className)}
 			collapse={props.facetState.collapse}
 		>
 			<FacetHeader
@@ -47,10 +55,15 @@ function FacetWrapper<FacetConfig extends BaseFacetConfig, FacetState extends Ba
 				hasOptions={props.Options != null}
 				Options={props.Options}
 			/>
-			{
-				!props.facetState.collapse &&
-				props.children
-			}
+			<div
+				className={clsx(
+					"facet__body",
+					props.facetState.collapse && "facet__body--collapsed"
+				)}
+			
+			>
+				{props.children}
+			</div>
 		</Wrapper>
 	)
 }

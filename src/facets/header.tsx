@@ -39,12 +39,12 @@ const H3 = styled('h3')`
 
 	&:before {
 		color: ${props => props.spotColor};
-		content: '<';
+		content: '>';
 		font-size: 0.5rem;
-		line-height: 1rem;
+		line-height: 1.5rem;
 		margin-left: -1rem;
 		position: absolute;
-		transform: rotate(${(p: HProps) => p.collapse ? -90 : 90}deg) scale(0.75, 2);
+		transform: rotate(${(p: HProps) => p.collapse ? 0 : 90}deg) scale(0.75, 2);
 	}
 `
 
