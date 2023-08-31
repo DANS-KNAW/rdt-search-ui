@@ -14,8 +14,13 @@ export interface ChartFacetState extends BaseFacetState {
 } 
 
 export interface DateChartFacetState extends BaseFacetState {
-	// Filter is a date string (e.g. '2020' or '2020-01-01')
-	// or a range of percentages (e.g. [25, 100])
+	// Filter is a:
+	// 		- date string (e.g. '2020' or '2020-01-01')
+	//		or
+	// 		- range of percentages (e.g. [25, 100])
 	filter: string | [number, number] | undefined
-	initialValues: KeyCount[] | undefined
+
+	initialValues: KeyCountMap | undefined
 }
+
+export type KeyCountMap = Map<string, number>

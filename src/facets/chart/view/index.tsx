@@ -1,6 +1,6 @@
 import type { Facet } from '../..'
 import type { KeyCount } from '../../list/state'
-import type { ChartFacetConfig, ChartFacetState } from '../state'
+import type { ChartFacetConfig, ChartFacetState, KeyCountMap } from '../state'
 
 import React from 'react'
 import styled from 'styled-components'
@@ -9,13 +9,16 @@ import * as echarts from 'echarts'
 import FacetWrapper from '../../wrapper'
 import debounce from 'lodash.debounce'
 import { ChartFacetType, FacetType } from '../../../common/enum'
+import { DateChartFacet } from '../date'
 
 const barSetOptions: echarts.EChartsOption = {
 	tooltip: {},
 	xAxis: {
 		data: []
 	},
-	yAxis: {},
+	yAxis: {
+		minInterval: 1,
+	},
 	series: [{
 		type: 'bar',
 		data: [],
@@ -49,7 +52,7 @@ const initialSetOptions: Record<ChartFacetType, echarts.EChartsOption> = {
 	}
 }
 
-const updateValues: Record<ChartFacetType, (values: any[]) => echarts.EChartsOption> = {
+const updateValues: Record<ChartFacetType, (values: any /* KeyCount[] | Map<string, number> */) => echarts.EChartsOption> = {
 	[FacetType.Bar]: (values: KeyCount[]) => ({
 		xAxis: {
 			data: values.map(value => value.key)
@@ -60,13 +63,13 @@ const updateValues: Record<ChartFacetType, (values: any[]) => echarts.EChartsOpt
 			}
 		]
 	}),
-	[FacetType.Date]: (values: KeyCount[]) => ({
+	[FacetType.Date]: (values: KeyCountMap) => ({
 		xAxis: {
-			data: values.map(value => value.key)
+			data: Array.from(values.keys())
 		},
 		series: [
 			{
-				data: values.map((value) => value.count)
+				data: Array.from(values.values())
 			}
 		]
 	}),
@@ -138,7 +141,38 @@ export function ChartFacetView(props: ChartFacetProps) {
 			chart.current == null
 		) return
 
-		chart.current.setOption(updateValues[props.facet.type as ChartFacetType](props.values))
+		// console.log(props.facet.ID, props.values, props.facet.valueRange, zoomValue.current)
+
+		let option = updateValues[props.facet.type as ChartFacetType](props.values)
+
+		// Define range upfront for type checking
+		const { range } = (props.facet as DateChartFacet)
+
+		if (typeof props.facetState.filter === 'string') {
+			option.dataZoom = [
+				{
+					startValue: props.facetState.filter,
+					endValue: props.facetState.filter,
+				}
+			]
+		} else if (Array.isArray(props.facetState.filter)) {
+			option.dataZoom = [
+				{
+					start: props.facetState.filter[0],
+					end: props.facetState.filter[1],
+				}
+			]
+		} else if (range) {
+			const { min, max, currentMin, currentMax } = range
+			option.dataZoom = [
+				{
+					start: (currentMin - min) / (max - min) * 100,
+					end: (currentMax - min) / (max - min) * 100,
+				}
+			]
+		}
+
+		chart.current.setOption(option)
 	}, [props.values])
 
 	return (

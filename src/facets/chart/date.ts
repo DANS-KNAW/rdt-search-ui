@@ -1,12 +1,11 @@
 import type { Bucket } from "../../context/state/use-search/response-with-facets-parser"
-import type { DateChartFacetConfig, DateChartFacetState  } from "./state"
+import type { DateChartFacetConfig, DateChartFacetState, KeyCountMap  } from "./state"
 
 import { addFilter } from "../../context/state/use-search/request-with-facets-creator"
 import { ChartFacetView } from "./view"
 import { Facet } from ".."
 import { EventName } from "../../constants"
 import { ElasticSearchResponse, FacetType } from "../../common"
-import { KeyCount } from "../list/state"
 
 function capitalize(str: string) {
 	return str.charAt(0).toUpperCase() + str.slice(1)
@@ -22,23 +21,21 @@ const format = {
 }
 
 export class DateChartFacet extends Facet<DateChartFacetConfig, DateChartFacetState> {
-	private valueRange: { min: number, max: number } | undefined
+	/**
+	 * Set the range of the values in timestamps. This is used to calculate the 
+	 * percentage of the range that the filter represents.
+	 * 
+	 * Range is not set on the state, because the range is dependent on the response
+	 * from the search request. The state is only passed to the rest of the application
+	 * when the user changes the filter.
+	 */
+	range: { min: number, max: number, currentMin: number, currentMax: number } | undefined
 
 	type = FacetType.Date
 	View = ChartFacetView
 
 	actions = {
 		setFilter: (filter: string | [number, number]) => {
-			// if (typeof filter === 'string') {
-			// 	filter = [
-			// 		Date.UTC(parseInt(filter), 0),
-			// 		Date.UTC(parseInt(filter) + 1, 0)
-			// 	]
-			// }
-			// else if (Array.isArray(filter) && filter.length === 2) {
-
-			// }
-
 			this.state.filter = this.state.filter === filter
 				? undefined
 				: filter
@@ -83,11 +80,12 @@ export class DateChartFacet extends Facet<DateChartFacetConfig, DateChartFacetSt
 		return {
 			id: this.ID,
 			title: this.config.title!,
-			values: getValueLabel(this.state.filter, this.valueRange, this.config)
+			values: getValueLabel(this.state.filter, this.range, this.config)
 		
 		}
 	}
 
+	// TODO only works for year interval
 	// Search request
 	createPostFilter() {
 		if (this.state.filter == null) return 
@@ -102,15 +100,15 @@ export class DateChartFacet extends Facet<DateChartFacetConfig, DateChartFacetSt
 				}
 			}
 		} else if (Array.isArray(this.state.filter) && this.state.filter.length === 2) {	
-			if (this.valueRange == null) return
+			if (this.range == null) return
 
-			const interval = this.valueRange.max - this.valueRange.min
-			const fromTimestamp = this.valueRange.min + (interval * this.state.filter[0] / 100)
-			const toTimestamp = this.valueRange.min + (interval * this.state.filter[1] / 100)
+			const { min, max } = this.range
+
+			const interval = max - min
+			const fromTimestamp = min + (interval * this.state.filter[0] / 100)
+			const toTimestamp = min + (interval * this.state.filter[1] / 100)
 			const fromYear = new Date(fromTimestamp).getUTCFullYear()
 			const toYear = new Date(toTimestamp).getUTCFullYear()
-
-			console.log(fromYear, toYear)
 
 			return {
 				range: {
@@ -138,45 +136,71 @@ export class DateChartFacet extends Facet<DateChartFacetConfig, DateChartFacetSt
 	}
 
 	// Search response
-	responseParser(buckets: Bucket[], _response: ElasticSearchResponse): KeyCount[] {
-		if (this.valueRange == null) {
-			this.valueRange = getValueRange(buckets, this.config)
-		}
+	responseParser(buckets: Bucket[], _response: ElasticSearchResponse): KeyCountMap {
+		// If no buckets are returned, return an empty map
+		if (buckets == null || buckets.length === 0) {
+			return this.values
+				// If this is not the first load, reset the values to 0
+				? new Map(Array.from(this.values.keys()).map(x => [x, 0]))
+				// If this is the first load, return an empty map
+				: new Map()
+		}	
 
-		return buckets.map((b: Bucket) => ({
-			key: b.key_as_string || b.key.toString(),
-			count: b.doc_count
-		}))
+		this.updateRange(buckets, this.config)
+
+		const emptyMap = this.values == null
+			? new Map()
+			: new Map(Array.from(this.values.keys()).map(x => [x, 0]))
+
+		this.values = buckets
+			.reduce(
+				(prev, curr) =>
+					prev.set(
+						curr.key_as_string || curr.key.toString(),
+						curr.doc_count
+					)
+				, emptyMap
+			)
+
+		return this.values
 	}
+
+	private values: KeyCountMap | undefined
 
 	reset() {
 		this.state = { ...this.initialState }
 	}
+
+	private updateRange(buckets: Bucket[], config: DateChartFacetConfig) {
+		const currentMin = buckets[0].key as number
+		let lastKey = buckets[buckets.length - 1].key as number
+		let currentMax: number
+
+		if (config.interval === 'year') {
+			currentMax = new Date(lastKey).setFullYear(new Date(lastKey).getFullYear() + 1)
+		} else if (config.interval === 'quarter') {
+			currentMax = new Date(lastKey).setMonth(new Date(lastKey).getMonth() + 3)
+		} else if (config.interval === 'month') {
+			currentMax = new Date(lastKey).setMonth(new Date(lastKey).getMonth() + 1)
+		} else if (config.interval === 'day') {
+			currentMax = new Date(lastKey).setDate(new Date(lastKey).getDate() + 1)
+		} else if (config.interval === 'hour') {
+			currentMax = new Date(lastKey).setHours(new Date(lastKey).getHours() + 1)
+		} else if (config.interval === 'minute') {
+			currentMax = new Date(lastKey).setMinutes(new Date(lastKey).getMinutes() + 1)
+		} else {
+			throw new Error(`Unknown interval: ${config.interval}`)
+		}
+
+		this.range = {
+			min: this.range?.min || currentMin,
+			currentMin,
+			currentMax: currentMax - 1, // subtract 1ms to get the last ms of the year/quarter/month/day/hour/minute
+			max: this.range?.max || lastKey,
+		}
+	}
 }
 
-function getValueRange(buckets: Bucket[], config: DateChartFacetConfig) {
-	const min = buckets[0].key as number
-	let max = buckets[buckets.length - 1].key as number
-
-	if (config.interval === 'year') {
-		max = new Date(max).setFullYear(new Date(max).getFullYear() + 1)
-	} else if (config.interval === 'quarter') {
-		max = new Date(max).setMonth(new Date(max).getMonth() + 3)
-	} else if (config.interval === 'month') {
-		max = new Date(max).setMonth(new Date(max).getMonth() + 1)
-	} else if (config.interval === 'day') {
-		max = new Date(max).setDate(new Date(max).getDate() + 1)
-	} else if (config.interval === 'hour') {
-		max = new Date(max).setHours(new Date(max).getHours() + 1)
-	} else if (config.interval === 'minute') {
-		max = new Date(max).setMinutes(new Date(max).getMinutes() + 1)
-	}
-
-	return {
-		min,
-		max,
-	}
-}
 
 // export function rangeToFacetValue(from: number, to: number, count = 0): HistogramFacetValue {
 // 	return {
@@ -202,16 +226,12 @@ function getValueLabel(
 
 		const interval = valueRange.max - valueRange.min
 		const fromTimestamp = valueRange.min + (interval * filter[0] / 100)
-		const toTimestamp = valueRange.min + (interval * filter[1] / 100)
+		const toTimestamp = valueRange.min + (interval * filter[1] / 100) - 1
 
 		return [
-			new Date(fromTimestamp).toISOString(),
-			new Date(toTimestamp).toISOString(),
+			timestampToLabel(fromTimestamp, config),
+			timestampToLabel(toTimestamp, config)
 		]
-		// return [
-		// 	timestampToLabel(fromTimestamp, config),
-		// 	timestampToLabel(toTimestamp, config)
-		// ]
 	}
 
 	return []
@@ -224,7 +244,7 @@ function timestampToLabel(timestamp: number, config: DateChartFacetConfig) {
 		return new Date(timestamp).getUTCFullYear().toString()
 	} else if (config.interval === 'month') {
 		const date = new Date(timestamp)
-		return `${date.getUTCFullYear()}-${date.getUTCMonth()}`
+		return `${date.getUTCFullYear()}-${date.getUTCMonth() + 1}`
 	} else if (config.interval === 'day') {
 		const date = new Date(timestamp)
 		return `${date.getUTCFullYear()}-${date.getUTCMonth()}-${date.getUTCDay()}`
