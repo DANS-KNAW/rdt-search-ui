@@ -5,14 +5,15 @@ import { addFilter } from "../../context/state/use-search/request-with-facets-cr
 import { ChartFacetView } from "./view"
 import { Facet } from ".."
 import { EventName } from "../../constants"
-import { ElasticSearchResponse } from "../../common"
+import { ElasticSearchResponse, FacetType } from "../../common"
 import { KeyCount } from "../list/state"
 
 function capitalize(str: string) {
 	return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
-export class ChartFacet extends Facet<ChartFacetConfig, ChartFacetState> {
+export class PieChartFacet extends Facet<ChartFacetConfig, ChartFacetState> {
+	type = FacetType.Pie
 	View = ChartFacetView
 
 	actions = {

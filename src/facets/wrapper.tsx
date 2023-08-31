@@ -6,7 +6,6 @@ import clsx from 'clsx'
 
 import { FacetHeader } from './header'
 import { Facet } from '.'
-import { HistogramFacetValue } from './histogram/state'
 
 const Wrapper = styled.div`
 	color: #444;

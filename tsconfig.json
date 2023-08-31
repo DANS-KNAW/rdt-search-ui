@@ -16,5 +16,10 @@
 		"useDefineForClassFields": false,
 		"outDir": "build"
 	},
-	"include": ["src/index.tsx", "src/facets/*/index.ts"]
+	"include": [
+		"src/index.tsx",
+		"src/facets/chart/pie.ts",
+		"src/facets/chart/date.ts",
+		"src/facets/*/index.ts"
+	]
 }

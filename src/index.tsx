@@ -21,7 +21,7 @@ export {
 	Label,
 	FacetType,
 	DropDown,
-	Colors
+	Colors,
 }
 export type {
 	FacetConfigs,

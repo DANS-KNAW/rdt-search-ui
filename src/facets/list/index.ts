@@ -5,7 +5,7 @@ import { addFilter } from "../../context/state/use-search/request-with-facets-cr
 import { ListFacetView } from "./view"
 import { Facet } from ".."
 import { EventName } from "../../constants"
-import { ElasticSearchResponse, SortBy, SortDirection } from "../../common"
+import { ElasticSearchResponse, FacetType, SortBy, SortDirection } from "../../common"
 
 function capitalize(str: string) {
 	return str.charAt(0).toUpperCase() + str.slice(1)
@@ -19,6 +19,7 @@ interface ListAggregationTerms {
 }
 
 export class ListFacet extends Facet<ListFacetConfig, ListFacetState> {
+	type = FacetType.List
 	View = ListFacetView
 
 	actions = {

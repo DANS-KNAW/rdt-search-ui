@@ -1,3 +1,4 @@
+import { FacetType } from "../common/enum";
 import type { ActiveFilter, ElasticSearchResponse } from "../common/types/search";
 import type { BaseFacetConfig, BaseFacetState } from "../common/types/search/facets";
 import type { Bucket } from "../context/state/use-search/response-with-facets-parser";
@@ -8,6 +9,7 @@ export abstract class Facet<FacetConfig extends BaseFacetConfig, FacetState exte
 	readonly initialState: FacetState
 	protected state: FacetState
 
+	abstract type: FacetType
 	abstract View: any
 	abstract actions: {
 		toggleCollapse: () => void

@@ -7,14 +7,16 @@ import { addFilter } from "../../context/state/use-search/request-with-facets-cr
 import { MapFacetView } from "./view"
 import { Facet } from ".."
 import { EventName } from "../../constants"
-import { ElasticSearchResponse } from "../../common"
+import { ElasticSearchResponse, FacetType } from "../../common"
 
 function capitalize(str: string) {
 	return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
 export class MapFacet extends Facet<MapFacetConfig, MapFacetState> {
+	type = FacetType.Map
 	View = MapFacetView
+
 	actions = {
 		toggleSearchOnZoom: () => {
 			this.state.searchOnZoom = !this.state.searchOnZoom

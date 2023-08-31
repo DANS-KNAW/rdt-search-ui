@@ -28,9 +28,16 @@ export enum Language {
 
 export enum FacetType {
 	List = 'list',
-	Histogram = 'histogram',
 	Map = 'map',
+
+	// Charts
+	Bar = 'bar',
+	Date = 'date',
+	Pie = 'pie',
 }
+
+// Create a union type out of the facets that use the Chart component
+export type ChartFacetType = Extract<`${FacetType}`, 'bar' | 'date' | 'pie'>
 
 export enum EsDataType {
 	Boolean = "boolean",

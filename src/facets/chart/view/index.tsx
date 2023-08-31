@@ -6,18 +6,96 @@ import React from 'react'
 import styled from 'styled-components'
 import * as echarts from 'echarts'
 
-import FacetWrapper from '../../../facets/wrapper'
+import FacetWrapper from '../../wrapper'
+import debounce from 'lodash.debounce'
+import { ChartFacetType, FacetType } from '../../../common/enum'
 
-const BodyWrapper = styled.div`
-	width: 100%;
-	height: 160px;
-`
+const barSetOptions: echarts.EChartsOption = {
+	tooltip: {},
+	xAxis: {
+		data: []
+	},
+	yAxis: {},
+	series: [{
+		type: 'bar',
+		data: [],
+	}],
+	dataZoom: [
+		{
+			type: 'slider',
+			height: 18,
+			top: 248,
 
-const defaultSeriesOptions = {
-	type: 'pie',
-	data: [],
-	radius: '60%'
+			// Do not change the y-axis when zooming
+			filterMode: 'empty',
+		},
+	],
+	grid: {
+		top: 24,
+		// bottom: 36,
+	}
 }
+
+const initialSetOptions: Record<ChartFacetType, echarts.EChartsOption> = {
+	[FacetType.Date]: barSetOptions,
+	[FacetType.Bar]: barSetOptions,
+	[FacetType.Pie]: {
+		tooltip: {},
+		series: [{
+			type: 'pie',
+			data: [],
+			radius: '60%'
+		}]
+	}
+}
+
+const updateValues: Record<ChartFacetType, (values: any[]) => echarts.EChartsOption> = {
+	[FacetType.Bar]: (values: KeyCount[]) => ({
+		xAxis: {
+			data: values.map(value => value.key)
+		},
+		series: [
+			{
+				data: values.map((value) => value.count)
+			}
+		]
+	}),
+	[FacetType.Date]: (values: KeyCount[]) => ({
+		xAxis: {
+			data: values.map(value => value.key)
+		},
+		series: [
+			{
+				data: values.map((value) => value.count)
+			}
+		]
+	}),
+	[FacetType.Pie]: (values: KeyCount[]) => ({
+		series: [
+			{
+				data: values.map((value) => ({
+					value: value.count,
+					name: value.key
+				}))
+			}
+		]
+	})
+}
+
+const ChartFacetWrapper = styled(FacetWrapper)`
+	.container {
+		width: 100%;
+	}
+
+	&.facet__pie-chart .container {
+		height: 160px;
+	}
+
+	&.facet__bar-chart .container,
+	&.facet__date-chart .container {
+		height: 280px;
+	}
+`
 
 export interface ChartFacetProps {
 	facet: Facet<ChartFacetConfig, ChartFacetState>
@@ -39,18 +117,16 @@ export function ChartFacetView(props: ChartFacetProps) {
 		chart.current = echarts.init(containerRef.current)
 
 		// Set the options
-		chart.current.setOption({
-			tooltip: {},
-			series: [{
-				...defaultSeriesOptions,
-				name: props.facet.config.title,
-			}]
-		})
+		chart.current.setOption(initialSetOptions[props.facet.type as ChartFacetType])
 
 		// Add click event listener
 		chart.current.on('click', (params) => {
 			props.facet.actions.setFilter(params.name)
 		})
+
+		chart.current.on('datazoom', debounce((params: any) => {
+			props.facet.actions.setFilter([params.start, params.end])
+		}, 1000))
 
 		return () => chart.current?.dispose()
 	}, [])
@@ -62,24 +138,20 @@ export function ChartFacetView(props: ChartFacetProps) {
 			chart.current == null
 		) return
 
-		chart.current.setOption({
-			series: [
-				{
-					data: props.values.map((value) => ({
-						value: value.count,
-						name: value.key
-					}))
-				}
-			]
-		})
+		chart.current.setOption(updateValues[props.facet.type as ChartFacetType](props.values))
 	}, [props.values])
 
 	return (
-		<FacetWrapper
+		<ChartFacetWrapper
+			className={`facet__${props.facet.type}-chart`}
 			{...props}
 		>
-			<BodyWrapper ref={containerRef}>
-			</BodyWrapper>
-		</FacetWrapper>
+			<div
+				className="container"
+				ref={containerRef}
+			>
+			</div>
+		</ChartFacetWrapper>
+
 	)
 }
