@@ -1,11 +1,13 @@
 import type { Bucket } from "../../context/state/use-search/response-with-facets-parser"
-import type { ListFacetState, ListFacetConfig, ListFacetValues } from "./state"
+import type { ListFacetState, ListFacetConfig, ListFacetValues, ListFacetSort } from "./state"
 
 import { addFilter } from "../../context/state/use-search/request-with-facets-creator"
 import { ListFacetView } from "./view"
 import { Facet } from ".."
 import { EventName } from "../../constants"
 import { ElasticSearchResponse, FacetType, SortBy, SortDirection } from "../../common"
+import { LIST_FACET_SCROLL_CUT_OFF } from "./view/list-view"
+import { listFacetViewStates, ListFacetViewState, getViewState } from "./view/state"
 
 function capitalize(str: string) {
 	return str.charAt(0).toUpperCase() + str.slice(1)
@@ -22,20 +24,43 @@ export class ListFacet extends Facet<ListFacetConfig, ListFacetState> {
 	type = FacetType.List
 	View = ListFacetView
 
+	viewState: ListFacetViewState = listFacetViewStates[0]
+
 	actions = {
 		showAll: (total: number) => {
-			this.state.page = 0
-			this.state.size = total
+			this.state.page = 1
+			this.state.size = this.state.query?.length
+				? LIST_FACET_SCROLL_CUT_OFF
+				: total
+			this.state.scroll = true
 			this.dispatchChange()
 		},
 		setPage: (page: number) => {
 			this.state.size = page * this.config.size!
 			this.state.page = page
+			this.state.scroll = false
+			this.dispatchChange()
+		},
+		setQuery: (query: string) => {
+			this.state.page = 1
+			this.state.query = query.length ? query : undefined
+			this.state.scroll = false
+			this.state.size = this.config.size!
+
+			this.dispatchChange()
+		},
+		setSort: (sort: ListFacetSort) => {
+			this.state.page = 1
+			this.state.query = this.state.query?.length ? this.state.query : undefined
+			this.state.sort = sort
+			this.state.size = this.config.size!
+
 			this.dispatchChange()
 		},
 		toggleFilter: (key: string) => {
 			this.state.page = 1
 			this.state.size = this.config.size!
+			this.state.query = undefined
 
 			if (this.state.filter?.has(key)) {
 				this.actions.removeFilter(key)
@@ -86,9 +111,10 @@ export class ListFacet extends Facet<ListFacetConfig, ListFacetState> {
 		return {
 			collapse: this.config.collapse || false,
 			filter: undefined,
-			query: '',
+			query: undefined,
 			size: this.config.size!,
 			page: 1,
+			scroll: false,
 			sort: this.config.sort!,
 		}
 	}
@@ -125,10 +151,18 @@ export class ListFacet extends Facet<ListFacetConfig, ListFacetState> {
 			}
 		}
 
-		if (this.state.query.length) {
-			terms.include = `.*${this.state.query}.*`
+		if (this.state.query?.length) {
+			// Turn query into hacky case insensitive regex,
+			// because ES doesn't support case insensitive include in terms aggregation
+			// For example: "test" -> "(t|T)(e|E)(s|S)(t|T)"
+			const query = [...this.state.query].map(c => {
+				const C = c.toUpperCase() === c ? c.toLowerCase() : c.toUpperCase()
+				return `(${c}|${C})`
+			}).join('')
+
+			terms.include = `.*${query}.*`
 		}
-		
+
 		const agg = {
 			...addFilter(this.ID, { terms }, postFilters),
 			...addFilter(
@@ -149,7 +183,12 @@ export class ListFacet extends Facet<ListFacetConfig, ListFacetState> {
 	responseParser(buckets: Bucket[], response: ElasticSearchResponse): ListFacetValues {
 		if (response.aggregations == null) return { total: 0, values: [] }
 
-		const total = response.aggregations[`${this.ID}-count`][`${this.ID}-count`].value
+		const total = this.state.query == null
+			? response.aggregations[`${this.ID}-count`][`${this.ID}-count`].value
+			: buckets.length
+
+
+		this.viewState = getViewState(total, this.config.size!, this.state.size, this.state.query)
 
 		return {
 			total,
@@ -158,6 +197,7 @@ export class ListFacet extends Facet<ListFacetConfig, ListFacetState> {
 	}
 
 	reset() {
+		this.viewState = listFacetViewStates[0]
 		this.state = { ...this.initialState }
 	}
 }

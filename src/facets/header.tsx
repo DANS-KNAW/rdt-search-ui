@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { FacetFilter, FacetConfig, BaseFacetState, BaseFacetConfig } from '../common'
+import { FacetFilter, BaseFacetState, BaseFacetConfig } from '../common'
 import { HelpButton } from '../views/ui/help-button'
 // import { Button } from '../views/ui/button'
 import { SearchPropsContext } from '../context/props'
@@ -55,12 +55,12 @@ interface Props<FacetConfig extends BaseFacetConfig, FacetState extends BaseFace
 	Options?: React.FC<{ facetData: FacetState }>
 }
 export function FacetHeader<FacetConfig extends BaseFacetConfig, FacetState extends BaseFacetState>(props: Props<FacetConfig, FacetState>) {
-	const { style, facets: facetsConfig } = React.useContext(SearchPropsContext)
+	const { style } = React.useContext(SearchPropsContext)
 	const [showOptions, setShowOptions] = React.useState(false)
 
-	const toggleOptions = React.useCallback(() => {
-		setShowOptions(!showOptions)
-	}, [showOptions])
+	// const toggleOptions = React.useCallback(() => {
+	// 	setShowOptions(!showOptions)
+	// }, [showOptions])
 
 	// Close options when facet is collapsed
 	React.useEffect(() => {

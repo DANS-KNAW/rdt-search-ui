@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import { SortBy } from './order-by'
 
-import { FSResponse, SetSortOrder, SortOrder } from '../../../common'
+import { FSResponse } from '../../../common'
 import { SearchPropsContext } from '../../../context/props'
 import { SearchState } from '../../../context/state'
 

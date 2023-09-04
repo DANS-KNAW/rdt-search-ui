@@ -1,8 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { SearchStateContext } from '../../../context/state'
 import { KeyCount, ListFacetConfig, ListFacetState } from '../state'
-import { List } from 'echarts'
 import { Facet } from '../..'
 
 interface WProps { active: boolean }
@@ -49,7 +47,8 @@ const Wrapper = styled('li')`
 interface Props {
 	active: boolean
 	facet: Facet<ListFacetConfig, ListFacetState>
-	keyFormatter: (key: string | number) => string
+	keyFormatter: (key: string | number, query?: string) => string
+	query: ListFacetState['query']
 	value: KeyCount
 }
 
@@ -71,7 +70,7 @@ function ListFacetValueView(props: Props) {
 		>
 			<span
 				className="value"
-				dangerouslySetInnerHTML={{ __html: props.keyFormatter(props.value.key) }}
+				dangerouslySetInnerHTML={{ __html: props.keyFormatter(props.value.key, props.query) }}
 			/>
 			<span className="count">{props.value.count}</span>
 		</Wrapper>
@@ -82,7 +81,15 @@ function ListFacetValueView(props: Props) {
 ListFacetValueView.defaultProps = {
 	// TODO use keyFormatter higher up the tree? now everytime the facet value is rendered,
 	// the keyFormatter function is run
-	keyFormatter: (value: string) => value.trim().length > 0 ? value : '<i>&lt;empty&gt;</i>'
+	keyFormatter: (value: string, query?: ListFacetState['query']) => {
+		value = value.trim().length > 0 ? value : '<i>&lt;empty&gt;</i>'
+
+		if (query?.length) {
+			value = value.replace(new RegExp(`(${query})`, 'gi'), '<b>$1</b>')
+		}
+
+		return value
+	}
 }
 
 export default ListFacetValueView

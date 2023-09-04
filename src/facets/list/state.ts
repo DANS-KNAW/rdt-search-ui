@@ -9,9 +9,10 @@ export interface ListFacetConfig extends BaseFacetConfig {
 
 export interface ListFacetState extends BaseFacetState {
 	filter: ListFacetFilter | undefined
-	query: string
+	query: string | undefined
 	size: number
 	page: number
+	scroll: boolean
 	sort: ListFacetSort
 } 
 

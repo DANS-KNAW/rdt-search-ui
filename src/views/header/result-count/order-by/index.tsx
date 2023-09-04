@@ -3,9 +3,8 @@ import React from 'react'
 import { DropDown } from '../../../ui/drop-down'
 import OrderOption from './option'
 
-import { SetSortOrder, SortOrder } from '../../../../common'
+import { SortOrder } from '../../../../common'
 import { SearchPropsContext } from '../../../../context/props'
-import { SearchStateContext } from '../../../../context/state'
 
 interface Props {
 	// setSortOrder: SetSortOrder
@@ -13,7 +12,6 @@ interface Props {
 }
 export const SortBy = React.memo(function SortBy(props: Props) {
 	const { uiTexts, facets } = React.useContext(SearchPropsContext)
-	const { state } = React.useContext(SearchStateContext)
 
 	const label = (props.sortOrder.size > 0) ?
 		`${uiTexts.sort_by} (${props.sortOrder.size})` :

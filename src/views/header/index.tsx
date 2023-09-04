@@ -5,7 +5,7 @@ import { Pagination } from './pagination'
 import ResultCount from './result-count'
 
 import { FSResponse } from '../../common'
-import { SearchState, SearchStateContext } from '../../context/state'
+import { SearchState } from '../../context/state'
 
 export const headerStyle = css`
 	background-color: white;

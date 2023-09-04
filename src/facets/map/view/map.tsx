@@ -2,21 +2,16 @@ import type { MapFacetProps } from '.'
 
 import React from 'react'
 
-import { fromExtent } from "ol/geom/Polygon"
 import { getMapInstance, markerStyle } from "./map-instance"
 import OLMap from 'ol/Map'
 import Feature from "ol/Feature"
 import Point from "ol/geom/Point"
-import Select from "ol/interaction/Select"
-import Overlay from "ol/Overlay"
-import { fromLonLat, toLonLat, transformExtent } from "ol/proj"
+import { fromLonLat, transformExtent } from "ol/proj"
 import VectorLayer from "ol/layer/Vector"
 import VectorSource from "ol/source/Vector"
 import styled from 'styled-components'
 import { MapFacetState } from '../state'
-import { vector } from 'echarts'
 import { FACETS_WIDTH } from '../../../constants'
-// import { SearchStateContext } from '../context/state'
 
 const Wrapper = styled.div`
 	height: ${FACETS_WIDTH * .75}px;

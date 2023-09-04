@@ -5,7 +5,6 @@ import React from 'react'
 import FacetWrapper from '../../wrapper'
 import { MapFacet } from '../index'
 import { MapView } from './map'
-import { Facet } from '../..'
 
 export interface MapFacetProps {
 	facet: MapFacet

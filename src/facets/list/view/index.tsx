@@ -20,6 +20,15 @@ export function ListFacetView(props: ListFacetProps) {
 			// @ts-ignore
 			Options={Options}
 		>
+
+			{
+				props.values != null &&
+				(
+					props.facet.viewState.pagination ||
+					props.facet.viewState.query
+				) &&
+				<Options {...props}></Options>
+			}
 			<ListView
 				{...props}
 			/>

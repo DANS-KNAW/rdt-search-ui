@@ -108,30 +108,30 @@ function OrderOption(props: Props) {
 
 export default React.memo(OrderOption)
 
-function Asc() {
+export function Asc({ title = "Ascending", color = '#444' }: { title?: string, color?: string }) {
 	return (
 		<svg
 			viewBox="0 0 400 400"
 		>
-			<title>Ascending</title>
-			<line x1="260" y1="30" x2="370" y2="30" stroke="#444" strokeLinecap="round" strokeWidth="60" />
-			<line x1="110" y1="256" x2="370" y2="256" stroke="#444" strokeLinecap="round" strokeWidth="60" />
-			<line x1="180" y1="143" x2="370" y2="143" stroke="#444" strokeLinecap="round" strokeWidth="60" />
-			<line x1="30" y1="370" x2="370" y2="370" stroke="#444" strokeLinecap="round" strokeWidth="60" />
+			<title>{title}</title>
+			<line x1="260" y1="30" x2="370" y2="30" stroke={color} strokeLinecap="round" strokeWidth="60" />
+			<line x1="110" y1="256" x2="370" y2="256" stroke={color} strokeLinecap="round" strokeWidth="60" />
+			<line x1="180" y1="143" x2="370" y2="143" stroke={color} strokeLinecap="round" strokeWidth="60" />
+			<line x1="30" y1="370" x2="370" y2="370" stroke={color} strokeLinecap="round" strokeWidth="60" />
 		</svg>
 	)
 }
 
-function Desc() {
+export function Desc({ title = "Descending", color = '#444' }: { title?: string, color?: string }) {
 	return (
 		<svg
 			viewBox="0 0 400 400"
 		>
-			<title>Descending</title>
-			<line x1="30" y1="30" x2="370" y2="30" stroke="#444" strokeLinecap="round" strokeWidth="60" />
-			<line x1="110" y1="143" x2="370" y2="143" stroke="#444" strokeLinecap="round" strokeWidth="60" />
-			<line x1="180" y1="256" x2="370" y2="256" stroke="#444" strokeLinecap="round" strokeWidth="60" />
-			<line x1="260" y1="370" x2="370" y2="370" stroke="#444" strokeLinecap="round" strokeWidth="60" />
+			<title>{title}</title>
+			<line x1="30" y1="30" x2="370" y2="30" stroke={color} strokeLinecap="round" strokeWidth="60" />
+			<line x1="110" y1="143" x2="370" y2="143" stroke={color} strokeLinecap="round" strokeWidth="60" />
+			<line x1="180" y1="256" x2="370" y2="256" stroke={color} strokeLinecap="round" strokeWidth="60" />
+			<line x1="260" y1="370" x2="370" y2="370" stroke={color} strokeLinecap="round" strokeWidth="60" />
 		</svg>
 	)
 }

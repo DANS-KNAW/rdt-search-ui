@@ -1,6 +1,6 @@
 // import type { HistogramFacetConfig, HistogramFacetState, HistogramFacetValue } from "../../../views/facets/histogram/state"
 // import type { ListFacetConfig, ListFacetFilter, ListFacetState, ListFacetValues } from "../../../views/facets/list/state"
-import type { MapFacetConfig, MapFacetFilter, MapFacetState, MapFacetValue } from "../../../facets/map/state"
+import type { MapFacetConfig, MapFacetFilter } from "../../../facets/map/state"
 
 // import { FacetType } from "../../enum"
 

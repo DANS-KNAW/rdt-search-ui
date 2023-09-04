@@ -1,4 +1,3 @@
-import type { FSResponse } from '../../../common'
 import type { SearchState } from '..'
 import type { SearchProps } from '../../props'
 import type { FacetsDataReducerAction } from '../actions'

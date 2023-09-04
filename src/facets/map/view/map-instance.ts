@@ -6,7 +6,6 @@ import CircleStyle from 'ol/style/Circle'
 import Stroke from "ol/style/Stroke"
 import Fill from "ol/style/Fill"
 import Text from "ol/style/Text"
-import XYZ from "ol/source/XYZ"
 import OSM from 'ol/source/OSM'
 import Feature from "ol/Feature"
 import { transformExtent } from "ol/proj"

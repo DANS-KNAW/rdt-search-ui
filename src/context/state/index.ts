@@ -1,5 +1,4 @@
 import type { BaseFacetState, FacetFilter, FSResponse, SortOrder } from "../../common"
-import type { SearchProps } from "../props"
 
 import React from "react"
 import { FacetsDataReducerAction } from "./actions"

@@ -6,7 +6,7 @@ import styled from 'styled-components'
 
 import { ResultList, Result } from './components'
 import { Pagination } from '../header/pagination'
-import { SearchState, SearchStateContext } from '../../context/state'
+import { SearchState } from '../../context/state'
 
 const Section = styled.section`
 	.rdt-search__pagination {
