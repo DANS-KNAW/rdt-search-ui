@@ -27,7 +27,7 @@ const barSetOptions: echarts.EChartsOption = {
 		{
 			type: 'slider',
 			height: 18,
-			top: 248,
+			bottom: 12,
 
 			// Do not change the y-axis when zooming
 			filterMode: 'empty',
@@ -86,17 +86,21 @@ const updateValues: Record<ChartFacetType, (values: any /* KeyCount[] | Map<stri
 }
 
 const ChartFacetWrapper = styled(FacetWrapper)`
+	height: 100%;
+
 	.container {
 		width: 100%;
 	}
 
 	&.facet__pie-chart .container {
-		height: 160px;
+		height: 100%;
+		min-height: 160px;
 	}
 
 	&.facet__bar-chart .container,
 	&.facet__date-chart .container {
-		height: 280px;
+		height: 100%;
+		min-height: 280px;
 	}
 `
 

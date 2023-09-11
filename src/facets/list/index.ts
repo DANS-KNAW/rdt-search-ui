@@ -201,3 +201,5 @@ export class ListFacet extends Facet<ListFacetConfig, ListFacetState> {
 		this.state = { ...this.initialState }
 	}
 }
+
+export default ListFacet

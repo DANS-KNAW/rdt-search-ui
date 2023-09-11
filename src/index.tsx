@@ -4,11 +4,12 @@ import { SearchStateContext } from './context/state'
 
 import { useSearchStateReducer } from './context/state/reducer'
 import App from './app'
+import { Dashboard } from './dashboard'
 
 import type { ResultBodyProps } from './common'
 import { SearchProps, SearchPropsContext, UserSearchProps, defaultSearchProps } from './context/props'
 import { Label } from './views/ui/label'
-import type { FacetConfigs } from './context/props'
+import type { DashboardProps, FacetConfigs } from './context/props'
 import { DropDown } from './views/ui/drop-down'
 
 export * from './date.utils'
@@ -24,12 +25,12 @@ export {
 	Colors,
 }
 export type {
+	DashboardProps,
 	FacetConfigs,
-}
-
-export type {
 	ResultBodyProps
 }
+
+export default FacetedSearch
 
 export function FacetedSearch(props: UserSearchProps) {
 	const [searchProps, setSearchProps] = React.useState<SearchProps | undefined>(undefined)
@@ -43,13 +44,12 @@ export function FacetedSearch(props: UserSearchProps) {
 		setSearchProps(sp)
 	}, [props])
 
+	if (searchProps == null) return
+
 	return (
 		// <React.StrictMode>
-			<SearchPropsContext.Provider value={searchProps || defaultSearchProps}>
-				{
-					searchProps &&
-					<AppLoader {...searchProps} />
-				}
+			<SearchPropsContext.Provider value={searchProps}>
+				<AppLoader {...searchProps} />
 			</SearchPropsContext.Provider>
 		// </React.StrictMode>
 	)
@@ -60,7 +60,12 @@ function AppLoader(props: SearchProps) {
 
 	return (
 		<SearchStateContext.Provider value={value}>
-			<App searchProps={props} searchState={value.state} />
+			{
+				props.dashboard
+				? <Dashboard searchProps={props} searchState={value.state} />
+				: <App searchProps={props} searchState={value.state} />
+
+			}
 		</SearchStateContext.Provider>
 	)
 }

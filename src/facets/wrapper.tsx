@@ -9,14 +9,9 @@ import { Facet } from '.'
 
 const Wrapper = styled.div`
 	color: #444;
-	margin-bottom: 2rem;
+	display: grid;
+	grid-template-rows: fit-content(0) 1fr;
 	transition: margin 100ms;
-
-	header > button,
-	header > h3:before {
-		opacity: ${(p: { collapse: boolean }) => p.collapse ? 1 : 0};
-		transition: opacity 300ms;
-	}
 
 	&:hover {
 		header > button,
@@ -25,10 +20,16 @@ const Wrapper = styled.div`
 		}
 	}
 
+
+	.facet__header > button,
+	.facet__header > h3:before {
+		opacity: ${(p: { collapse: boolean }) => p.collapse ? 1 : 0};
+		transition: opacity 300ms;
+	}
+
 	.facet__body--collapsed {
 		display: none;
 	}
-
 `
 
 // TODO add a div around children and show/hide using display: none

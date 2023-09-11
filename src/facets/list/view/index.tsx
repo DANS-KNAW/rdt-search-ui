@@ -16,7 +16,7 @@ export function ListFacetView(props: ListFacetProps) {
 	return (
 		<FacetWrapper
 			{...props}
-			className="facet__list"
+			className="list-facet"
 			// @ts-ignore
 			Options={Options}
 		>

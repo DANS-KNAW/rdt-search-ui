@@ -201,6 +201,8 @@ export class DateChartFacet extends Facet<DateChartFacetConfig, DateChartFacetSt
 	}
 }
 
+export default DateChartFacet
+
 
 // export function rangeToFacetValue(from: number, to: number, count = 0): HistogramFacetValue {
 // 	return {

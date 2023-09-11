@@ -98,6 +98,8 @@ export class PieChartFacet extends Facet<ChartFacetConfig, ChartFacetState> {
 	}
 }
 
+export default PieChartFacet
+
 // export function rangeToFacetValue(from: number, to: number, count = 0): HistogramFacetValue {
 // 	return {
 // 		from,

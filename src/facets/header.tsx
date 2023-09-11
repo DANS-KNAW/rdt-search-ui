@@ -70,7 +70,7 @@ export function FacetHeader<FacetConfig extends BaseFacetConfig, FacetState exte
 	}, [props.facetState.collapse])
 
 	return (
-		<Header>
+		<Header className="facet__header">
 			<H3
 				collapse={props.facetState.collapse}
 				onClick={props.facet.actions.toggleCollapse}

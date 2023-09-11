@@ -26,10 +26,14 @@ const Wrapper = styled.div`
 		/* margin: 0 16px; */
 	}
 
-	#rdt-search__facets {
+	#facets {
 		grid-column: 1;
 		min-width: ${FACETS_WIDTH}px;
 		grid-row: 2 / -1;
+	}
+
+	#facets .facet-container {
+		margin-bottom: 2rem;
 	}
 
 	#rdt-search__active-filters,
@@ -54,7 +58,7 @@ const Wrapper = styled.div`
 			display: ${(props: WProps) => props.showResults ? 'grid' : 'none'};
 		}
 
-		#rdt-search__facets,
+		#facets,
 		#rdt-search__active-filters,
 		#rdt-search__full-text {
 			display: ${(props: WProps) => props.showResults ? 'none' : 'grid'};
@@ -79,17 +83,21 @@ export default function FacetedSearch(props: { searchProps: SearchProps, searchS
 				sortOrder={props.searchState.sortOrder}
 			/>
 			<ActiveFilters />
-			<div id="rdt-search__facets">
+			<div id="facets">
 				{
 					props.searchState.facetStates.size > 0 &&
 					props.searchProps.facets
 						.map(facet =>
-							<facet.View
+							<div
+								className="facet-container"
 								key={facet.ID}
-								facet={facet}
-								facetState={props.searchState.facetStates.get(facet.ID)!}
-								values={props.searchState.facetValues[facet.ID]}
-							/>
+							>
+								<facet.View
+									facet={facet}
+									facetState={props.searchState.facetStates.get(facet.ID)!}
+									values={props.searchState.facetValues[facet.ID]}
+								/>
+							</div>
 						)
 				}
 			</div>

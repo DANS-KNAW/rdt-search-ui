@@ -4,45 +4,61 @@ import { FacetConfig, ResultBodyProps, SortOrder } from "../../common/types/sear
 import { UITexts, uiTexts } from "./ui-texts"
 import { Facet } from "../../facets"
 
+export interface DashboardProps {
+	rows?: number
+	columns?: number
+}
+
 export interface UserSearchProps {
+	/* Required */
 	ResultBodyComponent: React.FC<ResultBodyProps>
 	url: string
 	facets: Facet<any, any>[]
 
+	/* Optional with defaults */
 	autoSuggest?: (query: string) => Promise<string[]>
-	className?: string /* className prop is used by StyledComponents */
 	excludeResultFields?: string[]
 	onClickResult?: (result: any, ev: React.MouseEvent<HTMLLIElement>) => void
 	resultFields?: string[]
 	resultBodyProps?: Record<string, any>
 	resultsPerPage?: number
-	SearchHomeComponent?: React.FC<any>
 	track_total_hits?: number | boolean
 	sortOrder?: SortOrder
 	style?: {
 		spotColor: string
 	}
 	uiTexts?: UITexts
+
+	/* Optional and can be undefined, see SearchProps */
+	className?: string /* className prop is used by StyledComponents */
+	dashboard?: DashboardProps 
+	SearchHomeComponent?: React.FC<any>
 }
 
 export type FacetConfigs = Map<string, FacetConfig>
 
 // Redefine the UserSearchProps to make some props required,
 // except for the SearchHomeComponent and className props
-export type SearchProps = Required<Omit<UserSearchProps, 'facetsConfig' | 'SearchHomeComponent' | 'className'>> & {
+export type SearchProps = Required<Omit<UserSearchProps, 'facetsConfig' | 'SearchHomeComponent' | 'className' | 'dashboard'>> & {
 	// The facetsConfig array is converted to a Map, with the facet field + array index as key
 	// TODO change to facetConfigs
 	facets: Facet<any, any>[]
 
 	// Optional props
-	SearchHomeComponent?: React.FC<any>
 	className?: string
+	dashboard?: DashboardProps
+	SearchHomeComponent?: React.FC<any>
 }
 
 export const defaultSearchProps: SearchProps = {
+	/**
+	 * These defaults will never be used, because these props are required and
+	 * therefor always overriden by the user props
+	 */
 	ResultBodyComponent: () => null,
 	url: '',
 	facets: [],
+	/* */
 
 	autoSuggest: async function autoSuggest(query: string) {
 		console.log('[RDT-SEARCH-UI] autoSuggest:', query)
