@@ -7,6 +7,7 @@ import { FacetController } from "../../facets"
 export interface DashboardProps {
 	rows?: number
 	columns?: number
+	areas?: string[]
 }
 
 export interface UserSearchProps {

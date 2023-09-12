@@ -21,9 +21,19 @@ const Wrapper = styled.div`
 		min-height: 100%;
 		display: grid;
 		grid-auto-rows: 420px;
-		grid-template-columns: ${(props: { dashboard: DashboardProps }) => {
-			return `repeat(${props.dashboard.columns}, 1fr)`
+		${(props: { dashboard: DashboardProps }) => {
+			if (props.dashboard.columns) {
+				return `grid-template-columns: repeat(${props.dashboard.columns}, 1fr)`
+			}
+			if (props.dashboard.areas) {
+				return `
+					grid-template-columns: repeat(${props.dashboard.areas[0].split(' ').length}, 1fr);
+					grid-template-areas: ${props.dashboard.areas.map(a => `"${a}"`).join(' ')}
+				`
+			}
+			return ''
 		}};
+
 		grid-gap: 32px;
 	}
 

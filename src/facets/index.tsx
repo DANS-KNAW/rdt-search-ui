@@ -23,7 +23,9 @@ export abstract class FacetController<FacetConfig extends BaseFacetConfig, Facet
 	constructor(initialConfig: FacetConfig, initialState?: FacetState) {
 		super()
 
-		this.ID = `${initialConfig.field}-${Math.random().toString().slice(2, 8)}`
+		this.ID = initialConfig.id
+			? initialConfig.id
+			: `${initialConfig.field}-${Math.random().toString().slice(2, 8)}`
 		this.config = this.initConfig(initialConfig)
 		this.initialState = initialState || this.initState()
 		this.state = { ...this.initialState }
@@ -63,6 +65,7 @@ export const Facets = ({ children, facetClassname, searchProps, searchState }: P
 						return <div
 							className={clsx('facet-container', facetClassname )}
 							key={facet.ID}
+							style={{ gridArea: facet.ID }}
 						>
 							<child.type
 								facet={facet}

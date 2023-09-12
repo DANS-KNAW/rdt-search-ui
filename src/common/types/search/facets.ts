@@ -16,7 +16,8 @@ import type { MapFacetConfig, MapFacetFilter } from "../../../facets/map/state"
 */
 export interface BaseFacetConfig {
 	readonly field: string
-	// readonly type: FacetType
+
+	readonly id?: string
 	readonly title?: string
 	readonly description?: string
 	readonly collapse?: boolean
