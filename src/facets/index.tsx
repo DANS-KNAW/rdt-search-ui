@@ -1,16 +1,19 @@
+import React, { Children, isValidElement } from 'react'
 import { FacetType } from "../common/enum";
 import type { ActiveFilter, ElasticSearchResponse } from "../common/types/search";
 import type { BaseFacetConfig, BaseFacetState } from "../common/types/search/facets";
 import type { Bucket } from "../context/state/use-search/response-with-facets-parser";
+import { SearchProps } from '../context/props';
+import { SearchState } from '../context/state';
+import clsx from 'clsx';
 
-export abstract class Facet<FacetConfig extends BaseFacetConfig, FacetState extends BaseFacetState> extends EventTarget {
+export abstract class FacetController<FacetConfig extends BaseFacetConfig, FacetState extends BaseFacetState> extends EventTarget {
 	ID: string
 	config: FacetConfig
 	readonly initialState: FacetState
 	protected state: FacetState
 
 	abstract type: FacetType
-	abstract View: any
 	abstract actions: {
 		toggleCollapse: () => void
 		removeFilter: (key: string) => void
@@ -38,4 +41,37 @@ export abstract class Facet<FacetConfig extends BaseFacetConfig, FacetState exte
 
 	protected abstract initConfig(config: FacetConfig): FacetConfig
 	protected abstract initState(): FacetState
+}
+
+interface Props {
+	facetClassname?: string
+	children: React.ReactNode
+	searchProps: SearchProps
+	searchState: SearchState
+}
+
+export const Facets = ({ children, facetClassname, searchProps, searchState }: Props) => {
+	if (searchState.facetStates.size === 0) return null
+	return (
+		<div id="facets">
+			{
+				Children
+					.map(children, (child, index) => {
+						if (!isValidElement(child)) return
+						const facet = searchProps.facets[index]
+ 
+						return <div
+							className={clsx('facet-container', facetClassname )}
+							key={facet.ID}
+						>
+							<child.type
+								facet={facet}
+								facetState={searchState.facetStates.get(facet.ID)!}
+								values={searchState.facetValues[facet.ID]}
+							/>
+						</div>
+					})
+			}
+		</div>
+	)
 }

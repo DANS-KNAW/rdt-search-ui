@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Children, isValidElement } from 'react'
 import { EsDataType, SortBy, SortDirection, FacetType, Colors } from './common'
 import { SearchStateContext } from './context/state'
 
@@ -22,7 +22,7 @@ export {
 	Label,
 	FacetType,
 	DropDown,
-	Colors,
+	Colors
 }
 export type {
 	DashboardProps,
@@ -32,16 +32,30 @@ export type {
 
 export default FacetedSearch
 
+
 export function FacetedSearch(props: UserSearchProps) {
+	const [children, setChildren] = React.useState<React.ReactNode>(props.children)
 	const [searchProps, setSearchProps] = React.useState<SearchProps | undefined>(undefined)
 
 	React.useEffect(() => {
+		if (props.children == null) return
+
+		const children = isValidElement(props.children) && props.children.type.toString() === Symbol.for('react.fragment').toString()
+			? props.children.props.children
+			: props.children
+
+		const facets = Children.map(children, child => {
+			return new child.type.controller(child.props.config)
+		}) as any
+
 		const sp: SearchProps = {
 			...defaultSearchProps,
 			...props,
+			facets
 		}
 
 		setSearchProps(sp)
+		setChildren(children)
 	}, [props])
 
 	if (searchProps == null) return
@@ -49,23 +63,25 @@ export function FacetedSearch(props: UserSearchProps) {
 	return (
 		// <React.StrictMode>
 			<SearchPropsContext.Provider value={searchProps}>
-				<AppLoader {...searchProps} />
+				<AppLoader searchProps={searchProps} >{children}</AppLoader>
 			</SearchPropsContext.Provider>
 		// </React.StrictMode>
 	)
 }
 
-function AppLoader(props: SearchProps) {
-	const value = useSearchStateReducer(props)
+function AppLoader(props: { children: React.ReactNode, searchProps: SearchProps }) {
+	const value = useSearchStateReducer(props.searchProps)
+
+	const Component = props.searchProps.dashboard ? Dashboard : App
 
 	return (
 		<SearchStateContext.Provider value={value}>
-			{
-				props.dashboard
-				? <Dashboard searchProps={props} searchState={value.state} />
-				: <App searchProps={props} searchState={value.state} />
-
-			}
+			<Component
+				searchProps={props.searchProps}
+				searchState={value.state}
+			>
+				{props.children}
+			</Component>
 		</SearchStateContext.Provider>
 	)
 }

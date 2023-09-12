@@ -3,16 +3,17 @@ import type { MapFacetState, MapFacetValue } from '../state'
 import React from 'react'
 
 import FacetWrapper from '../../wrapper'
-import { MapFacet } from '../index'
+import { MapFacetController } from '../controller'
 import { MapView } from './map'
 
 export interface MapFacetProps {
-	facet: MapFacet
+	facet: MapFacetController
 	facetState: MapFacetState
 	values: MapFacetValue[]
 }
-export function MapFacetView(props: MapFacetProps) {
+export function MapFacet(props: MapFacetProps) {
 	if (props.facetState == null) return
+
 	return (
 		<FacetWrapper {...props} >
 			<MapView {...props} />
@@ -26,3 +27,5 @@ export function MapFacetView(props: MapFacetProps) {
 		</FacetWrapper>
 	)
 }
+
+MapFacet.mapFacetController = MapFacetController

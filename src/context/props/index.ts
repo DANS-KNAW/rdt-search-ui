@@ -2,7 +2,7 @@ import React from "react"
 import { Colors } from "../../common/enum"
 import { FacetConfig, ResultBodyProps, SortOrder } from "../../common/types/search"
 import { UITexts, uiTexts } from "./ui-texts"
-import { Facet } from "../../facets"
+import { FacetController } from "../../facets"
 
 export interface DashboardProps {
 	rows?: number
@@ -13,7 +13,8 @@ export interface UserSearchProps {
 	/* Required */
 	ResultBodyComponent: React.FC<ResultBodyProps>
 	url: string
-	facets: Facet<any, any>[]
+	children: React.ReactNode
+	// facets: FacetController<any, any>[]
 
 	/* Optional with defaults */
 	autoSuggest?: (query: string) => Promise<string[]>
@@ -39,10 +40,10 @@ export type FacetConfigs = Map<string, FacetConfig>
 
 // Redefine the UserSearchProps to make some props required,
 // except for the SearchHomeComponent and className props
-export type SearchProps = Required<Omit<UserSearchProps, 'facetsConfig' | 'SearchHomeComponent' | 'className' | 'dashboard'>> & {
+export type SearchProps = Required<Omit<UserSearchProps, 'children' | 'facetsConfig' | 'SearchHomeComponent' | 'className' | 'dashboard'>> & {
 	// The facetsConfig array is converted to a Map, with the facet field + array index as key
 	// TODO change to facetConfigs
-	facets: Facet<any, any>[]
+	facets: FacetController<any, any>[]
 
 	// Optional props
 	className?: string

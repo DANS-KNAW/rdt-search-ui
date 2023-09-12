@@ -6,7 +6,7 @@ import { HelpButton } from '../views/ui/help-button'
 // import { Button } from '../views/ui/button'
 import { SearchPropsContext } from '../context/props'
 import FacetWrapper from './wrapper'
-import { Facet } from '.'
+import { FacetController } from '.'
 // import { ListFacetUtils } from '../views/list/utils'
 
 /**
@@ -50,24 +50,24 @@ const H3 = styled('h3')`
 
 interface Props<FacetConfig extends BaseFacetConfig, FacetState extends BaseFacetState> {
 	facetState: FacetState
-	facet: Facet<FacetConfig, FacetState>
-	hasOptions: boolean
-	Options?: React.FC<{ facetData: FacetState }>
+	facet: FacetController<FacetConfig, FacetState>
+	// hasOptions: boolean
+	// Options?: React.FC<{ facetData: FacetState }>
 }
 export function FacetHeader<FacetConfig extends BaseFacetConfig, FacetState extends BaseFacetState>(props: Props<FacetConfig, FacetState>) {
 	const { style } = React.useContext(SearchPropsContext)
-	const [showOptions, setShowOptions] = React.useState(false)
+	// const [showOptions, setShowOptions] = React.useState(false)
 
 	// const toggleOptions = React.useCallback(() => {
 	// 	setShowOptions(!showOptions)
 	// }, [showOptions])
 
 	// Close options when facet is collapsed
-	React.useEffect(() => {
-		if (props.facetState.collapse) {
-			setShowOptions(false)
-		}
-	}, [props.facetState.collapse])
+	// React.useEffect(() => {
+	// 	if (props.facetState.collapse) {
+	// 		setShowOptions(false)
+	// 	}
+	// }, [props.facetState.collapse])
 
 	return (
 		<Header className="facet__header">
@@ -109,11 +109,11 @@ export function FacetHeader<FacetConfig extends BaseFacetConfig, FacetState exte
 					Sort
 				</Button>
 			} */}
-			{
+			{/* {
 				showOptions &&
 				props.Options != null &&
 				<props.Options facetData={props.facetState} />
-			}
+			} */}
 		</Header>
 	)
 }

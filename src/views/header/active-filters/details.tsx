@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { Label } from '../../ui/label'
 
-import { Facet } from '../../../facets'
+import { FacetController } from '../../../facets'
 
 export const Ul = styled.ul`
 	margin: 0;
@@ -89,7 +89,7 @@ const Li = styled(Label)`
 `
 
 export function ActiveFilterValue(props: {
-	facet: Facet<any, any>,
+	facet: FacetController<any, any>,
 	value: string
 }) {
 	return (

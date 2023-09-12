@@ -19,8 +19,9 @@
 	},
 	"include": [
 		"src/index.tsx",
-		"src/facets/chart/pie.ts",
-		"src/facets/chart/date.ts",
-		"src/facets/*/index.ts"
+		"src/facets/chart/view/pie.tsx",
+		"src/facets/chart/view/date.tsx",
+		"src/facets/map/view/index.tsx",
+		"src/facets/list/view/index.tsx"
 	]
 }

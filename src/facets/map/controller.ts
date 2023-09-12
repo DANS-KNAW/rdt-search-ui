@@ -4,8 +4,8 @@ import type { MapFacetState, MapFacetConfig, MapFacetValue } from "./state"
 import ngeohash from 'ngeohash'
 
 import { addFilter } from "../../context/state/use-search/request-with-facets-creator"
-import { MapFacetView } from "./view"
-import { Facet } from ".."
+import { MapFacet } from "./view"
+import { FacetController } from ".."
 import { EventName } from "../../constants"
 import { ElasticSearchResponse, FacetType } from "../../common"
 
@@ -13,9 +13,9 @@ function capitalize(str: string) {
 	return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
-export class MapFacet extends Facet<MapFacetConfig, MapFacetState> {
+export class MapFacetController extends FacetController<MapFacetConfig, MapFacetState> {
 	type = FacetType.Map
-	View = MapFacetView
+	View = MapFacet
 
 	actions = {
 		toggleSearchOnZoom: () => {

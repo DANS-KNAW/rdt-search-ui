@@ -9,7 +9,7 @@ import { ESResponseWithFacetsParser, getBuckets } from './response-with-facets-p
 import { ESResponseParser } from './response-parser'
 import { fetchSearchResult } from './fetch'
 import { ESRequest } from './request-creator'
-import { Facet } from '../../../facets'
+import { FacetController } from '../../../facets'
 
 export function useSearch(searchProps: SearchProps, searchState: SearchState, dispatch: React.Dispatch<FacetsDataReducerAction>) {
 	const prev = usePrevious(searchState)
@@ -96,7 +96,7 @@ async function fetchSearchResultWithFacets(searchState: SearchState, searchProps
 	return result
 }
 
-async function fetchFacetValuesOnly(searchState: SearchState, searchProps: SearchProps, facet: Facet<any, any>) {
+async function fetchFacetValuesOnly(searchState: SearchState, searchProps: SearchProps, facet: FacetController<any, any>) {
 	// Create a regular payload of a search with facets
 	const { payload } = new ESRequestWithFacets(searchState, searchProps)
 

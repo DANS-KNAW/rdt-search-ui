@@ -7,7 +7,7 @@ import { SortDirection } from '../../../../common'
 import { Button } from '../../../ui/button'
 import { SearchPropsContext } from '../../../../context/props'
 import { SearchStateContext } from '../../../../context/state'
-import { Facet } from '../../../../facets'
+import { FacetController } from '../../../../facets'
 
 interface OOProps { active: boolean }
 const Wrapper = styled.div`
@@ -50,7 +50,7 @@ function updateSortOrder(sortOrder: SortOrder, field: string, direction: SortDir
 }
 
 interface Props {
-	facet: Facet<any, any>
+	facet: FacetController<any, any>
 	sortOrder: SortOrder
 }
 function OrderOption(props: Props) {

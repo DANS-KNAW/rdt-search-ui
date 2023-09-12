@@ -1,9 +1,8 @@
 import type { Bucket } from "../../context/state/use-search/response-with-facets-parser"
-import type { ChartFacetState, ChartFacetConfig  } from "./state"
+import type { ChartFacetConfig, PieChartFacetState  } from "./state"
 
 import { addFilter } from "../../context/state/use-search/request-with-facets-creator"
-import { ChartFacetView } from "./view"
-import { Facet } from ".."
+import { FacetController } from ".."
 import { EventName } from "../../constants"
 import { ElasticSearchResponse, FacetType } from "../../common"
 import { KeyCount } from "../list/state"
@@ -12,9 +11,32 @@ function capitalize(str: string) {
 	return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
-export class PieChartFacet extends Facet<ChartFacetConfig, ChartFacetState> {
+export class PieChartController extends FacetController<ChartFacetConfig, PieChartFacetState> {
+	setOptions() {
+		return {
+			tooltip: {},
+			series: [{
+				type: 'pie',
+				data: [],
+				radius: '60%'
+			}]
+		}
+	}
+
+	updateOptions(values: KeyCount[]) {
+		return {
+			series: [
+				{
+					data: values.map((value) => ({
+						value: value.count,
+						name: value.key
+					}))
+				}
+			]
+		}
+	}
+
 	type = FacetType.Pie
-	View = ChartFacetView
 
 	actions = {
 		setFilter: (filter: string) => {
@@ -51,7 +73,7 @@ export class PieChartFacet extends Facet<ChartFacetConfig, ChartFacetState> {
 	}
 
 	// State
-	protected initState(): ChartFacetState {
+	protected initState(): PieChartFacetState {
 		return {
 			collapse: this.config.collapse || false,
             filter: undefined,
@@ -98,7 +120,7 @@ export class PieChartFacet extends Facet<ChartFacetConfig, ChartFacetState> {
 	}
 }
 
-export default PieChartFacet
+export default PieChartController
 
 // export function rangeToFacetValue(from: number, to: number, count = 0): HistogramFacetValue {
 // 	return {

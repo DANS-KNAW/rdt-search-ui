@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { KeyCount, ListFacetConfig, ListFacetState } from '../state'
-import { Facet } from '../..'
+import { FacetController } from '../..'
 
 interface WProps { active: boolean }
 const Wrapper = styled('li')`
@@ -46,7 +46,7 @@ const Wrapper = styled('li')`
 
 interface Props {
 	active: boolean
-	facet: Facet<ListFacetConfig, ListFacetState>
+	facet: FacetController<ListFacetConfig, ListFacetState>
 	keyFormatter: (key: string | number, query?: string) => string
 	query: ListFacetState['query']
 	value: KeyCount

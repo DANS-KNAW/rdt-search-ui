@@ -2,8 +2,7 @@ import type { Bucket } from "../../context/state/use-search/response-with-facets
 import type { DateChartFacetConfig, DateChartFacetState, KeyCountMap  } from "./state"
 
 import { addFilter } from "../../context/state/use-search/request-with-facets-creator"
-import { ChartFacetView } from "./view"
-import { Facet } from ".."
+import { FacetController } from ".."
 import { EventName } from "../../constants"
 import { ElasticSearchResponse, FacetType } from "../../common"
 
@@ -20,7 +19,7 @@ const format = {
 	minute: 'yyyy-MM-dd HH:mm',
 }
 
-export class DateChartFacet extends Facet<DateChartFacetConfig, DateChartFacetState> {
+export class DateChartController extends FacetController<DateChartFacetConfig, DateChartFacetState> {
 	/**
 	 * Set the range of the values in timestamps. This is used to calculate the 
 	 * percentage of the range that the filter represents.
@@ -31,8 +30,51 @@ export class DateChartFacet extends Facet<DateChartFacetConfig, DateChartFacetSt
 	 */
 	range: { min: number, max: number, currentMin: number, currentMax: number } | undefined
 
+	setOptions() {
+		return barSetOptions
+	}
+
+	updateOptions(values: KeyCountMap) {
+		let dataZoom
+		if (typeof this.state.filter === 'string') {
+			dataZoom = [
+				{
+					startValue: this.state.filter,
+					endValue: this.state.filter,
+				}
+			]
+		} else if (Array.isArray(this.state.filter)) {
+			dataZoom = [
+				{
+					start: this.state.filter[0],
+					end: this.state.filter[1],
+				}
+			]
+		} else if (this.range) {
+			const { min, max, currentMin, currentMax } = this.range
+			dataZoom = [
+				{
+					start: (currentMin - min) / (max - min) * 100,
+					end: (currentMax - min) / (max - min) * 100,
+				}
+			]
+		}
+		
+		return {
+			dataZoom,
+			series: [
+				{
+					data: Array.from(values.values())
+				}
+			],
+			xAxis: {
+				data: Array.from(values.keys())
+			},
+		}
+
+	}
+
 	type = FacetType.Date
-	View = ChartFacetView
 
 	actions = {
 		setFilter: (filter: string | [number, number]) => {
@@ -201,7 +243,7 @@ export class DateChartFacet extends Facet<DateChartFacetConfig, DateChartFacetSt
 	}
 }
 
-export default DateChartFacet
+export default DateChartController
 
 
 // export function rangeToFacetValue(from: number, to: number, count = 0): HistogramFacetValue {
@@ -259,4 +301,32 @@ function timestampToLabel(timestamp: number, config: DateChartFacetConfig) {
 	}
 
 	throw new Error(`Unknown interval: ${config.interval}`)
+}
+
+const barSetOptions: echarts.EChartsOption = {
+	tooltip: {},
+	xAxis: {
+		data: []
+	},
+	yAxis: {
+		minInterval: 1,
+	},
+	series: [{
+		type: 'bar',
+		data: [],
+	}],
+	dataZoom: [
+		{
+			type: 'slider',
+			height: 18,
+			bottom: 12,
+
+			// Do not change the y-axis when zooming
+			filterMode: 'empty',
+		},
+	],
+	grid: {
+		top: 24,
+		// bottom: 36,
+	}
 }

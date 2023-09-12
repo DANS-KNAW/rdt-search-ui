@@ -2,8 +2,7 @@ import type { Bucket } from "../../context/state/use-search/response-with-facets
 import type { ListFacetState, ListFacetConfig, ListFacetValues, ListFacetSort } from "./state"
 
 import { addFilter } from "../../context/state/use-search/request-with-facets-creator"
-import { ListFacetView } from "./view"
-import { Facet } from ".."
+import { FacetController } from ".."
 import { EventName } from "../../constants"
 import { ElasticSearchResponse, FacetType, SortBy, SortDirection } from "../../common"
 import { LIST_FACET_SCROLL_CUT_OFF } from "./view/list-view"
@@ -20,9 +19,8 @@ interface ListAggregationTerms {
 	size: number
 }
 
-export class ListFacet extends Facet<ListFacetConfig, ListFacetState> {
+export class ListFacetController extends FacetController<ListFacetConfig, ListFacetState> {
 	type = FacetType.List
-	View = ListFacetView
 
 	viewState: ListFacetViewState = listFacetViewStates[0]
 
@@ -202,4 +200,4 @@ export class ListFacet extends Facet<ListFacetConfig, ListFacetState> {
 	}
 }
 
-export default ListFacet
+export default ListFacetController

@@ -1,24 +1,32 @@
-import type { ListFacetState, ListFacetValues } from '../state'
+import type { ListFacetConfig, ListFacetState, ListFacetValues } from '../state'
 
 import React from 'react'
 
 import { ListView } from './list-view'
 import Options from './options'
 import FacetWrapper from '../../wrapper'
-import { ListFacet } from '..'
+import { ListFacetController } from '../controller'
+import { isConfig } from '../../common'
 
 export interface ListFacetProps {
-	facet: ListFacet
+	facet: ListFacetController
 	facetState: ListFacetState
 	values: ListFacetValues
 }
-export function ListFacetView(props: ListFacetProps) {
+
+export function ListFacet(props: { config: ListFacetConfig } | ListFacetProps) {
+	if (isConfig(props)) return null
+	return <_ListFacet {...props} />
+}
+ListFacet.controller = ListFacetController
+
+export function _ListFacet(props: ListFacetProps) {
+	if (props.facet == null) return null
+
 	return (
 		<FacetWrapper
 			{...props}
 			className="list-facet"
-			// @ts-ignore
-			Options={Options}
 		>
 
 			{

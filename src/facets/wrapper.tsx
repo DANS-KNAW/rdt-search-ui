@@ -5,7 +5,7 @@ import styled from "styled-components"
 import clsx from 'clsx'
 
 import { FacetHeader } from './header'
-import { Facet } from '.'
+import { FacetController } from '.'
 
 const Wrapper = styled.div`
 	color: #444;
@@ -37,11 +37,12 @@ const Wrapper = styled.div`
 
 interface Props<FacetConfig extends BaseFacetConfig, FacetState extends BaseFacetState> {
 	children: React.ReactNode
-	facet: Facet<FacetConfig, FacetState>
+	facet: FacetController<FacetConfig, FacetState>
 	facetState: FacetState
-	values: any[]
+	// TODO add values to facetState
+	values: any
 	className?: string
-	Options?: React.FC<{ facetData: FacetState }>
+	// Options?: React.FC<{ facetData: FacetState }>
 }
 function FacetWrapper<FacetConfig extends BaseFacetConfig, FacetState extends BaseFacetState>(props: Props<FacetConfig, FacetState>) {
 	return (
@@ -52,8 +53,8 @@ function FacetWrapper<FacetConfig extends BaseFacetConfig, FacetState extends Ba
 			<FacetHeader
 				facet={props.facet}
 				facetState={props.facetState}
-				hasOptions={props.Options != null}
-				Options={props.Options}
+				// hasOptions={props.Options != null}
+				// Options={props.Options}
 			/>
 			<div
 				className={clsx(

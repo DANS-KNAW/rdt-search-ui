@@ -11,6 +11,7 @@ import { ActiveFilters } from './views/header/active-filters'
 import { SearchProps } from './context/props'
 import { SearchState } from './context/state'
 import { FACETS_WIDTH } from './constants'
+import { Facets } from './facets'
 
 const Wrapper = styled.div`
 	display: grid;
@@ -68,45 +69,38 @@ const Wrapper = styled.div`
 
 interface WProps { showResults: boolean }
 
-export default function FacetedSearch(props: { searchProps: SearchProps, searchState: SearchState }) {
+interface Props {
+	children: React.ReactNode
+	searchProps: SearchProps
+	searchState: SearchState
+}
+export default function FacetedSearch({ children, searchProps, searchState }: Props) {
 	const [showResults, setShowResults] = React.useState(true)
 
 	return (
 		<Wrapper
-			className={props.searchProps.className}
+			className={searchProps.className}
 			showResults={showResults}
 		>
 			<FullTextSearch />
 			<ResultHeader
-				currentPage={props.searchState.currentPage}
-				searchResult={props.searchState.searchResult}
-				sortOrder={props.searchState.sortOrder}
+				currentPage={searchState.currentPage}
+				searchResult={searchState.searchResult}
+				sortOrder={searchState.sortOrder}
 			/>
 			<ActiveFilters />
-			<div id="facets">
-				{
-					props.searchState.facetStates.size > 0 &&
-					props.searchProps.facets
-						.map(facet =>
-							<div
-								className="facet-container"
-								key={facet.ID}
-							>
-								<facet.View
-									facet={facet}
-									facetState={props.searchState.facetStates.get(facet.ID)!}
-									values={props.searchState.facetValues[facet.ID]}
-								/>
-							</div>
-						)
-				}
-			</div>
+			<Facets
+				searchProps={searchProps}
+				searchState={searchState}
+			>
+				{children}
+			</Facets>
 			<SearchResult
-				currentPage={props.searchState.currentPage}
-				ResultBodyComponent={props.searchProps.ResultBodyComponent}
-				onClickResult={props.searchProps.onClickResult}
-				resultBodyProps={props.searchProps.resultBodyProps}
-				searchResult={props.searchState.searchResult}
+				currentPage={searchState.currentPage}
+				ResultBodyComponent={searchProps.ResultBodyComponent}
+				onClickResult={searchProps.onClickResult}
+				resultBodyProps={searchProps.resultBodyProps}
+				searchResult={searchState.searchResult}
 			/>
 			<ToggleView
 				showResults={showResults}

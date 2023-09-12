@@ -6,6 +6,7 @@ import type { DashboardProps  } from './context/props'
 import { SearchState } from './context/state'
 import clsx from 'clsx'
 import { ActiveFilters } from './views/header/active-filters'
+import { Facets } from './facets'
 // import { FACETS_WIDTH } from './constants'
 
 const Wrapper = styled.div`
@@ -34,35 +35,29 @@ const Wrapper = styled.div`
 	}
 `
 
-export function Dashboard(props: {
-	searchProps: SearchProps,
+interface Props {
+	children: React.ReactNode
+	searchProps: SearchProps
 	searchState: SearchState
-}) {
+}
+
+export function Dashboard({ children, searchProps, searchState }: Props) {
+	if (searchState.facetStates.size === 0) return null
+
 	return (
 		<Wrapper
-			className={clsx('dashboard', props.searchProps.className)}
-			dashboard={props.searchProps.dashboard!}
+			className={clsx('dashboard', searchProps.className)}
+			dashboard={searchProps.dashboard!}
 			id="rdt-search"
 		>
 			<ActiveFilters />
-			<div id="facets">
-				{
-					props.searchState.facetStates.size > 0 &&
-					props.searchProps.facets
-						.map(facet =>
-							<div
-								className="facet-container facet-container--card"
-								key={facet.ID}
-							>
-								<facet.View
-									facet={facet}
-									facetState={props.searchState.facetStates.get(facet.ID)!}
-									values={props.searchState.facetValues[facet.ID]}
-								/>
-							</div>
-						)
-				}
-			</div>
+			<Facets
+				facetClassname="facet-container--card"
+				searchProps={searchProps}
+				searchState={searchState}
+			>
+				{children}
+			</Facets>
 		</Wrapper>
 	)
 }
