@@ -14,13 +14,13 @@ const ChartFacetWrapper = styled(FacetWrapper)`
 		width: 100%;
 	}
 
-	&.facet__pie-chart .container {
+	&.pie-chart-facet .inner-container {
 		height: 100%;
 		min-height: 160px;
 	}
 
-	&.facet__bar-chart .container,
-	&.facet__date-chart .container {
+	&.bar-chart-facet .inner-container,
+	&.date-chart-facet .inner-container {
 		height: 100%;
 		min-height: 280px;
 	}
@@ -79,11 +79,11 @@ export function ChartFacet<Config extends ChartFacetConfig, State extends ChartF
 
 	return (
 		<ChartFacetWrapper
-			className={`facet__${props.facet.type}-chart`}
+			className={`${props.facet.type}-chart-facet`}
 			{...props}
 		>
 			<div
-				className="container"
+				className="inner-container"
 				ref={containerRef}
 			>
 			</div>

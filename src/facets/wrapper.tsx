@@ -11,6 +11,7 @@ const Wrapper = styled.div`
 	color: #444;
 	display: grid;
 	grid-template-rows: fit-content(0) 1fr;
+	height: 100%;
 	transition: margin 100ms;
 
 	&:hover {

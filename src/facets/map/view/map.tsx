@@ -11,10 +11,10 @@ import VectorLayer from "ol/layer/Vector"
 import VectorSource from "ol/source/Vector"
 import styled from 'styled-components'
 import { MapFacetState } from '../state'
-import { FACETS_WIDTH } from '../../../constants'
+// import { FACETS_WIDTH } from '../../../constants'
 
+	// height: ${FACETS_WIDTH * .75}px;
 const Wrapper = styled.div`
-	height: ${FACETS_WIDTH * .75}px;
 	width: 100%;
 `
 
@@ -158,6 +158,6 @@ export function MapView(props: MapFacetProps) {
 	}, [props.values, map, vectorSource])
 
 	return (
-		<Wrapper id="map" ref={mapRef}></Wrapper>
+		<Wrapper ref={mapRef}></Wrapper>
 	)
 }

@@ -12,7 +12,7 @@ import { SearchPropsContext } from '../../../context/props'
 export const LIST_FACET_SCROLL_CUT_OFF = 50
 
 export const Wrapper = styled('div')`
-	.list-facet__values {
+	ul.values {
 		list-style: none;
 		margin: 0 0 0 -1rem;
 		padding: 0;
@@ -39,7 +39,7 @@ export function ListView(props: ListFacetProps) {
 	return (
 		<Wrapper>
 			<ul
-				className="list-facet__values"
+				className="values"
  				ref={ulRef}
 			>
 				{
