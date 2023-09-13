@@ -65,7 +65,7 @@ export const Facets = ({ children, facetClassname, searchProps, searchState }: P
 						return <div
 							className={clsx('facet-container', facetClassname )}
 							key={facet.ID}
-							style={{ gridArea: facet.ID }}
+							style={{ gridArea: searchProps.dashboard?.areas == null ? undefined : facet.ID }}
 						>
 							<child.type
 								facet={facet}

@@ -7,6 +7,17 @@ import { FacetController } from "../../facets"
 export interface DashboardProps {
 	rows?: number
 	columns?: number
+
+	/* 
+	 * Define grid areas in the config to use the grid area layout.
+	 * The areas depend on user defined facet IDs. If dashboard.areas
+	 * is defined, the facet container will have grid-area: facet.ID in the
+	 * style tag.
+	 * 
+	 * TODO all the facets should be defined in the area, otherwise it messes
+	 * up the layout. Maybe we should add a default area for facets that are
+	 * not defined in the areas array.
+	 */
 	areas?: string[]
 }
 
