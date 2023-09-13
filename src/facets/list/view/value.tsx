@@ -13,7 +13,7 @@ const Wrapper = styled('li')`
 	position: relative;
 	overflow: hidden;
 	display: grid;
-	grid-template-columns: 1fr fit-content(0) 4px;
+	grid-template-columns: 1fr fit-content(0);
 
 	${p => p.active
 		? `&:before {

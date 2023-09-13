@@ -16,16 +16,16 @@ const Wrapper = styled.div`
 	grid-row: 2;
 	grid-template-columns: 16px auto 16px;
 	height: 48px;
-	margin: 0 .2em;
 `
 
 const Prev = styled(PaginationButton)`
 	font-size: 20px;
 	margin-top: -4px;
+	justify-self: start;
 `
 
 const Next = styled(Prev)`
-	text-align: right;
+	justify-self: end;
 `
 
 const PageNumbers = styled.div`

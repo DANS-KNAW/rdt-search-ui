@@ -11,6 +11,7 @@ export const PaginationButton = styled.button`
 	color: ${(props: { color: string, disabled?: boolean }) => props.color};
 	cursor: ${props => props.disabled ? 'default' : 'pointer'};
 	outline: none;
+	padding: 0;
 `
 
 interface PnProps { active: boolean }
