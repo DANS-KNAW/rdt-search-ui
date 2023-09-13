@@ -37,7 +37,7 @@ const Wrapper = styled.div`
 		margin-bottom: 2rem;
 	}
 
-	#rdt-search__active-filters,
+	#active-filters,
 	#rdt-search__search-result {
 		grid-column: 2;
 		/* grid-row: 2 / -1; */
@@ -60,7 +60,7 @@ const Wrapper = styled.div`
 		}
 
 		#facets,
-		#rdt-search__active-filters,
+		#active-filters,
 		#rdt-search__full-text {
 			display: ${(props: WProps) => props.showResults ? 'none' : 'grid'};
 		}

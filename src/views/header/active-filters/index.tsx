@@ -29,12 +29,16 @@ export function ActiveFilters() {
 		dispatch({ type: 'RESET' })
 	}, [facets])
 
-	if (!state.query.length && !state.facetFilters.size) return null
+	// If there are no active filters, just render an empty div
+	// in order not to mess up the grid layout
+	if (!state.query.length && !state.facetFilters.size) {
+		return <div id="active-filters" />
+	}
+
 
 	return (
 		<Wrapper
-			id="rdt-search__active-filters"
-			className="active-filters"
+			id="active-filters"
 		>
 			<Ul>
 				{
