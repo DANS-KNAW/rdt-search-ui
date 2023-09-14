@@ -27,27 +27,43 @@ export {
 export type {
 	DashboardProps,
 	FacetConfigs,
-	ResultBodyProps
+	ResultBodyProps,
+	UserSearchProps
 }
 
 export default FacetedSearch
 
 
 export function FacetedSearch(props: UserSearchProps) {
-	const [children, setChildren] = React.useState<React.ReactNode>(props.children)
+	const [children, setChildren] = React.useState<React.ReactNode>(undefined)
 	const [searchProps, setSearchProps] = React.useState<SearchProps | undefined>(undefined)
 
 	React.useEffect(() => {
-		if (props.children == null) return
+		// Only set children once
+		if (props.children == null || children != null) return
 
-		const children = isValidElement(props.children) && props.children.type.toString() === Symbol.for('react.fragment').toString()
+		const _children = (
+			// Make sure it is an element and not a string, number, ...
+			isValidElement(props.children) &&
+			// If children is a fragment, get the children of the fragment
+			props.children.type.toString() === Symbol.for('react.fragment').toString()
+		)	
 			? props.children.props.children
 			: props.children
 
-		const facets = Children.map(children, child => {
-			return new child.type.controller(child.props.config)
-		}) as any
+		setChildren(_children)
+	}, [props.children])
 
+	React.useEffect(() => {
+		// Children nog set, move on
+		if (children == null) return
+
+		// Initialise the facet controllers
+		const facets = Children.map(children, (child: any) => {
+			return new child.type.controller(child.props.config)
+		})
+
+		// Extend the search props with default values
 		const sp: SearchProps = {
 			...defaultSearchProps,
 			...props,
@@ -55,8 +71,7 @@ export function FacetedSearch(props: UserSearchProps) {
 		}
 
 		setSearchProps(sp)
-		setChildren(children)
-	}, [props])
+	}, [children])
 
 	if (searchProps == null) return
 
@@ -73,6 +88,15 @@ function AppLoader(props: { children: React.ReactNode, searchProps: SearchProps 
 	const value = useSearchStateReducer(props.searchProps)
 
 	const Component = props.searchProps.dashboard ? Dashboard : App
+
+	React.useEffect(() => {
+		if (props.searchProps.onActiveFiltersChange) {
+			props.searchProps.onActiveFiltersChange(
+				value.state.facetFilters,
+				value.state.query
+			)
+		}
+	}, [value.state.facetFilters, value.state.query])
 
 	return (
 		<SearchStateContext.Provider value={value}>

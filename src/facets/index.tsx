@@ -54,6 +54,7 @@ interface Props {
 
 export const Facets = ({ children, facetClassname, searchProps, searchState }: Props) => {
 	if (searchState.facetStates.size === 0) return null
+
 	return (
 		<div id="facets">
 			{
@@ -61,18 +62,24 @@ export const Facets = ({ children, facetClassname, searchProps, searchState }: P
 					.map(children, (child, index) => {
 						if (!isValidElement(child)) return
 						const facet = searchProps.facets[index]
- 
-						return <div
-							className={clsx('facet-container', facetClassname )}
-							key={facet.ID}
-							style={{ gridArea: searchProps.dashboard?.areas == null ? undefined : facet.ID }}
-						>
-							<child.type
-								facet={facet}
-								facetState={searchState.facetStates.get(facet.ID)!}
-								values={searchState.facetValues[facet.ID]}
-							/>
-						</div>
+
+						return (
+							<div
+								className={clsx('facet-container', facetClassname )}
+								key={facet.ID}
+								style={{
+									gridArea: searchProps.dashboard?.areas != null
+										? facet.ID
+										: undefined
+								}}
+							>
+								<child.type
+									facet={facet}
+									facetState={searchState.facetStates.get(facet.ID)!}
+									values={searchState.facetValues[facet.ID]}
+								/>
+							</div>
+						)
 					})
 			}
 		</div>
