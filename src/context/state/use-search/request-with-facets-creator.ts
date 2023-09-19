@@ -1,5 +1,6 @@
 import type { SearchProps } from '../../../context/props'
 import type { SearchState } from '../../../context/state'
+import { FacetControllers } from '../../controllers'
 
 import { ESRequest } from './request-creator'
 
@@ -15,28 +16,27 @@ import { ESRequest } from './request-creator'
 // }
 
 export class ESRequestWithFacets extends ESRequest {
-	constructor(state: SearchState, props: SearchProps) {
-		super(state, props)
+	constructor(state: SearchState, props: SearchProps, controllers: FacetControllers) {
+		super(state, props, controllers)
 
 		if (state.facetStates == null) return
 
-		this.setAggregations(props.facets)
+		this.setAggregations()
 		this.setQuery(state)
 	}
 
-	private setAggregations(facets: SearchProps['facets']) {
-		for (const facet of facets) {
-			// const field = facet.config.field
+	private setAggregations() {
+		for (const facet of this.controllers.values()) {
+			const facetState = this.state.facetStates.get(facet.ID)
+			if (facetState == null) continue
 
-			// let facetAggs	
-			// TODO remove type casting
-			const facetAggs = facet.createAggregation(this.payload.post_filter)
-			// if (ListFacetUtils.is(facetState)) {
-			// } else if (HistogramFacetUtils.is(facetState)) {
-			// 	facetAggs = HistogramFacetUtils.createAggregation({ field, facetID, facetState, postFilters: this.payload.post_filter })
-			// } else if (MapFacetUtils.is(facetState)) {
-			// 	facetAggs = MapFacetUtils.createAggregation({ field, facetID, facetState, postFilters: this.payload.post_filter })
-			// }
+			const facetFilter = this.state.facetFilters.get(facet.ID)
+
+			const facetAggs = facet.createAggregation(
+				this.payload.post_filter,
+				facetFilter?.value,
+				facetState,
+			)
 
 			if (facetAggs != null) {
 				this.payload.aggs = {

@@ -8,6 +8,7 @@ import ListFacetValue from './value'
 import { Pagination } from '../../../views/header/pagination'
 import { Button } from '../../../views/ui/button'
 import { SearchPropsContext } from '../../../context/props'
+import { FacetsDataReducerAction } from '../../../context/state/actions'
 
 export const LIST_FACET_SCROLL_CUT_OFF = 50
 
@@ -23,7 +24,7 @@ export const Wrapper = styled('div')`
 export function ListView(props: ListFacetProps) {
 	const ulRef = React.useRef<HTMLUListElement>(null)
 	const { style } = React.useContext(SearchPropsContext)
-	const [page, setPage] = usePage(props)
+	const [page, setPage] = usePage(props, props.dispatch)
 	const values = useValues(props, page)
 
 	React.useEffect(() => {
@@ -33,6 +34,26 @@ export function ListView(props: ListFacetProps) {
 			? `${ulRef.current.getBoundingClientRect().height}px`
 			: 'auto'
 	}, [props.facetState.scroll])
+
+	const toggleFilter = React.useCallback((ev: React.MouseEvent) => {
+		const value = ev.currentTarget.getAttribute('title')!
+
+		props.dispatch({
+			type: "UPDATE_FACET_FILTER",
+			subType: "LIST_FACET_TOGGLE_FILTER",
+			facetID: props.facet.ID,
+			value
+		})
+	}, [])
+
+	const showAll = React.useCallback(() => {
+		props.dispatch({
+			type: "UPDATE_FACET_STATE",
+			subType: "LIST_FACET_SHOW_ALL",
+			facetID: props.facet.ID,
+			total: props.values.total
+		})
+	}, [props.values?.total])
 
 	if (!values.length) return null
 
@@ -46,30 +67,31 @@ export function ListView(props: ListFacetProps) {
 					values
 						.map(value =>
 							<ListFacetValue
-								active={props.facetState.filter != null && props.facetState.filter.has(value.key.toString())}
-								facet={props.facet}
+								active={props.filter != null && props.filter.has(value.key.toString())}
 								key={value.key}
 								query={props.facetState.query}
+								toggleFilter={toggleFilter}
 								value={value}
 							/>
 						)
 				}
 			</ul>
 			{
-				props.facet.viewState.pagination ?
+				props.viewState.pagination ?
 					<Pagination
 						currentPage={page}
+						dispatch={props.dispatch}
 						total={props.values.total}
 						resultsPerPage={props.facet.config.size}
 						setCurrentPage={setPage}
 					/> :
-					props.facet.viewState.scrollButton &&
+					props.viewState.scrollButton &&
 					<Button
-						onClick={() => props.facet.actions.showAll(props.values.total)}
+						onClick={showAll}
 						spotColor={style.spotColor}
 					>
 						{
-							props.facet.viewState.query
+							props.viewState.query
 								? <>Show more</>
 								: <>Show all ({props.values.total})</>
 						}
@@ -92,7 +114,7 @@ function useValues(props: ListFacetProps, page: number) {
 
 		// Don't set the values if the pagination is enabled and the values
 		// have not been fetched yet
-		if (props.facet.viewState.pagination) {
+		if (props.viewState.pagination) {
 			// Calculate the number of pages (total: 28 / size: 10 = 2.8 => 3 pages)
 			const pageCount = Math.ceil(props.values.total / props.facet.config.size!)
 
@@ -127,16 +149,21 @@ function useValues(props: ListFacetProps, page: number) {
 	return values
 }
 
-function usePage(props: ListFacetProps) {
+function usePage(props: ListFacetProps, dispatch: React.Dispatch<FacetsDataReducerAction>) {
 	const [page, setPage] = React.useState(props.facetState.page)
 
 	// Update the page in the facetState when the page changes,
 	// but check if the page is not the same, this happens after
 	// the facetState and page are just synced (see next useEffect)
 	React.useEffect(() => {
-		if (props.facetState.page !== page) {
-			props.facet.actions.setPage(page)
-		}
+		if (props.facetState.page === page) return
+
+		dispatch({
+			type: "UPDATE_FACET_STATE",
+			subType: "LIST_FACET_SET_PAGE",
+			facetID: props.facet.ID,
+			page
+		})
 	}, [page])
 
 	// Update the page from the facetState. For example when the user selects a value,

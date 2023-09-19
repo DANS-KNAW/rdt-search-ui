@@ -1,11 +1,11 @@
-import type { BaseFacetConfig, BaseFacetState } from '../common'
+import type { BaseFacetConfig, BaseFacetState, FacetFilter } from '../common'
 
 import React from 'react'
 import styled from "styled-components"
 import clsx from 'clsx'
 
 import { FacetHeader } from './header'
-import { FacetController } from '.'
+import { FacetController } from './controller'
 
 const Wrapper = styled.div`
 	color: #444;
@@ -33,19 +33,23 @@ const Wrapper = styled.div`
 	}
 `
 
-// TODO add a div around children and show/hide using display: none
-//      this makes it possible to keep state of children
-
-interface Props<FacetConfig extends BaseFacetConfig, FacetState extends BaseFacetState> {
+interface Props<
+	FacetConfig extends BaseFacetConfig,
+	FacetState extends BaseFacetState,
+	Filter extends FacetFilter
+> {
 	children: React.ReactNode
-	facet: FacetController<FacetConfig, FacetState>
+	facet: FacetController<FacetConfig, FacetState, Filter>
 	facetState: FacetState
-	// TODO add values to facetState
+	filter: Filter
 	values: any
 	className?: string
-	// Options?: React.FC<{ facetData: FacetState }>
 }
-function FacetWrapper<FacetConfig extends BaseFacetConfig, FacetState extends BaseFacetState>(props: Props<FacetConfig, FacetState>) {
+function FacetWrapper<
+	FacetConfig extends BaseFacetConfig,
+	FacetState extends BaseFacetState,
+	Filter extends FacetFilter
+>(props: Props<FacetConfig, FacetState, Filter>) {
 	return (
 		<Wrapper
 			className={clsx("facet", props.className)}
@@ -54,6 +58,7 @@ function FacetWrapper<FacetConfig extends BaseFacetConfig, FacetState extends Ba
 			<FacetHeader
 				facet={props.facet}
 				facetState={props.facetState}
+				filter={props.filter}
 				// hasOptions={props.Options != null}
 				// Options={props.Options}
 			/>

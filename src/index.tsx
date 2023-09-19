@@ -1,16 +1,19 @@
 import React, { Children, isValidElement } from 'react'
 import { EsDataType, SortBy, SortDirection, FacetType, Colors } from './common'
-import { SearchStateContext } from './context/state'
+import { SearchStateContext, SearchStateDispatchContext, intialSearchState } from './context/state'
 
-import { useSearchStateReducer } from './context/state/reducer'
+import { searchStateReducer } from './context/state/reducer'
 import App from './app'
 import { Dashboard } from './dashboard'
 
 import type { ResultBodyProps } from './common'
 import { SearchProps, SearchPropsContext, UserSearchProps, defaultSearchProps } from './context/props'
 import { Label } from './views/ui/label'
-import type { DashboardProps, FacetConfigs } from './context/props'
+import type { DashboardProps } from './context/props'
 import { DropDown } from './views/ui/drop-down'
+import type { FacetController } from './facets/controller'
+import { FacetControllersContext, type FacetControllers } from './context/controllers'
+import { useSearch } from './context/state/use-search'
 
 export * from './date.utils'
 export {
@@ -18,7 +21,6 @@ export {
 	SearchStateContext,
 	SortBy,
 	SortDirection,
-	useSearchStateReducer,
 	Label,
 	FacetType,
 	DropDown,
@@ -26,7 +28,6 @@ export {
 }
 export type {
 	DashboardProps,
-	FacetConfigs,
 	ResultBodyProps,
 	UserSearchProps
 }
@@ -51,62 +52,88 @@ export function FacetedSearch(props: UserSearchProps) {
 			? props.children.props.children
 			: props.children
 
-		setChildren(_children)
-	}, [props.children])
-
-	React.useEffect(() => {
-		// Children nog set, move on
-		if (children == null) return
-
-		// Initialise the facet controllers
-		const facets = Children.map(children, (child: any) => {
-			return new child.type.controller(child.props.config)
-		})
-
 		// Extend the search props with default values
 		const sp: SearchProps = {
 			...defaultSearchProps,
-			...props,
-			facets
+			...props
 		}
 
+		setChildren(_children)
 		setSearchProps(sp)
-	}, [children])
+	}, [props.children])
 
-	if (searchProps == null) return
+
+	const controllers = useControllers(children)
+
+	if (searchProps == null || controllers.size === 0) return
 
 	return (
 		// <React.StrictMode>
 			<SearchPropsContext.Provider value={searchProps}>
-				<AppLoader searchProps={searchProps} >{children}</AppLoader>
+				<AppLoader searchProps={searchProps} controllers={controllers}>{children}</AppLoader>
 			</SearchPropsContext.Provider>
 		// </React.StrictMode>
 	)
 }
 
-function AppLoader(props: { children: React.ReactNode, searchProps: SearchProps }) {
-	const value = useSearchStateReducer(props.searchProps)
+interface AppLoaderProps {
+	children: React.ReactNode
+	controllers: FacetControllers
+	searchProps: SearchProps
+}
 
-	const Component = props.searchProps.dashboard ? Dashboard : App
+function AppLoader({ children, controllers, searchProps }: AppLoaderProps) {
+	const [state, dispatch] = React.useReducer(searchStateReducer(controllers), intialSearchState)
+
+	useSearch({
+		props: searchProps,
+		state,
+		dispatch,
+		controllers
+	})
+
+	const Component = searchProps.dashboard ? Dashboard : App
 
 	React.useEffect(() => {
-		if (props.searchProps.onActiveFiltersChange) {
-			props.searchProps.onActiveFiltersChange(
-				value.state.facetFilters,
-				value.state.query
-			)
+		if (!controllers.size) return
+		console.log('HERE')
+		const facetStates = new Map()
+		for (const [id, controller] of controllers.entries()) {
+			facetStates.set(id, controller.initState())
 		}
-	}, [value.state.facetFilters, value.state.query])
+
+		dispatch({
+			type: 'SET_FACET_STATES',
+			facetStates
+		})
+	}, [controllers])
+
+
+	// console.log('LOAD', props.searchProps, value, Component)
+
+	// React.useEffect(() => {
+	// 	if (props.searchProps.onActiveFiltersChange) {
+	// 		props.searchProps.onActiveFiltersChange(
+	// 			value.state.facetFilters,
+	// 			value.state.query
+	// 		)
+	// 	}
+	// }, [value.state.facetFilters, value.state.query])
 
 	return (
-		<SearchStateContext.Provider value={value}>
-			<Component
-				searchProps={props.searchProps}
-				searchState={value.state}
-			>
-				{props.children}
-			</Component>
-		</SearchStateContext.Provider>
+		<FacetControllersContext.Provider value={controllers}>
+			<SearchStateDispatchContext.Provider value={dispatch}>
+				<SearchStateContext.Provider value={state}>
+					<Component
+						controllers={controllers}
+						searchProps={searchProps}
+						searchState={state}
+					>
+						{children}
+					</Component>
+				</SearchStateContext.Provider>
+			</SearchStateDispatchContext.Provider>
+		</FacetControllersContext.Provider>
 	)
 }
 
@@ -119,3 +146,20 @@ function AppLoader(props: { children: React.ReactNode, searchProps: SearchProps 
 // 	console.log('=-=-=-=-=-=-=-=')
 // 	return false
 // }
+
+function useControllers(children: React.ReactNode): FacetControllers {
+	const [controllers, setControllers] = React.useState<FacetControllers>(new Map())
+
+	React.useEffect(() => {
+		if (children == null || controllers.size > 0) return
+
+		// Initialise the facet controllers
+		const facets = Children.map(children, (child: any) =>
+			 new child.type.controller(child.props.config)
+		)
+
+		setControllers(new Map(facets.map((f: FacetController<any, any, any>) => [f.ID, f])))
+	}, [children, controllers])
+
+	return controllers
+}

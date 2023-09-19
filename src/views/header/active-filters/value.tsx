@@ -3,42 +3,6 @@ import styled from 'styled-components'
 import { Label } from '../../ui/label'
 
 export const Ul = styled.ul`
-	margin: 0;
-	padding: 0;
-	list-style: none;
-	display: flex;
-	flex-wrap: wrap;
-
-	& > li {
-		align-items: center;
-		border-radius: 2px;
-		border: 1px solid #DDD;
-		box-shadow: 0 0 10px #EEE;
-		display: flex;
-		margin-bottom: .5rem;
-		padding: .25rem .5rem;
- 		margin-right: 1rem;
-		
- 		& > .active-filters__facet__title {
- 			margin-right: .5rem;
- 			white-space: nowrap;
-		}
-
-		& > ul.active-filters__facet__values {
-			display: flex;
-			list-style: none;
-			margin: 0;
-			padding: 0;
-
-			& > li {
-				margin-right: .5rem;
-
-				&:last-of-type {
-					margin-right: 0;
-				}
-			}
-		}
-	}
 `
 
 // interface Props {
@@ -63,43 +27,50 @@ const Li = styled(Label)`
 	display: grid;
 	grid-template-columns: 1fr 16px;
 	max-width: 100%;
+	margin-right: .5rem;
+
+	&:last-of-type {
+		margin-right: 0;
+	}
 
 	&:hover {
 		border-color: #BBB;
 
-		& > div.close {
+		.active-filters__close {
 			color: #444;
 			font-weight: bold;
 		}
 	}
 
-	& > div.value {
+
+	.active-filters__value {
 		overflow: hidden;
+		line-height: 1rem;
 		max-width: 100%;
 		text-overflow: ellipsis;
 	}
 
-	& > div.close {
+	.active-filters__close {
 		color: #888;
 		font-size: 0.7rem;
+		line-height: 1rem;
 		text-align: right;
 	}
 `
 
 export function ActiveFilterValue(props: {
-	facetID: string
-	removeFilter: (ev: React.MouseEvent) => void,
+	removeFilter: () => void,
+	title: string
 	value: string
 }) {
 	return (
 		<Li
 			as="li"
-			data-facet-id={props.facetID}
 			onClick={props.removeFilter}
-			title={`Facet filter value: ${props.value}`}
+			title={props.title}
 		>
-			<div className="value">{props.value}</div>
-			<div className="close">✕</div>
+			<div className="active-filters__value">{props.value}</div>
+			<div className="active-filters__close">✕</div>
 		</Li>		
 	)
 

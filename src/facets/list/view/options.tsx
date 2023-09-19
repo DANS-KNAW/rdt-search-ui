@@ -47,7 +47,13 @@ function Options(props: ListFacetProps) {
 	const [filterInputValue, setFilterInputValue] = React.useState('')
 
 	const setQuery = debounce((value: string) => {
-		props.facet.actions.setQuery(value)
+		// props.facet.actions.setQuery(value)
+		props.dispatch({
+			type: 'UPDATE_FACET_STATE',
+			subType: 'LIST_FACET_SET_QUERY',
+			facetID: props.facet.ID,
+			query: value
+		})
 	}, 600)
 
 	const handleFilterInputChange = React.useCallback(
@@ -79,12 +85,23 @@ function Options(props: ListFacetProps) {
 					}
 				)}
 				onClick={() => {
-					props.facet.actions.setSort({
-						by: SortBy.Key,
-						direction: ascending
-							? SortDirection.Desc
-							: SortDirection.Asc
+					props.dispatch({
+						type: "UPDATE_FACET_STATE",
+						subType: "LIST_FACET_SET_SORT",
+						facetID: props.facet.ID,
+						sort: {
+							by: SortBy.Key,
+							direction: ascending
+								? SortDirection.Desc
+								: SortDirection.Asc
+						}
 					})
+					// props.facet.actions.setSort({
+					// 	by: SortBy.Key,
+					// 	direction: ascending
+					// 		? SortDirection.Desc
+					// 		: SortDirection.Asc
+					// })
 				}}
 			>
 				{
@@ -102,11 +119,16 @@ function Options(props: ListFacetProps) {
 					}
 				)}
 				onClick={() => {
-					props.facet.actions.setSort({
-						by: SortBy.Count,
-						direction: props.facetState.sort.direction === SortDirection.Asc
-							? SortDirection.Desc
-							: SortDirection.Asc
+					props.dispatch({
+						type: "UPDATE_FACET_STATE",
+						subType: "LIST_FACET_SET_SORT",
+						facetID: props.facet.ID,
+						sort: {
+							by: SortBy.Count,
+							direction: props.facetState.sort.direction === SortDirection.Asc
+								? SortDirection.Desc
+								: SortDirection.Asc
+						}
 					})
 				}}
 			>

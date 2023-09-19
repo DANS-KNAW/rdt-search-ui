@@ -1,59 +1,70 @@
 import type { Bucket } from "../../context/state/use-search/response-with-facets-parser"
-import type { MapFacetState, MapFacetConfig, MapFacetValue } from "./state"
+import type { MapFacetState, MapFacetConfig, MapFacetValue, MapFacetFilter } from "./state"
+import type { MapFacetAction } from './actions'
 
 import ngeohash from 'ngeohash'
 
 import { addFilter } from "../../context/state/use-search/request-with-facets-creator"
 import { MapFacet } from "./view"
-import { FacetController } from ".."
-import { EventName } from "../../constants"
-import { ElasticSearchResponse, FacetType } from "../../common"
+import { FacetController } from "../controller"
+import { ElasticSearchResponse, FacetFilterObject, FacetType } from "../../common"
+import { SearchState } from "../../context/state"
 
 function capitalize(str: string) {
 	return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
-export class MapFacetController extends FacetController<MapFacetConfig, MapFacetState> {
+export class MapFacetController extends FacetController<MapFacetConfig, MapFacetState, MapFacetFilter> {
 	type = FacetType.Map
 	View = MapFacet
 
-	actions = {
-		toggleSearchOnZoom: () => {
-			this.state.searchOnZoom = !this.state.searchOnZoom
-			this.dispatchChange()
-		},
-		setFilter: (payload: MapFacetState['filter']) => {
+	reducer(state: SearchState, action: MapFacetAction): SearchState {
+		const facetState = state.facetStates.get(this.ID) as MapFacetState
+		const nextState = { ...facetState }
+
+		// <STATE>
+		if (action.type === 'TOGGLE_COLLAPSE') {
+			nextState.collapse = !nextState.collapse
+			return this.updateFacetState(nextState, state)
+		}
+
+		if (action.subType === 'MAP_FACET_TOGGLE_SEARCH_ON_ZOOM') {
+			nextState.searchOnZoom = !nextState.searchOnZoom
+			return this.updateFacetState(nextState, state)
+		}
+		// <\STATE>
+
+		const facetFilter = state.facetFilters.get(this.ID) as FacetFilterObject<MapFacetFilter> | undefined
+
+		// <FILTER>
+		if (action.subType === 'REMOVE_FILTER') {
+			return this.updateFacetFilter(undefined, state)
+		}
+
+		if (action.subType === 'MAP_FACET_SET_FILTER') {
 			// Only update the filter when it has changed,
 			// this happens when the filter is not yet set (undefined)
 			// and the user triggers a reset (again undefined)
-			const isUpdate = this.state.filter !== payload
-
-			// Set the new filter
-			this.state.filter = payload
+			const isUpdate = facetFilter?.value !== action.value
 
 			// Dispatch the change if the filter has changed
 			// and the searchOnZoom is enabled
-			if (isUpdate && this.state.searchOnZoom) {
-				this.dispatchChange()
+			if (isUpdate && facetState.searchOnZoom) {
+				return this.updateFacetFilter(action.value, state)
 			}
-		},
-		removeFilter: () => {
-			this.state.filter = undefined
-			this.dispatchChange()
-		},
-		toggleCollapse: () => {
-			this.state.collapse = !this.state.collapse
-			this.dispatchChange()
-		},
+		}
+		// <\FILTER>
+
+		return state
 	}
 
-	private dispatchChange() {
-		const detail = { ID: this.ID, state: { ...this.state } }
+	// private dispatchChange() {
+	// 	const detail = { ID: this.ID, state: { ...this.state } }
 
-		this.dispatchEvent(
-			new CustomEvent(EventName.FacetStateChange, { detail })
-		)
-	}
+	// 	this.dispatchEvent(
+	// 		new CustomEvent(EventName.FacetStateChange, { detail })
+	// 	)
+	// }
 
 	// Config
 	protected initConfig(config: MapFacetConfig): MapFacetConfig {
@@ -65,29 +76,23 @@ export class MapFacetController extends FacetController<MapFacetConfig, MapFacet
 	}
 
 	// State
-	protected initState(): MapFacetState {
+	initState(): MapFacetState {
 		return {
 			collapse: this.config.collapse || false,
-			filter: undefined,
 			searchOnZoom: this.config.searchOnZoom || true,
 		}
 	}
 
-	activeFilter() {
-		if (this.state.filter?.bounds == null) return
-
-		return {
-			id: this.ID,
-			title: this.config.title!,
-			values: [this.state.filter.bounds.map(filter => filter.toFixed(2)).join(', ')],
-		}
+	formatFilter(filter: MapFacetFilter) {
+		if (filter?.bounds == null) return []
+		return [filter.bounds.map(f => f.toFixed(2)).join(', ')]
 	}
 
 	// Search request
-	createPostFilter() {
+	createPostFilter(filter: MapFacetFilter) {
 		let bounds = undefined
-		if (this.state.filter != null) {
-			let [lonmin, latmax, lonmax, latmin] = this.state.filter.bounds as [number, number, number, number]
+		if (filter != null) {
+			let [lonmin, latmax, lonmax, latmin] = filter.bounds as [number, number, number, number]
 			if (lonmin < -180) lonmin = -180
 			if (lonmax > 180) lonmax = 180
 			if (latmax < -90) latmax = -90
@@ -107,11 +112,11 @@ export class MapFacetController extends FacetController<MapFacetConfig, MapFacet
 		}
 	}
 
-	createAggregation(postFilters: any) {
+	createAggregation(postFilters: any, filter: MapFacetFilter) {
 		// if filter is not set, use the zoom set in the config
-		const zoom = this.state.filter?.zoom == null
+		const zoom = filter?.zoom == null
 			? this.config.zoom
-			: this.state.filter.zoom
+			: filter.zoom
 
 		let precision = Math.ceil(zoom || 0)
 		if (precision < 1) precision = 1
@@ -136,9 +141,5 @@ export class MapFacetController extends FacetController<MapFacetConfig, MapFacet
 				count: bucket.doc_count,
 			}
 		})
-	}
-
-	reset() {
-		this.state = { ...this.initialState }
 	}
 }

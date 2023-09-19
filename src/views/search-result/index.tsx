@@ -6,7 +6,7 @@ import styled from 'styled-components'
 
 import { ResultList, Result } from './components'
 import { Pagination } from '../header/pagination'
-import { SearchState } from '../../context/state'
+import { SearchState, SearchStateDispatchContext } from '../../context/state'
 
 const Section = styled.section`
 	.rdt-search__pagination {
@@ -22,6 +22,7 @@ interface Props {
 	searchResult: FSResponse | undefined
 }
 export function SearchResult(props: Props) {
+	const dispatch = React.useContext(SearchStateDispatchContext)
 	if (props.searchResult == null) return null
 
 	return (
@@ -43,6 +44,7 @@ export function SearchResult(props: Props) {
 			</ResultList>
 			<Pagination
 				currentPage={props.currentPage}
+				dispatch={dispatch}
 				total={props.searchResult.total}
 			/>
 		</Section>

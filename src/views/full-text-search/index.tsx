@@ -4,7 +4,7 @@ import debounce from 'lodash.debounce'
 import { AutoSuggest } from './auto-suggest'
 import { InputWrapper } from './input'
 import { SearchPropsContext } from '../../context/props'
-import { SearchStateContext } from '../../context/state'
+import { SearchStateContext, SearchStateDispatchContext } from '../../context/state'
 import { headerStyle } from '../header'
 
 export * from './input'
@@ -41,14 +41,15 @@ function hideLoader(loaderRef: any) {
 
 export function FullTextSearch() {
 	const { autoSuggest } = React.useContext(SearchPropsContext)
-	const searchContext = React.useContext(SearchStateContext)
+	const state = React.useContext(SearchStateContext)
+	const dispatch = React.useContext(SearchStateDispatchContext)
 	const loaderRef = React.useRef<HTMLDivElement>(null)
 	const [suggestActive, setSuggestActive] = React.useState(false)
 	const [inputValue, setInputValue] = React.useState('')
 	const setQuery = debounce(
 		(value: string) => {
 			// props.setQuery(value)
-			searchContext.dispatch({ type: 'SET_QUERY', value })
+			dispatch({ type: 'SET_QUERY', value })
 			hideLoader(loaderRef)
 		},
 		1000
@@ -64,8 +65,8 @@ export function FullTextSearch() {
 	)
 
 	React.useEffect(() => {
-		if (searchContext.state.query !== inputValue) setInputValue(searchContext.state.query) 
-	}, [searchContext.state.query])
+		if (state.query !== inputValue) setInputValue(state.query) 
+	}, [state.query])
 
 	return (
 		<Wrapper id="rdt-search__full-text">

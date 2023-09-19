@@ -7,6 +7,7 @@ import { SearchState } from './context/state'
 import clsx from 'clsx'
 import { ActiveFilters } from './views/header/active-filters'
 import { Facets } from './facets'
+import { FacetControllers } from './context/controllers'
 // import { FACETS_WIDTH } from './constants'
 
 const Wrapper = styled.div`
@@ -47,11 +48,12 @@ const Wrapper = styled.div`
 
 interface Props {
 	children: React.ReactNode
+	controllers: FacetControllers
 	searchProps: SearchProps
 	searchState: SearchState
 }
 
-export function Dashboard({ children, searchProps, searchState }: Props) {
+export function Dashboard({ children, controllers, searchProps, searchState }: Props) {
 	if (searchState.facetStates.size === 0) return null
 
 	return (
@@ -62,6 +64,7 @@ export function Dashboard({ children, searchProps, searchState }: Props) {
 		>
 			<ActiveFilters />
 			<Facets
+				controllers={controllers}
 				facetClassname="facet-container--card"
 				searchProps={searchProps}
 				searchState={searchState}

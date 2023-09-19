@@ -7,7 +7,7 @@ export interface MapFacetConfig extends BaseFacetConfig {
 }
 
 export interface MapFacetState extends BaseFacetState {
-	filter: MapFacetFilter | undefined
+	// filter: MapFacetFilter | undefined
 	searchOnZoom: boolean 
 } 
 

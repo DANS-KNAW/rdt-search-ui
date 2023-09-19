@@ -1,17 +1,18 @@
 import type { Bucket } from "../../context/state/use-search/response-with-facets-parser"
-import type { ChartFacetConfig, PieChartFacetState  } from "./state"
+import type { ChartFacetConfig, PieChartFacetFilter, PieChartFacetState  } from "./state"
 
 import { addFilter } from "../../context/state/use-search/request-with-facets-creator"
-import { FacetController } from ".."
-import { EventName } from "../../constants"
+import { FacetController } from "../controller"
 import { ElasticSearchResponse, FacetType } from "../../common"
 import { KeyCount } from "../list/state"
+import { SearchState } from "../../context/state"
+import { ChartFacetAction } from "./actions"
 
 function capitalize(str: string) {
 	return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
-export class PieChartController extends FacetController<ChartFacetConfig, PieChartFacetState> {
+export class PieChartController extends FacetController<ChartFacetConfig, PieChartFacetState, PieChartFacetFilter> {
 	setOptions() {
 		return {
 			tooltip: {},
@@ -38,30 +39,32 @@ export class PieChartController extends FacetController<ChartFacetConfig, PieCha
 
 	type = FacetType.Pie
 
-	actions = {
-		setFilter: (filter: string) => {
-			if (
-				this.state.filter === filter
-			) return
-			this.state.filter = filter
-			this.dispatchChange()
-		},
-		toggleCollapse: () => {
-			this.state.collapse = !this.state.collapse
-			this.dispatchChange()
-		},
-		removeFilter: () => {
-			this.state.filter = undefined
-			this.dispatchChange()
+	reducer(state: SearchState, action: ChartFacetAction): SearchState {
+		const facetState = state.facetStates.get(this.ID) as PieChartFacetState
+		const nextState = { ...facetState }
+
+		// <STATE>
+		if (action.subType === 'CHART_FACET_TOGGLE_COLLAPSE') {
+			nextState.collapse = !nextState.collapse
+			return this.updateFacetState(nextState, state)
 		}
-	}
+		// <\STATE>
 
-	private dispatchChange() {
-		const detail = { ID: this.ID, state: { ...this.state } }
+		const facetFilter = state.facetFilters.get(this.ID)
 
-		this.dispatchEvent(
-			new CustomEvent(EventName.FacetStateChange, { detail })
-		)
+		// <FILTER>
+		if (action.subType === 'REMOVE_FILTER') {
+			return this.updateFacetFilter(undefined, state)
+		}
+
+		if (action.subType === 'CHART_FACET_SET_FILTER') {
+			if (facetFilter?.value === action.value) return state
+
+			return this.updateFacetFilter(action.value, state)
+		}
+		// <\FILTER>
+
+		return state
 	}
 
 	// Config
@@ -73,29 +76,24 @@ export class PieChartController extends FacetController<ChartFacetConfig, PieCha
 	}
 
 	// State
-	protected initState(): PieChartFacetState {
+	initState(): PieChartFacetState {
 		return {
 			collapse: this.config.collapse || false,
-            filter: undefined,
 			initialValues: undefined,
 		}
 	}
 
-	activeFilter() {
-		return {
-			id: this.ID,
-			title: this.config.title!,
-			values: this.state.filter ? [this.state.filter] : []
-		}
+	formatFilter(filter: PieChartFacetFilter) {
+		return filter ? [filter] : []
 	}
 
 	// Search request
-	createPostFilter() {
-		if (this.state.filter == null) return 
+	createPostFilter(filter: PieChartFacetFilter) {
+		if (filter == null) return 
 
         return {
             term: {
-                [this.config.field]: this.state.filter
+                [this.config.field]: filter
             }
         }
 	}
@@ -114,20 +112,4 @@ export class PieChartController extends FacetController<ChartFacetConfig, PieCha
 	responseParser(buckets: Bucket[], _response: ElasticSearchResponse): KeyCount[] {
 		return buckets.map((b: Bucket) => ({ key: b.key.toString(), count: b.doc_count }))
 	}
-
-	reset() {
-		this.state = { ...this.initialState }
-	}
 }
-
-export default PieChartController
-
-// export function rangeToFacetValue(from: number, to: number, count = 0): HistogramFacetValue {
-// 	return {
-// 		from,
-// 		to,
-// 		fromLabel: Math.floor(from).toString(),
-// 		toLabel: Math.ceil(to).toString(),
-// 		count,
-// 	}
-// }

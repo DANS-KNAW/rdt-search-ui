@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { KeyCount, ListFacetConfig, ListFacetState } from '../state'
-import { FacetController } from '../..'
+import { KeyCount, ListFacetState } from '../state'
 
 interface WProps { active: boolean }
 const Wrapper = styled('li')`
@@ -46,26 +45,17 @@ const Wrapper = styled('li')`
 
 interface Props {
 	active: boolean
-	facet: FacetController<ListFacetConfig, ListFacetState>
 	keyFormatter: (key: string | number, query?: string) => string
 	query: ListFacetState['query']
+	toggleFilter: (ev: React.MouseEvent) => void
 	value: KeyCount
 }
 
 function ListFacetValueView(props: Props) {
-	// const searchContext = React.useContext(SearchStateContext)
-	const handleChange = React.useCallback(() => {
-		// TODO remove/add filter
-		// const type = props.active ? 'REMOVE_FILTER' : 'ADD_FILTER'
-		// searchContext.dispatch({ type, facetId: props.facetId, value: props.value.key })
-		props.facet.actions.toggleFilter(props.value.key)
-
-	}, [props.active, props.facet.ID, props.value.key])
-
 	return (
 		<Wrapper
 			active={props.active}
-			onClick={handleChange}
+			onClick={props.toggleFilter}
 			title={props.value.key}
 		>
 			<span

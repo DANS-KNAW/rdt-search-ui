@@ -1,5 +1,5 @@
 import type { ElasticSearchResponse, FSResponse } from '../../../common'
-import type { SearchProps } from '../../../context/props'
+import { FacetControllers } from '../../controllers'
 
 import { ESResponseParser } from './response-parser'
 
@@ -17,11 +17,11 @@ export function getBuckets(response: any, facetID: string): Bucket[] {
 
 export function ESResponseWithFacetsParser(
 	response: ElasticSearchResponse,
-	facets: SearchProps['facets']
+	controllers: FacetControllers
 ): [FSResponse, Record<string, any>] {
 	const facetValues: Record<string, any> = {}
 
-	for (const facet of facets) {
+	for (const facet of controllers.values()) {
 		let buckets = getBuckets(response, facet.ID)
 		facetValues[facet.ID] = facet.responseParser(buckets, response)
 	}

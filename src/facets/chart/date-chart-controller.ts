@@ -1,10 +1,11 @@
 import type { Bucket } from "../../context/state/use-search/response-with-facets-parser"
-import type { DateChartFacetConfig, DateChartFacetState, KeyCountMap  } from "./state"
+import type { DateChartFacetConfig, DateChartFacetState, DateChartFacetFilter, KeyCountMap  } from "./state"
 
 import { addFilter } from "../../context/state/use-search/request-with-facets-creator"
-import { FacetController } from ".."
-import { EventName } from "../../constants"
+import { FacetController } from "../controller"
 import { ElasticSearchResponse, FacetType } from "../../common"
+import { SearchState } from "../../context/state"
+import { ChartFacetAction } from "./actions"
 
 function capitalize(str: string) {
 	return str.charAt(0).toUpperCase() + str.slice(1)
@@ -19,7 +20,7 @@ const format = {
 	minute: 'yyyy-MM-dd HH:mm',
 }
 
-export class DateChartController extends FacetController<DateChartFacetConfig, DateChartFacetState> {
+export class DateChartController extends FacetController<DateChartFacetConfig, DateChartFacetState, DateChartFacetFilter> {
 	/**
 	 * Set the range of the values in timestamps. This is used to calculate the 
 	 * percentage of the range that the filter represents.
@@ -34,20 +35,20 @@ export class DateChartController extends FacetController<DateChartFacetConfig, D
 		return barSetOptions
 	}
 
-	updateOptions(values: KeyCountMap) {
+	updateOptions(values: KeyCountMap, filter: DateChartFacetFilter) {
 		let dataZoom
-		if (typeof this.state.filter === 'string') {
+		if (typeof filter === 'string') {
 			dataZoom = [
 				{
-					startValue: this.state.filter,
-					endValue: this.state.filter,
+					startValue: filter,
+					endValue: filter,
 				}
 			]
-		} else if (Array.isArray(this.state.filter)) {
+		} else if (Array.isArray(filter) && filter.length >= 2) {
 			dataZoom = [
 				{
-					start: this.state.filter[0],
-					end: this.state.filter[1],
+					start: filter[0],
+					end: filter[1],
 				}
 			]
 		} else if (this.range) {
@@ -76,29 +77,34 @@ export class DateChartController extends FacetController<DateChartFacetConfig, D
 
 	type = FacetType.Date
 
-	actions = {
-		setFilter: (filter: string | [number, number]) => {
-			this.state.filter = this.state.filter === filter
-				? undefined
-				: filter
-			this.dispatchChange()
-		},
-		toggleCollapse: () => {
-			this.state.collapse = !this.state.collapse
-			this.dispatchChange()
-		},
-		removeFilter: () => {
-			this.state.filter = undefined
-			this.dispatchChange()
+	reducer(state: SearchState, action: ChartFacetAction): SearchState {
+		const facetState = state.facetStates.get(this.ID) as DateChartFacetState
+		const nextState = { ...facetState }
+
+		// <STATE>
+		if (action.subType === 'CHART_FACET_TOGGLE_COLLAPSE') {
+			nextState.collapse = !nextState.collapse
+			return this.updateFacetState(nextState, state)
 		}
-	}
+		// <\STATE>
 
-	private dispatchChange() {
-		const detail = { ID: this.ID, state: { ...this.state } }
+		const facetFilter = state.facetFilters.get(this.ID) as DateChartFacetFilter
 
-		this.dispatchEvent(
-			new CustomEvent(EventName.FacetStateChange, { detail })
-		)
+		// <FILTER>
+		if (action.subType === 'REMOVE_FILTER') {
+			return this.updateFacetFilter(undefined, state)
+		}
+
+		if (
+			action.subType === 'CHART_FACET_SET_FILTER' ||
+			action.subType === 'CHART_FACET_SET_RANGE'
+		) {
+			if (facetFilter === action.value) return state
+			return this.updateFacetFilter(action.value, state)
+		}
+		// <\FILTER>
+
+		return state
 	}
 
 	// Config, initialised in Facet.constructor
@@ -110,45 +116,39 @@ export class DateChartController extends FacetController<DateChartFacetConfig, D
 	}
 
 	// State, initialised in Facet.constructor
-	protected initState(): DateChartFacetState {
+	initState(): DateChartFacetState {
 		return {
 			collapse: this.config.collapse || false,
-            filter: undefined,
 			initialValues: undefined,
 		}
 	}
 
-	activeFilter() {
-		return {
-			id: this.ID,
-			title: this.config.title!,
-			values: getValueLabel(this.state.filter, this.range, this.config)
-		
-		}
+	formatFilter(filter: DateChartFacetFilter) {
+		return getValueLabel(filter, this.range, this.config)
 	}
 
 	// TODO only works for year interval
 	// Search request
-	createPostFilter() {
-		if (this.state.filter == null) return 
+	createPostFilter(filter: DateChartFacetFilter) {
+		if (filter == null) return 
 
-		if (typeof this.state.filter === 'string') {
+		if (typeof filter === 'string') {
 			return {
 				range: {
 					[this.config.field]: {
-						gte: this.state.filter + '-01-01||/y',
-						lt: this.state.filter + '-01-01||+1y/y'
+						gte: filter + '-01-01||/y',
+						lt: filter + '-01-01||+1y/y'
 					}
 				}
 			}
-		} else if (Array.isArray(this.state.filter) && this.state.filter.length === 2) {	
+		} else if (Array.isArray(filter) && filter.length === 2) {	
 			if (this.range == null) return
 
 			const { min, max } = this.range
 
 			const interval = max - min
-			const fromTimestamp = min + (interval * this.state.filter[0] / 100)
-			const toTimestamp = min + (interval * this.state.filter[1] / 100)
+			const fromTimestamp = min + (interval * filter[0] / 100)
+			const toTimestamp = min + (interval * filter[1] / 100)
 			const fromYear = new Date(fromTimestamp).getUTCFullYear()
 			const toYear = new Date(toTimestamp).getUTCFullYear()
 
@@ -164,7 +164,7 @@ export class DateChartController extends FacetController<DateChartFacetConfig, D
 
 		return
 	}
-
+ 
 	createAggregation(postFilters: any) {
 		const values = {
 			date_histogram: {
@@ -209,10 +209,6 @@ export class DateChartController extends FacetController<DateChartFacetConfig, D
 
 	private values: KeyCountMap | undefined
 
-	reset() {
-		this.state = { ...this.initialState }
-	}
-
 	private updateRange(buckets: Bucket[], config: DateChartFacetConfig) {
 		const currentMin = buckets[0].key as number
 		let lastKey = buckets[buckets.length - 1].key as number
@@ -245,19 +241,8 @@ export class DateChartController extends FacetController<DateChartFacetConfig, D
 
 export default DateChartController
 
-
-// export function rangeToFacetValue(from: number, to: number, count = 0): HistogramFacetValue {
-// 	return {
-// 		from,
-// 		to,
-// 		fromLabel: Math.floor(from).toString(),
-// 		toLabel: Math.ceil(to).toString(),
-// 		count,
-// 	}
-// }
-
 function getValueLabel(
-	filter: DateChartFacetState['filter'],
+	filter: DateChartFacetFilter,
 	valueRange: { min: number, max: number } | undefined,
 	config: DateChartFacetConfig
 ) {

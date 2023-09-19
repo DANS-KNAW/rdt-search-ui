@@ -4,7 +4,8 @@ import styled from 'styled-components'
 import { Ul, ActiveFilterValue } from './details'
 import { Button } from '../../ui/button'
 import { SearchPropsContext } from '../../../context/props'
-import { SearchStateContext } from '../../../context/state'
+import { SearchStateContext, SearchStateDispatchContext } from '../../../context/state'
+import { FacetControllersContext } from '../../../context/controllers'
 
 // Background color and box shadow are only visible when the active filters
 // are sticky at the top of the page and the search result is scrolled.
@@ -21,13 +22,21 @@ const Wrapper = styled.div`
 `
 
 export function ActiveFilters() {
-	const { style, uiTexts, facets } = React.useContext(SearchPropsContext)
-	const { state, dispatch } = React.useContext(SearchStateContext) 
+	const controllers = React.useContext(FacetControllersContext)
+	const { style, uiTexts } = React.useContext(SearchPropsContext)
+	const state = React.useContext(SearchStateContext) 
+	const dispatch = React.useContext(SearchStateDispatchContext) 
 
 	const reset = React.useCallback(() => {
-		facets.forEach(facet => facet.reset())
 		dispatch({ type: 'RESET' })
-	}, [facets])
+	}, [controllers])
+
+	const removeFilter = React.useCallback((ev: React.MouseEvent) => {
+		dispatch({
+			type: 'REMOVE_FILTER',
+			facetID: ev.currentTarget.getAttribute('data-facet-id')!,
+		})
+	}, [])
 
 	// If there are no active filters, just render an empty div
 	// in order not to mess up the grid layout
@@ -35,16 +44,14 @@ export function ActiveFilters() {
 		return <div id="active-filters" />
 	}
 
-
 	return (
 		<Wrapper
 			id="active-filters"
 		>
 			<Ul>
 				{
-					Array.from(state.facetFilters.keys()).map(facetID => {
-						const facet = facets.find(facet => facet.ID === facetID)
-						if (facet == null) return null
+					Array.from(state.facetFilters.entries())
+					.map(([facetID, filter]) => {
 						return (
 							<li
 								className="active-filters__facet"
@@ -52,16 +59,17 @@ export function ActiveFilters() {
 							>
 								<div
 									className="active-filters__facet__title"
-									title={`Facet title: ${facet.config.title}`}
+									title={`Facet title: ${filter.title}`}
 								>
-									{facet.config.title}
+									{filter.title}
 								</div>
 								<ul className="active-filters__facet__values">
 									{
-										facet.activeFilter()?.values.map(value =>
+										filter.formatted.map(value =>
 											<ActiveFilterValue
-												facet={facet}
+												facetID={facetID}
 												key={facetID + value}
+												removeFilter={removeFilter}
 												value={value}
 											/>
 										)

@@ -12,6 +12,7 @@ import { SearchProps } from './context/props'
 import { SearchState } from './context/state'
 import { FACETS_WIDTH } from './constants'
 import { Facets } from './facets'
+import { FacetControllers } from './context/controllers'
 
 const Wrapper = styled.div`
 	display: grid;
@@ -71,10 +72,16 @@ interface WProps { showResults: boolean }
 
 interface Props {
 	children: React.ReactNode
+	controllers: FacetControllers
 	searchProps: SearchProps
 	searchState: SearchState
 }
-export default function FacetedSearch({ children, searchProps, searchState }: Props) {
+export default function FacetedSearch({
+	children,
+	controllers,
+	searchProps,
+	searchState
+}: Props) {
 	const [showResults, setShowResults] = React.useState(true)
 
 	return (
@@ -90,6 +97,7 @@ export default function FacetedSearch({ children, searchProps, searchState }: Pr
 			/>
 			<ActiveFilters />
 			<Facets
+				controllers={controllers}
 				searchProps={searchProps}
 				searchState={searchState}
 			>

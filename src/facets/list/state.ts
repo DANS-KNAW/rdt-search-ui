@@ -8,10 +8,10 @@ export interface ListFacetConfig extends BaseFacetConfig {
 }
 
 export interface ListFacetState extends BaseFacetState {
-	filter: ListFacetFilter | undefined
 	query: string | undefined
 	size: number
 	page: number
+	// TODO move to viewState?
 	scroll: boolean
 	sort: ListFacetSort
 } 
@@ -22,6 +22,7 @@ export interface KeyCount {
 }
 
 export interface ListFacetValues {
+	bucketsCount: number
 	total: number
 	values: KeyCount[]
 }

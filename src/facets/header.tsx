@@ -1,12 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { FacetFilter, BaseFacetState, BaseFacetConfig } from '../common'
+import { BaseFacetState, BaseFacetConfig, FacetFilter } from '../common'
 import { HelpButton } from '../views/ui/help-button'
 // import { Button } from '../views/ui/button'
 import { SearchPropsContext } from '../context/props'
 import FacetWrapper from './wrapper'
-import { FacetController } from '.'
+import { FacetController } from './controller'
+import { SearchStateDispatchContext } from '../context/state'
 // import { ListFacetUtils } from '../views/list/utils'
 
 /**
@@ -48,14 +49,24 @@ const H3 = styled('h3')`
 	}
 `
 
-interface Props<FacetConfig extends BaseFacetConfig, FacetState extends BaseFacetState> {
+interface Props<
+	FacetConfig extends BaseFacetConfig,
+	FacetState extends BaseFacetState,
+	Filter extends FacetFilter
+> {
 	facetState: FacetState
-	facet: FacetController<FacetConfig, FacetState>
+	facet: FacetController<FacetConfig, FacetState, Filter>
+	filter: Filter
 	// hasOptions: boolean
 	// Options?: React.FC<{ facetData: FacetState }>
 }
-export function FacetHeader<FacetConfig extends BaseFacetConfig, FacetState extends BaseFacetState>(props: Props<FacetConfig, FacetState>) {
+export function FacetHeader<
+	FacetConfig extends BaseFacetConfig,
+	FacetState extends BaseFacetState,
+	Filter extends FacetFilter
+>(props: Props<FacetConfig, FacetState, Filter>) {
 	const { style } = React.useContext(SearchPropsContext)
+	const dispatch = React.useContext(SearchStateDispatchContext)
 	// const [showOptions, setShowOptions] = React.useState(false)
 
 	// const toggleOptions = React.useCallback(() => {
@@ -73,13 +84,18 @@ export function FacetHeader<FacetConfig extends BaseFacetConfig, FacetState exte
 		<Header className="facet__header">
 			<H3
 				collapse={props.facetState.collapse}
-				onClick={props.facet.actions.toggleCollapse}
+				onClick={() => {
+					dispatch({
+						type: "TOGGLE_COLLAPSE",
+						facetID: props.facet.ID,
+					})
+				}}
 				spotColor={style.spotColor}
 			>
 				{props.facet.config.title}
 				{
 					props.facetState.collapse &&
-					<ActiveIndicator filters={props.facetState.filter} />
+					<ActiveIndicator<Filter> filter={props.filter} />
 				}
 			</H3>
 			<HelpButton
@@ -126,11 +142,11 @@ const Small = styled.small`
 `
 
 // TODO handle different kinds of filters (like MapFacetFilter)
-function ActiveIndicator(props: { filters: FacetFilter | undefined }) {
+function ActiveIndicator<FacetFilter>(props: { filter: FacetFilter | undefined }) {
 	const { uiTexts } = React.useContext(SearchPropsContext)
 
-	if (props.filters == null) return null
-	const size = props.filters != null ? 1 : 0
+	if (props.filter == null) return null
+	const size = props.filter != null ? 1 : 0
 
 	if (size === 0) return null
 

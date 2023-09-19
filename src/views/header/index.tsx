@@ -5,7 +5,7 @@ import { Pagination } from './pagination'
 import ResultCount from './result-count'
 
 import { FSResponse } from '../../common'
-import { SearchState } from '../../context/state'
+import { SearchState, SearchStateDispatchContext } from '../../context/state'
 
 export const headerStyle = css`
 	background-color: white;
@@ -30,6 +30,7 @@ interface Props {
 	sortOrder: SearchState['sortOrder']
 }
 export const ResultHeader = function Header(props: Props) {
+	const dispatch = React.useContext(SearchStateDispatchContext)
 	if (props.searchResult == null) return null
 
 	return (
@@ -41,6 +42,7 @@ export const ResultHeader = function Header(props: Props) {
 			/>
 			<Pagination
 				currentPage={props.currentPage}
+				dispatch={dispatch}
 				total={props.searchResult.total}
 			/>
 		</Wrapper>

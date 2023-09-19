@@ -1,5 +1,6 @@
 import type { SearchProps } from '../../props'
 import type { SearchState } from '..'
+import { FacetControllers } from '../../controllers'
 // import { HistogramFacetUtils } from '../views/facets/histogram/utils'
 // import { ListFacetUtils } from '../views/facets/list/utils'
 // import { MapFacetUtils } from '../views/facets/map/utils'
@@ -45,7 +46,7 @@ export class ESRequest {
 
 	payload: Payload = {}
 
-	constructor(state: SearchState, props: SearchProps) {
+	constructor(protected state: SearchState, props: SearchProps, protected controllers: FacetControllers) {
 		this.setSource(props)
 		this.payload.size = props.resultsPerPage
 
@@ -65,7 +66,7 @@ export class ESRequest {
 			this.payload.track_total_hits = props.track_total_hits
 		}
 
-		this.setPostFilter(props.facets)
+		this.setPostFilter()
 	}
 
 	private setSource(context: SearchProps) {
@@ -77,13 +78,14 @@ export class ESRequest {
 		}
 	}
 
-	private setPostFilter(facets: SearchProps['facets']) {
+	private setPostFilter() {
 		// Create post filters per facet, they are set on the payload, see below,
 		// and used when creating the aggregations
-		for (const facet of facets) {
+		for (const facet of this.controllers.values()) {
+			const filter = this.state.facetFilters.get(facet.ID)?.value
         	// const field = facets.get(facetID)!.field
 			// const { field } = facet.config
-			const postFilter = facet.createPostFilter()
+			const postFilter = facet.createPostFilter(filter)
 			if (postFilter != null) {
 				this.postFilters.set(facet.ID, postFilter)
 			}

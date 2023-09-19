@@ -1,16 +1,24 @@
 import type { Bucket } from "../../context/state/use-search/response-with-facets-parser"
-import type { ListFacetState, ListFacetConfig, ListFacetValues, ListFacetSort } from "./state"
+import type { ListFacetState, ListFacetConfig, ListFacetValues, ListFacetFilter } from "./state"
 
 import { addFilter } from "../../context/state/use-search/request-with-facets-creator"
-import { FacetController } from ".."
-import { EventName } from "../../constants"
-import { ElasticSearchResponse, FacetType, SortBy, SortDirection } from "../../common"
+import { FacetController } from "../controller"
+import { ElasticSearchResponse, FacetFilterObject, FacetType, SortBy, SortDirection } from "../../common"
+import { ListFacetAction } from "./actions"
+import { SearchState } from "../../context/state"
 import { LIST_FACET_SCROLL_CUT_OFF } from "./view/list-view"
-import { listFacetViewStates, ListFacetViewState, getViewState } from "./view/state"
 
 function capitalize(str: string) {
 	return str.charAt(0).toUpperCase() + str.slice(1)
 }
+
+function removeFilterValue(facetFilter: ListFacetFilter | undefined, value: string) {
+	if (facetFilter == null) return undefined
+	facetFilter.delete(value)
+	return facetFilter.size
+		? facetFilter
+		: undefined
+} 
 
 interface ListAggregationTerms {
 	field: string
@@ -19,75 +27,159 @@ interface ListAggregationTerms {
 	size: number
 }
 
-export class ListFacetController extends FacetController<ListFacetConfig, ListFacetState> {
+export class ListFacetController extends FacetController<ListFacetConfig, ListFacetState, ListFacetFilter> {
 	type = FacetType.List
 
-	viewState: ListFacetViewState = listFacetViewStates[0]
+	// TODO move to state?
+	// viewState: ListFacetViewState = listFacetViewStates[0]
 
-	actions = {
-		showAll: (total: number) => {
-			this.state.page = 1
-			this.state.size = this.state.query?.length
-				? LIST_FACET_SCROLL_CUT_OFF
-				: total
-			this.state.scroll = true
-			this.dispatchChange()
-		},
-		setPage: (page: number) => {
-			this.state.size = page * this.config.size!
-			this.state.page = page
-			this.state.scroll = false
-			this.dispatchChange()
-		},
-		setQuery: (query: string) => {
-			this.state.page = 1
-			this.state.query = query.length ? query : undefined
-			this.state.scroll = false
-			this.state.size = this.config.size!
+	reducer(state: SearchState, action: ListFacetAction): SearchState {
+		const facetState = state.facetStates.get(this.ID) as ListFacetState
+		const nextState = { ...facetState }
 
-			this.dispatchChange()
-		},
-		setSort: (sort: ListFacetSort) => {
-			this.state.page = 1
-			this.state.query = this.state.query?.length ? this.state.query : undefined
-			this.state.sort = sort
-			this.state.size = this.config.size!
-
-			this.dispatchChange()
-		},
-		toggleFilter: (key: string) => {
-			this.state.page = 1
-			this.state.size = this.config.size!
-			this.state.query = undefined
-
-			if (this.state.filter?.has(key)) {
-				this.actions.removeFilter(key)
-			} else {
-				const filter = new Set(this.state.filter)
-				filter.add(key)
-				this.state.filter = filter
-				this.dispatchChange()	
-			} 
-		},
-		toggleCollapse: () => {
-			this.state.collapse = !this.state.collapse
-			this.dispatchChange()
-		},
-		removeFilter: (value: string) => {
-			const filter = new Set(this.state.filter)
-			filter.delete(value)
-			this.state.filter = filter.size ? filter : undefined
-			this.dispatchChange()
+		// <STATE>
+		if (action.subType === 'LIST_FACET_TOGGLE_COLLAPSE') {
+			nextState.collapse = !facetState.collapse
+			// return this.updateFacetState(facetState, state)
 		}
+
+		if (action.subType === 'LIST_FACET_SHOW_ALL') {
+			// TODO remove scroll?
+			nextState.scroll = true
+
+			nextState.page = 1
+			nextState.size = state.query?.length
+				? LIST_FACET_SCROLL_CUT_OFF
+				: action.total
+			// return this.updateFacetState(facetState, state)
+		}
+
+		if (action.subType === 'LIST_FACET_SET_PAGE') {
+			nextState.page = action.page
+			nextState.size = action.page * this.config.size!
+			nextState.scroll = false
+			// return this.updateFacetState(facetState, state)
+		}
+
+		if (action.subType === 'LIST_FACET_SET_QUERY') {
+			nextState.page = 1
+			nextState.query = action.query.length ? action.query : undefined
+			nextState.scroll = false
+			nextState.size = this.config.size!
+			// return this.updateFacetState(facetState, state)
+		}
+
+		if (action.subType === 'LIST_FACET_SET_SORT') {
+			nextState.page = 1
+			nextState.sort = action.sort
+			nextState.size = this.config.size!
+			// return this.updateFacetState(facetState, state)
+		}
+		// <\STATE>
+
+		if (action.type === 'UPDATE_FACET_STATE') {
+			return this.updateFacetState(nextState, state)
+
+		}
+
+		const facetFilterObject = state.facetFilters.get(this.ID) as FacetFilterObject<ListFacetFilter> | undefined
+		const facetFilter = facetFilterObject == null
+			? new Set<string>()
+			: new Set(facetFilterObject.value)
+
+		// <FILTER>
+		if (action.subType === 'REMOVE_FILTER') {
+			const nextFilter = removeFilterValue(facetFilter, action.value)
+			return this.updateFacetFilter(nextFilter, state)
+		}
+
+		if (action.subType === 'LIST_FACET_TOGGLE_FILTER') {
+			facetState.page = 1
+			facetState.size = this.config.size!
+			facetState.query = undefined
+			const nextState = this.updateFacetState(facetState, state)
+
+			if (facetFilterObject?.value.has(action.value)) {
+				const nextFilter = removeFilterValue(facetFilter, action.value)
+				return this.updateFacetFilter(nextFilter, nextState)
+			} else {
+				facetFilter.add(action.value)
+				return this.updateFacetFilter(facetFilter, nextState)
+			} 
+		}
+		// <\FILTER>
+
+		return state
 	}
 
-	private dispatchChange() {
-		const detail = { ID: this.ID, state: { ...this.state } }
+	// actions = {
+	// 	showAll: (total: number) => {
+	// 		this.update({
+	// 			page: 1,
+	// 			size: this.state.query?.length
+	// 				? LIST_FACET_SCROLL_CUT_OFF
+	// 				: total,
+	// 			scroll: true
+	// 		})
+	// 	},
+	// 	setPage: (page: number) => {
+	// 		this.update({
+	// 			size: page * this.config.size!,
+	// 			page,
+	// 			scroll: false
+	// 		})
+	// 	},
+	// 	setQuery: (query: string) => {
+	// 		this.update({
+	// 			page: 1,
+	// 			query: query.length ? query : undefined,
+	// 			scroll: false,
+	// 			size: this.config.size!
+	// 		})
+	// 	},
+	// 	setSort: (sort: ListFacetSort) => {
+	// 		this.update({
+	// 			page: 1,
+	// 			query: this.state.query?.length ? this.state.query : undefined,
+	// 			sort,
+	// 			size: this.config.size!,
+	// 		})
+	// 	},
+	// 	toggleFilter: (key: string) => {
+	// 		this.state.page = 1
+	// 		this.state.size = this.config.size!
+	// 		this.state.query = undefined
 
-		this.dispatchEvent(
-			new CustomEvent(EventName.FacetStateChange, { detail })
-		)
-	}
+	// 		if (this.state.filter?.has(key)) {
+	// 			this.actions.removeFilter(key)
+	// 		} else {
+	// 			const filter = new Set(this.state.filter)
+	// 			filter.add(key)
+	// 			this.update({ filter })
+	// 		} 
+	// 	},
+	// 	toggleCollapse: () => {
+	// 		this.update({
+	// 			collapse: !this.state.collapse
+	// 		})
+	// 	},
+	// 	removeFilter: (value: string) => {
+	// 		const filter = new Set(this.state.filter)
+	// 		filter.delete(value)
+
+	// 		this.update({
+	// 			filter: filter.size ? filter : undefined
+	// 		})
+	// 	}
+	// }
+
+	// private dispatchChange() {
+	// 	const detail = { ID: this.ID, state: { ...this.state } }
+
+	// 	this.dispatchEvent(
+	// 		new CustomEvent(EventName.FacetStateChange, { detail })
+	// 	)
+	// }
 
 	// Config
 	protected initConfig(config: ListFacetConfig): ListFacetConfig {
@@ -105,10 +197,9 @@ export class ListFacetController extends FacetController<ListFacetConfig, ListFa
 	}
 
 	// State
-	protected initState(): ListFacetState {
+	initState(): ListFacetState {
 		return {
 			collapse: this.config.collapse || false,
-			filter: undefined,
 			query: undefined,
 			size: this.config.size!,
 			page: 1,
@@ -117,43 +208,39 @@ export class ListFacetController extends FacetController<ListFacetConfig, ListFa
 		}
 	}
 
-	activeFilter() {
-		return {
-			id: this.ID,
-			title: this.config.title!,
-			values: Array.from(this.state.filter || [])
-		}
+	formatFilter(filter: ListFacetFilter) {
+		return Array.from(filter || [])
 	}
 
 	// Search request
-	createPostFilter() {
-		if (this.state.filter == null) return 
+	createPostFilter(filter: ListFacetFilter) {
+		if (filter == null) return 
 
-		const allFacetFilters = [...this.state.filter].map(key => ({ term: { [this.config.field]: key } }))
+		const allFacetFilters = [...filter].map(key => ({ term: { [this.config.field]: key } }))
 		if (allFacetFilters.length === 1) return allFacetFilters[0]
 		else if (allFacetFilters.length > 1) return { bool: { must: allFacetFilters } }
 
 		return
 	}
 
-	createAggregation(postFilters: any) {
+	createAggregation(postFilters: any, _filter: ListFacetFilter, state: ListFacetState) {
 		const terms: ListAggregationTerms = {
 			field: this.config.field,
-			size: this.state.size,
+			size: state.size,
 		}
 
 		// TODO is always filled? or only add when not the default (sort by frequency descending)?
-		if (this.state.sort != null) {
+		if (state.sort != null) {
 			terms.order = {
-				[this.state.sort.by]: this.state.sort.direction
+				[state.sort.by]: state.sort.direction
 			}
 		}
 
-		if (this.state.query?.length) {
+		if (state.query?.length) {
 			// Turn query into hacky case insensitive regex,
 			// because ES doesn't support case insensitive include in terms aggregation
 			// For example: "test" -> "(t|T)(e|E)(s|S)(t|T)"
-			const query = [...this.state.query].map(c => {
+			const query = [...state.query].map(c => {
 				const C = c.toUpperCase() === c ? c.toLowerCase() : c.toUpperCase()
 				return `(${c}|${C})`
 			}).join('')
@@ -179,25 +266,27 @@ export class ListFacetController extends FacetController<ListFacetConfig, ListFa
 
 	// Search response
 	responseParser(buckets: Bucket[], response: ElasticSearchResponse): ListFacetValues {
-		if (response.aggregations == null) return { total: 0, values: [] }
+		if (response.aggregations == null) return { bucketsCount: 0, total: 0, values: [] }
 
-		const total = this.state.query == null
-			? response.aggregations[`${this.ID}-count`][`${this.ID}-count`].value
-			: buckets.length
+		// TODO move to SearchState?
+		// const total = state.query == null
+		// 	? response.aggregations[`${this.ID}-count`][`${this.ID}-count`].value
+		// 	: buckets.length
 
 
-		this.viewState = getViewState(total, this.config.size!, this.state.size, this.state.query)
+		// this.viewState = getViewState(total, this.config.size!, state.size, state.query)
 
 		return {
-			total,
+			bucketsCount: buckets.length,
+			total: response.aggregations[`${this.ID}-count`][`${this.ID}-count`].value,
 			values: buckets.map((b: Bucket) => ({ key: b.key.toString(), count: b.doc_count }))
 		}
 	}
 
-	reset() {
-		this.viewState = listFacetViewStates[0]
-		this.state = { ...this.initialState }
-	}
+	// reset() {
+	// 	this.viewState = listFacetViewStates[0]
+	// 	this.state = { ...this.initialState }
+	// }
 }
 
 export default ListFacetController

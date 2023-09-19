@@ -1,8 +1,7 @@
 import React from "react"
 import { Colors } from "../../common/enum"
-import { FacetConfig, ResultBodyProps, SortOrder } from "../../common/types/search"
+import { ResultBodyProps, SortOrder } from "../../common/types/search"
 import { UITexts, uiTexts } from "./ui-texts"
-import { FacetController } from "../../facets"
 
 export interface DashboardProps {
 	rows?: number
@@ -26,7 +25,6 @@ export interface UserSearchProps {
 	ResultBodyComponent: React.FC<ResultBodyProps>
 	url: string
 	children: React.ReactNode
-	// facets: FacetController<any, any>[]
 
 	/* Optional with defaults */
 	autoSuggest?: (query: string) => Promise<string[]>
@@ -48,15 +46,11 @@ export interface UserSearchProps {
 	SearchHomeComponent?: React.FC<any>
 }
 
-export type FacetConfigs = Map<string, FacetConfig>
+// export type FacetConfigs = Map<string, FacetConfig>
 
 // Redefine the UserSearchProps to make some props required,
 // except for the SearchHomeComponent and className props
 export type SearchProps = Required<Omit<UserSearchProps, 'children' | 'facetsConfig' | 'SearchHomeComponent' | 'className' | 'dashboard'>> & {
-	// The facetsConfig array is converted to a Map, with the facet field + array index as key
-	// TODO change to facetConfigs
-	facets: FacetController<any, any>[]
-
 	// Optional props
 	className?: string
 	dashboard?: DashboardProps
@@ -70,7 +64,7 @@ export const defaultSearchProps: SearchProps = {
 	 */
 	ResultBodyComponent: () => null,
 	url: '',
-	facets: [],
+	// facets: [],
 	/* */
 
 	autoSuggest: async function autoSuggest(query: string) {

@@ -1,14 +1,7 @@
-// import type { HistogramFacetConfig, HistogramFacetState, HistogramFacetValue } from "../../../views/facets/histogram/state"
-// import type { ListFacetConfig, ListFacetFilter, ListFacetState, ListFacetValues } from "../../../views/facets/list/state"
-import type { MapFacetConfig, MapFacetFilter } from "../../../facets/map/state"
+import { DateChartFacetFilter, PieChartFacetFilter } from "../../../facets/chart/state"
+import { ListFacetFilter } from "../../../facets/list/state"
+import type { MapFacetFilter } from "../../../facets/map/state"
 
-// import { FacetType } from "../../enum"
-
-// TODO remove
-// export type FacetValues = MapFacetValue[] // | ListFacetValues | HistogramFacetValue[]
-
-// TODO remove
-// export type FacetState = MapFacetState // | ListFacetState | HistogramFacetState
 
 /*
  * BaseConfig is defined in @docere/common because it is also the
@@ -23,14 +16,13 @@ export interface BaseFacetConfig {
 	readonly collapse?: boolean
 }
 
-// TODO remove
-export type FacetConfig = MapFacetConfig // | ListFacetConfig | HistogramFacetConfig
-
-// TODO remove
-export type FacetFilter = MapFacetFilter // | ListFacetFilter | HistogramFacetValue[]
+export interface FacetFilterObject<T extends FacetFilter> {
+	title: string
+	value: T 
+	formatted: string[]
+}
+export type FacetFilter = MapFacetFilter | ListFacetFilter | PieChartFacetFilter | DateChartFacetFilter
 
 export interface BaseFacetState {
-	// type: FacetType
 	collapse: boolean
-	filter: any
 }

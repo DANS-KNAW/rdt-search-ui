@@ -6,7 +6,7 @@ import { PageNumber, PaginationButton } from './page-number'
 import { usePages } from './use-pages'
 
 import { SearchPropsContext } from '../../../context/props'
-import { SearchStateContext } from '../../../context/state'
+import { FacetsDataReducerAction } from '../../../context/state/actions'
 
 const Wrapper = styled.div`
 	align-items: center;
@@ -37,6 +37,7 @@ const PageNumbers = styled.div`
 
 export interface PaginationProps {
 	currentPage: number
+	dispatch: React.Dispatch<FacetsDataReducerAction>
 	resultsPerPage?: number
 	total: number
 	setCurrentPage?: (page: number) => void
@@ -44,10 +45,9 @@ export interface PaginationProps {
 
 export function Pagination(props: PaginationProps) {
 	const context = React.useContext(SearchPropsContext)
-	const { dispatch } = React.useContext(SearchStateContext)
 
 	let setCurrentPage = React.useCallback((page: number) => {
-		dispatch({ type: 'SET_PAGE', page })
+		props.dispatch({ type: 'SET_PAGE', page })
 	}, [])
 
 	// Override the setCurrentPage function if it was passed in as a prop

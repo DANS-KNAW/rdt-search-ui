@@ -10,7 +10,8 @@ import { fromLonLat, transformExtent } from "ol/proj"
 import VectorLayer from "ol/layer/Vector"
 import VectorSource from "ol/source/Vector"
 import styled from 'styled-components'
-import { MapFacetState } from '../state'
+import { MapFacetFilter } from '../state'
+import { MapFacetAction } from '../actions'
 // import { FACETS_WIDTH } from '../../../constants'
 
 	// height: ${FACETS_WIDTH * .75}px;
@@ -18,10 +19,8 @@ const Wrapper = styled.div`
 	width: 100%;
 `
 
-export function MapView(props: MapFacetProps) {
+export function MapView(props: MapFacetProps & { dispatch: React.Dispatch<MapFacetAction> }) {
 	const initialZoom = React.useRef(0)
-	// const [initialZoom, setInitialZoom] = React.useState<number>(0)
-	// const { dispatch } = React.useContext(SearchStateContext)
 	const [vectorSource, setVectorSource] = React.useState<VectorSource>()
 	const [map, setMap] = React.useState<OLMap>()
 	const mapRef = React.useRef<HTMLDivElement>(null)
@@ -77,16 +76,21 @@ export function MapView(props: MapFacetProps) {
 			_map.on('moveend', () => {
 				const zoom = view.getZoom()!
 
-				let payload: MapFacetState['filter'] = undefined
+				let payload: MapFacetFilter | undefined = undefined
 
 				// Only set the filter if the zoom is not the initial zoom.
 				if (zoom != initialZoom.current) {
 					const extent = view.calculateExtent() 
 					const bounds = transformExtent(extent, 'EPSG:3857', 'EPSG:4326') as [number, number, number, number]
 					payload = { bounds, zoom }
-				}
 
-				props.facet.actions.setFilter(payload)
+					props.dispatch({
+						type: "UPDATE_FACET_FILTER",
+						subType: 'MAP_FACET_SET_FILTER',
+						facetID: props.facet.ID,
+						value: payload
+					})
+				}
 			})
 		})
 
@@ -100,7 +104,7 @@ export function MapView(props: MapFacetProps) {
 	// reset the map view (zoom and bounds).
 	React.useEffect(() => {
 		const view = map?.getView()!
-		if (props.facetState.filter == null && view != null) {
+		if (props.filter == null && view != null) {
 			// Reset the zoom to the initial zoom 
 			view.setZoom(initialZoom.current)
 
@@ -112,7 +116,7 @@ export function MapView(props: MapFacetProps) {
 			)
 			view.fit(bounds)
 		}
-	}, [props.facetState.filter])
+	}, [props.filter])
 
 	// Effect for restoring the view (zoom and bounds) of the map 
 	// when the facet is re-expanded.
@@ -122,18 +126,18 @@ export function MapView(props: MapFacetProps) {
 		if (
 			view == null ||
 			view.getZoom() == null ||
-			props.facetState.filter?.zoom == null ||
-			props.facetState.filter?.bounds == null
+			props.filter?.zoom == null ||
+			props.filter?.bounds == null
 		) return
 
 		if (
 			!props.facetState.collapse &&
-			props.facetState.filter.zoom !== view.getZoom()
+			props.filter.zoom !== view.getZoom()
 		) {
-			view.setZoom(props.facetState.filter.zoom)
-			view.fit(transformExtent(props.facetState.filter.bounds, 'EPSG:4326', 'EPSG:3857'))
+			view.setZoom(props.filter.zoom)
+			view.fit(transformExtent(props.filter.bounds, 'EPSG:4326', 'EPSG:3857'))
 		}
-	}, [props.facetState.collapse, props.facetState.filter, map])
+	}, [props.facetState.collapse, props.filter, map])
 
 	// Draw features (markers) on the map. 
 	// This effect is mainly used to update features on the map when

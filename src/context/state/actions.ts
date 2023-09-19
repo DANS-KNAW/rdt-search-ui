@@ -1,16 +1,28 @@
 import type { MapFacetFilter } from '../../facets/map/state'
 import type { SearchState } from '.'
-import type { BaseFacetState } from '../../common/types/search/facets'
+import { ListFacetAction } from '../../facets/list/actions'
+import { MapFacetAction } from '../../facets/map/actions'
+import { ChartFacetAction } from '../../facets/chart/actions'
+
+
+export interface UpdateFacetState {
+	type: "UPDATE_FACET_STATE"
+	facetID: string
+}
+
+export interface UpdateFacetFilter {
+	type: "UPDATE_FACET_FILTER"
+	facetID: string
+}
 
 interface SetFacetStates {
 	type: 'SET_FACET_STATES'
 	facetStates: SearchState['facetStates']
 }
 
-interface UpdateFacetState {
-	type: 'UPDATE_FACET_STATE'
+interface RemoveFilter {
+	type: 'REMOVE_FILTER'
 	facetID: string
-	facetState: BaseFacetState
 }
 
 interface UpdateFacetValues {
@@ -49,6 +61,10 @@ interface SetPage {
 }
 
 export type FacetsDataReducerAction =
+	MapFacetAction |
+	ListFacetAction |
+	ChartFacetAction |
+	RemoveFilter |
 	Reset |
 	SetFacetStates |
 	SetPage |
@@ -56,78 +72,4 @@ export type FacetsDataReducerAction =
 	SetSearchFilter |
 	SetSearchResult |
 	SetSortOrder |
-	UpdateFacetState |
 	UpdateFacetValues
-
-	// FacetsDataReducerActionAddFilter |
-	// FacetsDataReducerActionRemoveFilter |
-	// SetActiveSearch |
-	// FacetsDataReducerActionSetSort |
-	// FacetsDataReducerActionSetQuery |
-	// FacetsDataReducerActionViewLess |
-	// FacetsDataReducerActionViewMore |
-
-
-// interface FacetsDataReducerActionAddFilter {
-// 	type: 'ADD_FILTER'
-// 	facetId: string
-// 	value: string | string[]// | HistogramFacetValue
-// }
-
-// interface FacetsDataReducerActionRemoveFilter {
-// 	type: 'REMOVE_FILTER'
-// 	facetId: string
-// 	value?: string
-// }
-
-
-// interface SetZoom {
-// 	type: 'SET_ZOOM',
-// 	facetId: string,
-// 	zoom: number
-// 	bounds: [number, number, number, number]
-// }
-
-// interface SetActiveSearch {
-// 	type: 'SET_ACTIVE_SEARCH',
-// 	isActive: boolean
-// }
-
-// // TODO change to SET_LIST_FACET_SORT
-// interface FacetsDataReducerActionSetSort {
-// 	type: 'set_sort'
-// 	facetId: string
-// 	by: SortBy
-// 	direction: SortDirection
-// }
-
-// // TODO change to SET_LIST_FACET_QUERY
-// interface FacetsDataReducerActionSetQuery {
-// 	type: 'set_query'
-// 	facetId: string
-// 	value: string
-// }
-
-// interface FacetsDataReducerActionViewLess {
-// 	type: 'view_less'
-// 	facetId: string
-// }
-
-// interface FacetsDataReducerActionViewMore {
-// 	type: 'view_more'
-// 	facetId: string
-// 	total: number
-// }
-
-// type SetRange = {
-// 	facetId: string
-// 	type: 'SET_RANGE'
-// 	value: RangeFacetValue
-// }
-
-// type ResetRange = {
-// 	facetId: string
-// 	type: 'RESET_RANGE'
-// }
-
-// TODO change to SET_FULL_TEXT_QUERY

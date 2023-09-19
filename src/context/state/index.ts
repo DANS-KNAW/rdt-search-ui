@@ -1,4 +1,4 @@
-import type { BaseFacetState, FacetFilter, FSResponse, SortOrder } from "../../common"
+import type { BaseFacetState, FacetFilter, FacetFilterObject, FSResponse, SortOrder } from "../../common"
 
 import React from "react"
 import { FacetsDataReducerAction } from "./actions"
@@ -31,7 +31,7 @@ export interface SearchState {
 
 	facetValues: Record<string, any>
 	facetStates: FacetStates
-	facetFilters: Map<string, FacetFilter>
+	facetFilters: Map<string, FacetFilterObject<FacetFilter>>
 
 	query: string
 
@@ -50,11 +50,6 @@ export const intialSearchState = {
 	sortOrder: new Map(),
 }
 
-interface SearchStateContext {
-	state: SearchState
-	dispatch: React.Dispatch<FacetsDataReducerAction>
-}
-export const SearchStateContext = React.createContext<SearchStateContext>({
-	state: intialSearchState,
-	dispatch: () => {}
-})
+export const SearchStateContext = React.createContext<SearchState>(intialSearchState)
+
+export const SearchStateDispatchContext = React.createContext<React.Dispatch<FacetsDataReducerAction>>(() => {})

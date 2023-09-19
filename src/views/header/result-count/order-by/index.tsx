@@ -5,13 +5,15 @@ import OrderOption from './option'
 
 import { SortOrder } from '../../../../common'
 import { SearchPropsContext } from '../../../../context/props'
+import { FacetControllersContext } from '../../../../context/controllers'
 
 interface Props {
 	// setSortOrder: SetSortOrder
 	sortOrder: SortOrder
 }
 export const SortBy = React.memo(function SortBy(props: Props) {
-	const { uiTexts, facets } = React.useContext(SearchPropsContext)
+	const controllers = React.useContext(FacetControllersContext)
+	const { uiTexts } = React.useContext(SearchPropsContext)
 
 	const label = (props.sortOrder.size > 0) ?
 		`${uiTexts.sort_by} (${props.sortOrder.size})` :
@@ -23,7 +25,7 @@ export const SortBy = React.memo(function SortBy(props: Props) {
 			z={998}
 		>
 			{
-				Array.from(facets)
+				Array.from(controllers.values())
 					// .sort(([id1, facetData1], [id2, facetData2]) => {
 					// 	const a = props.sortOrder.has(id1)
 					// 	const b = props.sortOrder.has(id2)

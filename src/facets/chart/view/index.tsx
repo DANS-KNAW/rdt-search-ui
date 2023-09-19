@@ -6,6 +6,7 @@ import * as echarts from 'echarts'
 
 import FacetWrapper from '../../wrapper'
 import debounce from 'lodash.debounce'
+import { FacetFilter } from '../../../common/types/search/facets'
 
 const ChartFacetWrapper = styled(FacetWrapper)`
 	height: 100%;
@@ -26,9 +27,12 @@ const ChartFacetWrapper = styled(FacetWrapper)`
 	}
 `
 
-
-export function ChartFacet<Config extends ChartFacetConfig, State extends ChartFacetState> (
-	props: ChartFacetProps<Config, State>
+export function ChartFacet<
+	Config extends ChartFacetConfig,
+	State extends ChartFacetState,
+	Filter extends FacetFilter
+> (
+	props: ChartFacetProps<Config, State, Filter>
 ) {
 	// Ref to the chart instance
 	const chart = React.useRef<echarts.ECharts | null>(null)
@@ -49,11 +53,21 @@ export function ChartFacet<Config extends ChartFacetConfig, State extends ChartF
 
 		// Add click event listener
 		chart.current.on('click', (params) => {
-			props.facet.actions.setFilter(params.name)
+			props.dispatch({
+				type: "UPDATE_FACET_FILTER",
+				subType: "CHART_FACET_SET_FILTER",
+				facetID: props.facet.ID,
+				value: params.name
+			})
 		})
 
 		chart.current.on('datazoom', debounce((params: any) => {
-			props.facet.actions.setFilter([params.start, params.end])
+			props.dispatch({
+				type: "UPDATE_FACET_FILTER",
+				subType: "CHART_FACET_SET_RANGE",
+				facetID: props.facet.ID,
+				value: [params.start, params.end]
+			})
 		}, 1000))
 
 		return () => chart.current?.dispose()

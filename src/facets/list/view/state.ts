@@ -1,4 +1,4 @@
-import { ListFacetState } from "../state"
+import { ListFacetConfig, ListFacetState, ListFacetValues } from "../state"
 import { LIST_FACET_SCROLL_CUT_OFF } from "./list-view"
 
 export interface ListFacetViewState {
@@ -35,36 +35,37 @@ export const listFacetViewStates: Record<number, ListFacetViewState> = {
 	6: { pagination: false, scroll: true, scrollButton: false, query: true },
 }
 
+	// const total = props.facetState.query ? props.values.bucketsCount : props.values.total
+	// 	total, props.facet.config.size!, props.facetState.size, props.facetState.query)
+	// console.log(viewState)
+
 export function getViewState(
-    total: number,
-    configSize: number,
-    stateSize: number,
-    query: ListFacetState['query']
+    values: ListFacetValues,
+    state: ListFacetState,
+    config: ListFacetConfig
 ) {
-    if (query?.length) {
-        if (total < configSize) {
-            return listFacetViewStates[4]
-        }
-        else if (total > configSize) {
-            return listFacetViewStates[6]
-        } else if (total === configSize) {
-            return listFacetViewStates[5]
-        } else {
-            throw new Error(`[viewState not set] Unexpected total (${total}) for query "${query}"`)
-        }
+    if (values == null) return listFacetViewStates[0]
+
+	const total = state.query ? values.bucketsCount : values.total
+
+    if (state.query?.length) {
+        if      (total < config.size!)   return listFacetViewStates[4]
+        else if (total > config.size!)   return listFacetViewStates[6]
+        else if (total === config.size!) return listFacetViewStates[5]
+        else throw new Error(`[viewState not set] Unexpected total (${total}) for query "${state.query}"`)
+    } 
+
+    if (total < config.size!) {
+        return listFacetViewStates[0]
+    }
+    else if (total <= LIST_FACET_SCROLL_CUT_OFF) {
+        return state.size === total
+            ? listFacetViewStates[2]
+            : listFacetViewStates[1]
+    }
+    else if (total > LIST_FACET_SCROLL_CUT_OFF) {
+        return listFacetViewStates[3]
     } else {
-        if (total < configSize) {
-            return listFacetViewStates[0]
-        }
-        else if (total <= LIST_FACET_SCROLL_CUT_OFF) {
-            return stateSize === total
-                ? listFacetViewStates[2]
-                : listFacetViewStates[1]
-        }
-        else if (total > LIST_FACET_SCROLL_CUT_OFF) {
-            return listFacetViewStates[3]
-        } else {
-            throw new Error(`[viewState not set] unexpected total (${total})`)
-        }
+        throw new Error(`[viewState not set] unexpected total (${total})`)
     }
 }

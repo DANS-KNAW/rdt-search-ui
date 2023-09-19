@@ -6,8 +6,8 @@ import { SortDirection } from '../../../../common'
 
 import { Button } from '../../../ui/button'
 import { SearchPropsContext } from '../../../../context/props'
-import { SearchStateContext } from '../../../../context/state'
-import { FacetController } from '../../../../facets'
+import { SearchStateDispatchContext } from '../../../../context/state'
+import { FacetController } from '../../../../facets/controller'
 
 interface OOProps { active: boolean }
 const Wrapper = styled.div`
@@ -50,12 +50,12 @@ function updateSortOrder(sortOrder: SortOrder, field: string, direction: SortDir
 }
 
 interface Props {
-	facet: FacetController<any, any>
+	facet: FacetController<any, any, any>
 	sortOrder: SortOrder
 }
 function OrderOption(props: Props) {
 	const { style } = React.useContext(SearchPropsContext)
-	const { dispatch } = React.useContext(SearchStateContext)
+	const dispatch = React.useContext(SearchStateDispatchContext)
 
 	const setDirection = React.useCallback((ev: React.MouseEvent) => {
 		ev.stopPropagation()
