@@ -40,7 +40,7 @@ function hideLoader(loaderRef: any) {
 }
 
 export function FullTextSearch() {
-	const { autoSuggest } = React.useContext(SearchPropsContext)
+	const { autoSuggest, style } = React.useContext(SearchPropsContext)
 	const state = React.useContext(SearchStateContext)
 	const dispatch = React.useContext(SearchStateDispatchContext)
 	const loaderRef = React.useRef<HTMLDivElement>(null)
@@ -69,7 +69,10 @@ export function FullTextSearch() {
 	}, [state.query])
 
 	return (
-		<Wrapper id="rdt-search__full-text">
+		<Wrapper
+			id="rdt-search__full-text"
+			style={style}
+		>
 			<InputWrapper
 				handleInputChange={handleInputChange}
 				inputValue={inputValue}

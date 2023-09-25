@@ -5,6 +5,7 @@ import { HelpButton } from '../ui/help-button'
 import { SearchPropsContext } from '../../context/props'
 
 export const inputStyle = css`
+	background: none;
 	border: none;
 	box-sizing: border-box;
 	font-size: 1.2em;
@@ -12,7 +13,7 @@ export const inputStyle = css`
 	width: 100%;
 
 	&::placeholder {
-		color: #DDD;
+		color: #CCC;
 		font-style: italic;
 	}
 `

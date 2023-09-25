@@ -10,7 +10,8 @@ export enum Colors {
 	Orange = '#ffa500',
 	// Orange = '#C90',
 	Pink = '#fd7a7a',
-	Red = '#DB4437'
+	Red = '#DB4437',
+	White = '#FFF'
 }
 
 export enum DTAP {

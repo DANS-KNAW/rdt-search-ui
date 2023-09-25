@@ -11,7 +11,7 @@ import { FacetControllers } from './context/controllers'
 // import { FACETS_WIDTH } from './constants'
 
 const Wrapper = styled.div`
-	background: #fbfbfb;
+	background: ${props => props.background}};
 	display: grid;
 	grid-gap: 32px;
 	grid-template-rows: fit-content(0) 1fr;
@@ -22,7 +22,7 @@ const Wrapper = styled.div`
 		min-height: 100%;
 		display: grid;
 		grid-auto-rows: 420px;
-		${(props: { dashboard: DashboardProps }) => {
+		${(props: { dashboard: DashboardProps, background: string }) => {
 			if (props.dashboard.columns) {
 				return `grid-template-columns: repeat(${props.dashboard.columns}, 1fr)`
 			}
@@ -58,6 +58,7 @@ export function Dashboard({ children, controllers, searchProps, searchState }: P
 
 	return (
 		<Wrapper
+			background={searchProps.style.background}
 			className={clsx('dashboard', searchProps.className)}
 			dashboard={searchProps.dashboard!}
 			id="rdt-search"

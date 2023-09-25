@@ -1,24 +1,23 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { BACKGROUND_GRAY } from '../../../constants'
-import { SearchPropsContext } from '../../../context/props'
+import { SearchProps, SearchPropsContext } from '../../../context/props'
 import { PaginationProps } from '.'
 
 export const PaginationButton = styled.button`
 	background: none;
 	border: none;
-	color: ${(props: { color: string, disabled?: boolean }) => props.color};
+	color: ${(props: { disabled?: boolean, color?: string, _style?: SearchProps['style'] }) => props.color || props._style?.spotColor};
 	cursor: ${props => props.disabled ? 'default' : 'pointer'};
 	outline: none;
 	padding: 0;
 `
 
-interface PnProps { active: boolean }
+interface PnProps { active: boolean, _style: SearchProps['style'] }
 const PageNumberWrapper = styled(PaginationButton)`
-	background-color: ${(props: PnProps) => props.active ? BACKGROUND_GRAY : 'white'};
+	background-color: ${(props: PnProps) => props.active ? props._style.activePageBackground : 'none'};
 	border-radius: .25em;
-	color: ${(props: PnProps) => props.active ? '#888' : 'inherit'};
+	color: ${(props: PnProps) => props.active ? '#444' : 'inherit'};
 	font-weight: ${(props: PnProps) => props.active ? 'bold' : 'normal'};
 	padding: .35em;
 	text-align: center;
@@ -38,7 +37,7 @@ export function PageNumber(props: Props) {
 			className={active ? 'active' : undefined}
 			key={props.pageNumber}
 			onClick={() => props.setCurrentPage(props.pageNumber)}
-			color={style.spotColor}
+			_style={style}
 		>
 			{props.pageNumber}
 		</PageNumberWrapper>

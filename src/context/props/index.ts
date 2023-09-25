@@ -21,6 +21,17 @@ export interface DashboardProps {
 	areas?: string[]
 }
 
+export interface UserStyle {
+	// Set the background color of the active page number in the Pagination component
+	activePageBackground?: string
+
+	// Set the general background color
+	background?: string
+
+	// Set the spot color, used to attract attention to interactive elements
+	spotColor?: string
+}
+
 export interface UserSearchProps {
 	/* Required */
 	ResultBodyComponent: React.FC<ResultBodyProps>
@@ -36,9 +47,9 @@ export interface UserSearchProps {
 	resultsPerPage?: number
 	track_total_hits?: number | boolean
 	sortOrder?: SortOrder
-	style?: {
-		spotColor: string
-	}
+
+	// TODO rename to theme? style is a React attribute
+	style?: UserStyle
 	uiTexts?: UITexts
 
 	/* Optional and can be undefined, see SearchProps */
@@ -52,7 +63,10 @@ export interface UserSearchProps {
 
 // Redefine the UserSearchProps to make some props required,
 // except for the SearchHomeComponent and className props
-export type SearchProps = Required<Omit<UserSearchProps, 'children' | 'facetsConfig' | 'SearchHomeComponent' | 'className' | 'dashboard' | 'onActiveFiltersChange'>> & {
+type RedefinedProps = 'children' | 'className' | 'dashboard' | 'facetsConfig' | 'onActiveFiltersChange' | 'SearchHomeComponent' | 'style'
+export type SearchProps = Required<Omit<UserSearchProps, RedefinedProps>> & {
+	style: Required<UserStyle>
+
 	// Optional props
 	className?: UserSearchProps['className']
 	dashboard?: UserSearchProps['dashboard']
@@ -83,7 +97,9 @@ export const defaultSearchProps: SearchProps = {
 	resultsPerPage: 20,
 	sortOrder: new Map(),
 	style: {
-		spotColor: Colors.BlueBright
+		background: Colors.White,
+		spotColor: Colors.BlueBright,
+		activePageBackground: '#F6F6F6'
 	},
 	track_total_hits: true,
 	uiTexts: uiTexts

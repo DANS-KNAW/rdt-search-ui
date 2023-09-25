@@ -6,12 +6,13 @@ import ResultCount from './result-count'
 
 import { FSResponse } from '../../common'
 import { SearchState, SearchStateDispatchContext } from '../../context/state'
+import { SearchProps, SearchPropsContext } from '../../context/props'
 
 export const headerStyle = css`
-	background-color: white;
+	background: ${(props: Pick<SearchProps, 'style'>) => props.style.background};
 	border-bottom: 1px solid #CCC;
 	box-sizing: border-box;
-	box-shadow: 0 1.5rem 1.5rem white;
+	box-shadow: 0 1.5rem 1.5rem ${(props: Pick<SearchProps, 'style'>) => props.style.background};
 	color: #888;
 	font-size: .85em;
 `
@@ -30,11 +31,15 @@ interface Props {
 	sortOrder: SearchState['sortOrder']
 }
 export const ResultHeader = function Header(props: Props) {
+	const { style } = React.useContext(SearchPropsContext)
 	const dispatch = React.useContext(SearchStateDispatchContext)
 	if (props.searchResult == null) return null
 
 	return (
-		<Wrapper id="rdt-search__result-header">
+		<Wrapper
+			id="rdt-search__result-header"
+			style={style}
+		>
 			<ResultCount
 				currentPage={props.currentPage}
 				searchResult={props.searchResult}

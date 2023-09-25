@@ -15,6 +15,7 @@ import { Facets } from './facets'
 import { FacetControllers } from './context/controllers'
 
 const Wrapper = styled.div`
+	background: ${(props: WProps) => props.style.background};
 	display: grid;
 	grid-template-columns: ${FACETS_WIDTH}px 1fr;
 	grid-template-rows: fit-content(0) fit-content(0) 1fr;
@@ -68,7 +69,9 @@ const Wrapper = styled.div`
 	}
 `
 
-interface WProps { showResults: boolean }
+interface WProps extends Pick<SearchProps, 'style'> {
+	showResults: boolean
+}
 
 interface Props {
 	children: React.ReactNode
@@ -88,6 +91,7 @@ export default function FacetedSearch({
 		<Wrapper
 			className={searchProps.className}
 			showResults={showResults}
+			style={searchProps.style}
 		>
 			<FullTextSearch />
 			<ResultHeader

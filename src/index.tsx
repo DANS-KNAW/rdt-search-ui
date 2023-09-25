@@ -52,16 +52,26 @@ export function FacetedSearch(props: UserSearchProps) {
 			? props.children.props.children
 			: props.children
 
+		setChildren(_children)
+	}, [props.children])
+
+	// After children have been set, set the search props.
+	// Everytime the props change, the search props will be updated
+	React.useEffect(() => {
+		if (children == null) return
+
 		// Extend the search props with default values
 		const sp: SearchProps = {
 			...defaultSearchProps,
-			...props
+			...props,
+			style: {
+				...defaultSearchProps.style,
+				...props.style
+			}
 		}
 
-		setChildren(_children)
 		setSearchProps(sp)
-	}, [props.children])
-
+	}, [props, children])
 
 	const controllers = useControllers(children)
 
@@ -96,7 +106,6 @@ function AppLoader({ children, controllers, searchProps }: AppLoaderProps) {
 
 	React.useEffect(() => {
 		if (!controllers.size) return
-		console.log('HERE')
 		const facetStates = new Map()
 		for (const [id, controller] of controllers.entries()) {
 			facetStates.set(id, controller.initState())
@@ -107,18 +116,6 @@ function AppLoader({ children, controllers, searchProps }: AppLoaderProps) {
 			facetStates
 		})
 	}, [controllers])
-
-
-	// console.log('LOAD', props.searchProps, value, Component)
-
-	// React.useEffect(() => {
-	// 	if (props.searchProps.onActiveFiltersChange) {
-	// 		props.searchProps.onActiveFiltersChange(
-	// 			value.state.facetFilters,
-	// 			value.state.query
-	// 		)
-	// 	}
-	// }, [value.state.facetFilters, value.state.query])
 
 	return (
 		<FacetControllersContext.Provider value={controllers}>
@@ -137,16 +134,6 @@ function AppLoader({ children, controllers, searchProps }: AppLoaderProps) {
 	)
 }
 
-// function compareProps(prevProps: any, nextProps: any) {
-// 	console.log('COMPAREING')
-// 	Object.keys(prevProps).forEach(key => {
-// 		const isSame = prevProps[key] === nextProps[key]
-// 		console.log(`${key}\t\t${isSame}`, isSame ? '' : `${prevProps[key]} __ ${nextProps[key]}`)
-// 	})
-// 	console.log('=-=-=-=-=-=-=-=')
-// 	return false
-// }
-
 function useControllers(children: React.ReactNode): FacetControllers {
 	const [controllers, setControllers] = React.useState<FacetControllers>(new Map())
 
@@ -163,3 +150,13 @@ function useControllers(children: React.ReactNode): FacetControllers {
 
 	return controllers
 }
+
+// function compareProps(prevProps: any, nextProps: any) {
+// 	console.log('COMPAREING')
+// 	Object.keys(prevProps).forEach(key => {
+// 		const isSame = prevProps[key] === nextProps[key]
+// 		console.log(`${key}\t\t${isSame}`, isSame ? '' : `${prevProps[key]} __ ${nextProps[key]}`)
+// 	})
+// 	console.log('=-=-=-=-=-=-=-=')
+// 	return false
+// }
