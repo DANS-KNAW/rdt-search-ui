@@ -11,8 +11,7 @@ const Wrapper = styled.div`
 
 const DropDownButton = styled(Button)`
 	background: rgba(0, 0, 0, 0);
-	/* border: 1px solid rgba(0, 0, 0, 0); */
-	height: 46px;
+	height: 100%;
 	transition: all 300ms;
 	white-space: nowrap;
 	z-index: ${({ z = 0 }: CProps) => z + 1};

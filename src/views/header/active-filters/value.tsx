@@ -48,6 +48,7 @@ export function ActiveFilterValue(props: {
 		<Li
 			as="li"
 			data-facet-id={props.facetID}
+			data-value={props.value}
 			onClick={props.removeFilter}
 			title={props.title}
 		>

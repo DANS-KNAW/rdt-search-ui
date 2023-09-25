@@ -7,13 +7,14 @@ import { SearchPropsContext } from '../../../context/props'
 
 import { SearchStateContext, SearchStateDispatchContext } from '../../../context/state'
 import { FacetControllersContext } from '../../../context/controllers'
-import { SaveSearch } from './save-search'
+import { SaveSearch } from './save-search/save-search'
+import { LoadSearch } from './save-search/load-search'
 
 // Background color and box shadow are only visible when the active filters
 // are sticky at the top of the page and the search result is scrolled.
 const Wrapper = styled.ul`
-	background: white;
-	box-shadow: white 0px 1.5rem 1.5rem;
+	background: ${({ background }: { background: string}) => background};
+	box-shadow: ${({ background }) => background} 0px 1.5rem 1.5rem;
 	display: flex;
 	flex-wrap: wrap;
 	font-size: .8rem;
@@ -23,6 +24,7 @@ const Wrapper = styled.ul`
 
 	li.active-filters__item {
 		display: flex;
+		height: 36px;
 		margin-bottom: .5rem;
 	}
 
@@ -48,9 +50,14 @@ const Wrapper = styled.ul`
 		padding: 0;
 	}
 
-	li.active-filters__button {
+	li.active-filters__buttons {
 		margin-left: .5rem;
 		margin-right: .5rem;
+		white-space: nowrap;
+
+		& > button:first-of-type {
+			margin-right: 1rem;
+		}
 	}
 `
 
@@ -68,86 +75,75 @@ export function ActiveFilters() {
 		dispatch({
 			type: 'REMOVE_FILTER',
 			facetID: ev.currentTarget.getAttribute('data-facet-id')!,
+			value: ev.currentTarget.getAttribute('data-value')!,
 		})
 	}, [])
 
 	// If there are no active filters, just render an empty div
 	// in order not to mess up the grid layout
 	if (!state.query.length && !state.facetFilters.size) {
-		return <div id="active-filters" />
+		return (
+			<Wrapper
+				background={style.background}
+				id="active-filters"
+			>
+				<li>
+					<LoadSearch url={url} />
+				</li>
+			</Wrapper>
+		)
 	}
 
 	return (
 		<Wrapper
+			background={style.background}
 			id="active-filters"
 		>
 			{
 				state.query?.length > 0 &&
-				<li
-					className="active-filters__item active-filters__facet"
-					key="full-text-query"
-				>
-					<div className="active-filters__title">
-						Full text query
-					</div>
-					<ul className="active-filters__values">
-						<ActiveFilterValue
-							key="full-text-query"
-							removeFilter={() => dispatch({ type: 'SET_QUERY', value: "" })}
-							title="Full text query"
-							value={state.query}
-						/>
-					</ul>
-				</li>
-
+				<ActiveFilterItem title="Full text query">
+					<ActiveFilterValue
+						key="full-text-query"
+						removeFilter={() => dispatch({ type: 'SET_QUERY', value: "" })}
+						title="Full text query"
+						value={state.query}
+					/>
+				</ActiveFilterItem>
 			}
 			{
 				Array.from(state.facetFilters.entries())
-					.map(([facetID, filter]) => {
-						return (
-							<li
-								className="active-filters__facet"
-								key={facetID}
-							>
-								<div
-									className="active-filters__facet__title"
-									title={`Facet title: ${filter.title}`}
-								>
-									{filter.title}
-								</div>
-								<ul className="active-filters__facet__values">
-									{
-										filter.formatted.map(value =>
-											<ActiveFilterValue
-												facetID={facetID}
-												key={facetID + value}
-												removeFilter={removeFilter}
-												title={`Facet filter value: ${value}`}
-												value={value}
-											/>
-										)
-									}
-								</ul>
-							</li>
-						)
-					})
+					.map(([facetID, filter]) =>
+						<ActiveFilterItem
+							key={facetID}
+							title={filter.title}
+						>
+							{
+								filter.formatted.map(value =>
+									<ActiveFilterValue
+										facetID={facetID}
+										key={facetID + value}
+										removeFilter={removeFilter}
+										title={`Facet filter value: ${value}`}
+										value={value}
+									/>
+								)
+							}
+						</ActiveFilterItem>
+					)
 			}
-			<li className="active-filters__item active-filters__button">
+			<li className="active-filters__item active-filters__buttons">
 				<Button
 					onClick={reset}
 					spotColor={style.spotColor}
 				>
-					{uiTexts.clear}
+					{uiTexts.clearSearch}
 				</Button>
-			</li>
-			<li className="active-filters__item active-filters__button">
 				<SaveSearch
 					url={url}
 					activeFilters={{
 						query: state.query,
 						filters: state.facetFilters
 					}}
-					loadSearchState={() => {}}
 				/>
 			</li>
 		</Wrapper>
@@ -155,3 +151,23 @@ export function ActiveFilters() {
 }
 
 			{/* TODO make query undefined */}
+
+interface ItemProps {
+	children: React.ReactNode
+	title: string
+}
+function ActiveFilterItem({ children, title }: ItemProps) {
+	return (
+		<li className="active-filters__item active-filters__facet">
+			<div
+				className="active-filters__title"
+				title={`Facet title: ${title}`}
+			>
+				{title}
+			</div>
+			<ul className="active-filters__values">
+				{children}
+			</ul>
+		</li>
+	)
+}

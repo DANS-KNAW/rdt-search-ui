@@ -1,6 +1,6 @@
 export interface UITexts {
 	active: string
-	clear: string
+	clearSearch: string
 	document: string
 	documents: string
 	fullTextSearchHelp: string
@@ -22,7 +22,7 @@ export interface UITexts {
 
 export const uiTexts: UITexts = {
 	active: 'active',
-	clear: 'Clear all',
+	clearSearch: 'Clear search',
 	document: 'document',
 	documents: 'documents',
 	fullTextSearchHelp: 'Search for words in the full text of the documents',
