@@ -2,26 +2,6 @@ import React from 'react'
 import styled from 'styled-components'
 import { Label } from '../../ui/label'
 
-export const Ul = styled.ul`
-`
-
-// interface Props {
-// 	dispatch: React.Dispatch<FacetsDataReducerAction>
-// 	filters: SearchState['facetFilters']
-// 	facets: Facet<any, any>[]
-// }
-// export function ActiveFiltersDetails(props: Props) {
-// 	const { style, uiTexts } = React.useContext(SearchPropsContext)
-
-// 	const reset = React.useCallback(() => {
-// 		facets.forEach(facet => facet.reset())
-// 		dispatch({ type: 'RESET' })
-// 	}, [facets])
-
-// 	return (
-// 	)
-// }
-
 const Li = styled(Label)`
 	cursor: pointer;
 	display: grid;
@@ -59,13 +39,15 @@ const Li = styled(Label)`
 `
 
 export function ActiveFilterValue(props: {
-	removeFilter: () => void,
+	facetID?: string
+	removeFilter: (ev: React.MouseEvent) => void,
 	title: string
 	value: string
 }) {
 	return (
 		<Li
 			as="li"
+			data-facet-id={props.facetID}
 			onClick={props.removeFilter}
 			title={props.title}
 		>

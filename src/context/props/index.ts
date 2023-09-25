@@ -2,6 +2,7 @@ import React from "react"
 import { Colors } from "../../common/enum"
 import { ResultBodyProps, SortOrder } from "../../common/types/search"
 import { UITexts, uiTexts } from "./ui-texts"
+import { SearchState } from "../state"
 
 export interface DashboardProps {
 	rows?: number
@@ -44,17 +45,19 @@ export interface UserSearchProps {
 	className?: string /* className prop is used by StyledComponents */
 	dashboard?: DashboardProps 
 	SearchHomeComponent?: React.FC<any>
+	onActiveFiltersChange?: (activeFilters: SearchState['facetFilters'], query: string) => void
 }
 
 // export type FacetConfigs = Map<string, FacetConfig>
 
 // Redefine the UserSearchProps to make some props required,
 // except for the SearchHomeComponent and className props
-export type SearchProps = Required<Omit<UserSearchProps, 'children' | 'facetsConfig' | 'SearchHomeComponent' | 'className' | 'dashboard'>> & {
+export type SearchProps = Required<Omit<UserSearchProps, 'children' | 'facetsConfig' | 'SearchHomeComponent' | 'className' | 'dashboard' | 'onActiveFiltersChange'>> & {
 	// Optional props
-	className?: string
-	dashboard?: DashboardProps
-	SearchHomeComponent?: React.FC<any>
+	className?: UserSearchProps['className']
+	dashboard?: UserSearchProps['dashboard']
+	SearchHomeComponent?: UserSearchProps['SearchHomeComponent']
+	onActiveFiltersChange?: UserSearchProps['onActiveFiltersChange']
 }
 
 export const defaultSearchProps: SearchProps = {

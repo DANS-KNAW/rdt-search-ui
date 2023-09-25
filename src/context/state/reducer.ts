@@ -58,8 +58,16 @@ export function searchStateReducer(controllers: FacetControllers) {
 				...state,
 				facetValues,
 			}
-
 		}
+
+		// if (action.type === 'LOAD_SEARCH') {
+		// 	return {
+		// 		...state,
+		// 		query: action.query,
+		// 		facetFilters: action.filters,
+		// 		currentPage: 1,
+		// 	}
+		// }
 
 		if (action.type === 'SET_QUERY') {
 			return {

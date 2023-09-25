@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { Button } from './button'
 import { SearchPropsContext } from '../../context/props'
+import clsx from 'clsx'
 
 const Wrapper = styled.div`
 	display: inline-block;
@@ -12,31 +13,24 @@ const DropDownButton = styled(Button)`
 	background: rgba(0, 0, 0, 0);
 	/* border: 1px solid rgba(0, 0, 0, 0); */
 	height: 46px;
-	margin: 0 .5rem;
-	padding: 0 12px;
 	transition: all 300ms;
 	white-space: nowrap;
-	z-index: ${props => props.z + 1};
+	z-index: ${({ z = 0 }: CProps) => z + 1};
 
 	& > span {
-		font-size: .65rem;
+		display: inline-block;
+		width: 1rem;
+		height: 1rem;
+		& > span {
+			display: inline-block;
+			font-size: .65rem;
+			transform: rotate(${p => p.show ? 90 : 0}deg) scale(0.75, 2) translateY(${p => p.show ? 0 : -1}px);
+			text-align: center;
+		}
 	}
-
-	/* ${(props: { showMenu: boolean, z: number }) =>
-		(props.showMenu)
-			? `
-				background: white;
-				border: 1px solid #888;
-				border-bottom: 1px solid white;
-				height: 49px;
-
-				border-radius: unset;
-				border-top-left-radius: .2rem;
-				border-top-right-radius: .2rem;
-			`
-			: null
-	} */
 `
+
+interface CProps { show?: boolean, z?: number, right?: boolean }
 
 export const DropDownBody = styled.div`
 	background: white;
@@ -45,33 +39,20 @@ export const DropDownBody = styled.div`
 	line-height: 1.6em;
 	margin: 2px 0 0 .5rem;
 	min-width: 200px;
-	opacity: ${(props: { show?: boolean, z?: number }) => props.show ? 1 : 0};
+	opacity: ${({ show = true }: CProps) => show ? 1 : 0};
 	padding: .5em 1em;
 	pointer-events: ${props => props.show ? 'all' : 'none'};
 	position: absolute;
+	right: ${({ right = false }: CProps) => right ? 0 : 'auto'};
 	transition: opacity 300ms;
-	z-index: ${props => props.z || 0};
-
-	& > div {
-		color: #444;
-		font-size: .9rem;
-
-		&:hover {
-			cursor: pointer;
-			color: black;
-		}
-	}
-
-	& > div:not(:last-of-type) {
-		border-bottom: 1px solid #EEE;
-	}
+	z-index: ${({ z = 0 }: CProps) => z};
 `
-DropDownBody.defaultProps = { show: true, z: 0 }
 
 interface Props {
 	children: React.ReactNode
 	className?: string
 	label: string
+	right?: boolean
 	z?: number
 }
 export const DropDown = React.memo(function DropDown(props: Props) {
@@ -92,19 +73,22 @@ export const DropDown = React.memo(function DropDown(props: Props) {
 	}, [showBody])
 
 	return (
-		<Wrapper className={props.className}>
+		<Wrapper className={clsx("dropdown", props.className)}>
 			<DropDownButton
-				className="huc-fs-dropdown-button"
+				className="dropdown__button"
 				onClick={handleClick}
-				showMenu={showBody}
+				show={showBody}
 				spotColor={style.spotColor}
 				z={props.z || 0}
 			>
-				{props.label} <span>{showBody ? '▲' : '▼'}</span>
+				{/* <span>{showBody ? '▼' : '▶'}</span> {props.label} */}
+				<span><span>&gt;</span></span>{props.label}
+				{/* {props.label} */}
 			</DropDownButton>
 			<DropDownBody
-				className="huc-fs-dropdown-body"
+				className="dropdown__body"
 				onClick={ev => ev.stopPropagation()}
+				right={props.right}
 				show={showBody}
 				z={props.z}
 			>

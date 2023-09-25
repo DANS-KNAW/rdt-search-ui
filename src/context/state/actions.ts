@@ -60,11 +60,18 @@ interface SetPage {
 	page: number
 }
 
+interface LoadSearch {
+	type: 'LOAD_SEARCH'
+	filters: SearchState['facetFilters']
+	query: SearchState['query']
+}
+
 export type FacetsDataReducerAction =
 	MapFacetAction |
 	ListFacetAction |
 	ChartFacetAction |
 	RemoveFilter |
+	LoadSearch |
 	Reset |
 	SetFacetStates |
 	SetPage |
