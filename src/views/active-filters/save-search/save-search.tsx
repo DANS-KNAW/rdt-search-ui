@@ -1,10 +1,10 @@
 import React from "react"
 import styled from "styled-components"
 import md5 from 'md5'
-import { DropDown } from "../../../ui/drop-down"
-import { SearchProps, SearchPropsContext } from "../../../../context/props"
-import { Button } from "../../../ui/button"
-import { SearchState } from "../../../../context/state"
+import { DropDown } from "../../ui/drop-down"
+import { SearchProps, SearchPropsContext } from "../../../context/props"
+import { Button } from "../../ui/button"
+import { SearchState } from "../../../context/state"
 import { serializeObject, useSavedSearches } from './use-saved-searches'
 
 export interface SearchFilters {

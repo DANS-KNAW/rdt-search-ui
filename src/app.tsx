@@ -5,7 +5,7 @@ import { ResultHeader } from './views/header'
 import { SearchResult } from './views/search-result'
 import { FullTextSearch } from './views/full-text-search'
 import { ToggleView } from './views/toggle-view'
-import { ActiveFilters } from './views/header/active-filters'
+import { ActiveFilters } from './views/active-filters'
 
 
 import { SearchProps } from './context/props'
@@ -26,7 +26,6 @@ const Wrapper = styled.div`
 
 	& > * {
 		padding: 0 16px;
-		/* margin: 0 16px; */
 	}
 
 	#facets {

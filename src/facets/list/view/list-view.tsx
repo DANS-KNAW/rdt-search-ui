@@ -5,7 +5,7 @@ import styled from 'styled-components'
 
 import ListFacetValue from './value'
 
-import { Pagination } from '../../../views/header/pagination'
+import { Pagination } from '../../../views/pagination'
 import { Button } from '../../../views/ui/button'
 import { SearchPropsContext } from '../../../context/props'
 import { FacetsDataReducerAction } from '../../../context/state/actions'

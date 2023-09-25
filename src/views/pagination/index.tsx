@@ -5,8 +5,8 @@ import styled from 'styled-components'
 import { PageNumber, PaginationButton } from './page-number'
 import { usePages } from './use-pages'
 
-import { SearchPropsContext } from '../../../context/props'
-import { FacetsDataReducerAction } from '../../../context/state/actions'
+import { SearchPropsContext } from '../../context/props'
+import { FacetsDataReducerAction } from '../../context/state/actions'
 
 const Wrapper = styled.div`
 	align-items: center;

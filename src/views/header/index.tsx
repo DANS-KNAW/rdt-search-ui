@@ -1,7 +1,7 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 
-import { Pagination } from './pagination'
+import { Pagination } from '../pagination'
 import ResultCount from './result-count'
 
 import { FSResponse } from '../../common'

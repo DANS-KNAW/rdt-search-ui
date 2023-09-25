@@ -2,11 +2,11 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { ActiveFilterValue } from './value'
-import { Button } from '../../ui/button'
-import { SearchPropsContext } from '../../../context/props'
+import { Button } from '../ui/button'
+import { SearchPropsContext } from '../../context/props'
 
-import { SearchStateContext, SearchStateDispatchContext } from '../../../context/state'
-import { FacetControllersContext } from '../../../context/controllers'
+import { SearchStateContext, SearchStateDispatchContext } from '../../context/state'
+import { FacetControllersContext } from '../../context/controllers'
 import { SaveSearch } from './save-search/save-search'
 import { LoadSearch } from './save-search/load-search'
 

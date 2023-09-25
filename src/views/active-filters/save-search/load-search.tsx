@@ -1,9 +1,9 @@
 import React from "react"
 import styled from "styled-components"
-import { DropDown } from "../../../ui/drop-down"
-import { SearchProps, SearchPropsContext } from "../../../../context/props"
-import { Button } from "../../../ui/button"
-import { SearchStateDispatchContext } from "../../../../context/state"
+import { DropDown } from "../../ui/drop-down"
+import { SearchProps, SearchPropsContext } from "../../../context/props"
+import { Button } from "../../ui/button"
+import { SearchStateDispatchContext } from "../../../context/state"
 import { SavedSearch, useSavedSearches } from "./use-saved-searches"
 
 export function LoadSearch(props: {

@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Label } from '../../ui/label'
+import { Label } from '../ui/label'
 
 const Li = styled(Label)`
 	cursor: pointer;

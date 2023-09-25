@@ -5,7 +5,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { ResultList, Result } from './components'
-import { Pagination } from '../header/pagination'
+import { Pagination } from '../pagination'
 import { SearchState, SearchStateDispatchContext } from '../../context/state'
 
 const Section = styled.section`

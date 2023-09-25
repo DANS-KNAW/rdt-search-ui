@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { SearchProps, SearchPropsContext } from '../../../context/props'
+import { SearchProps, SearchPropsContext } from '../../context/props'
 import { PaginationProps } from '.'
 
 export const PaginationButton = styled.button`
