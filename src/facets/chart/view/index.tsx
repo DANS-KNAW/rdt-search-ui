@@ -80,12 +80,6 @@ export function ChartFacet<
 			chart.current == null
 		) return
 
-		// console.log(props.facet.ID, props.values, props.facet.valueRange, zoomValue.current)
-
-		// let option = updateValues[props.facet.type as ChartFacetType](props.values)
-
-		// Define range upfront for type checking
-
 		const options = props.facet.updateOptions(props.values)
 
 		chart.current.setOption(options)

@@ -6,6 +6,7 @@ import clsx from 'clsx'
 
 import { FacetHeader } from './header'
 import { FacetController } from './controller'
+import { FacetsDataReducerAction } from '../context/state/actions'
 
 const Wrapper = styled.div`
 	color: #444;
@@ -39,6 +40,7 @@ interface Props<
 	Filter extends FacetFilter
 > {
 	children: React.ReactNode
+	dispatch: React.Dispatch<FacetsDataReducerAction>
 	facet: FacetController<FacetConfig, FacetState, Filter>
 	facetState: FacetState
 	filter: Filter
@@ -56,6 +58,7 @@ function FacetWrapper<
 			collapse={props.facetState.collapse}
 		>
 			<FacetHeader
+				dispatch={props.dispatch}
 				facet={props.facet}
 				facetState={props.facetState}
 				filter={props.filter}

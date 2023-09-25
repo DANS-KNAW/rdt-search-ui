@@ -7,7 +7,7 @@ import { HelpButton } from '../views/ui/help-button'
 import { SearchPropsContext } from '../context/props'
 import FacetWrapper from './wrapper'
 import { FacetController } from './controller'
-import { SearchStateDispatchContext } from '../context/state'
+import { FacetsDataReducerAction } from '../context/state/actions'
 // import { ListFacetUtils } from '../views/list/utils'
 
 /**
@@ -54,6 +54,7 @@ interface Props<
 	FacetState extends BaseFacetState,
 	Filter extends FacetFilter
 > {
+	dispatch: React.Dispatch<FacetsDataReducerAction>
 	facetState: FacetState
 	facet: FacetController<FacetConfig, FacetState, Filter>
 	filter: Filter
@@ -66,7 +67,6 @@ export function FacetHeader<
 	Filter extends FacetFilter
 >(props: Props<FacetConfig, FacetState, Filter>) {
 	const { style } = React.useContext(SearchPropsContext)
-	const dispatch = React.useContext(SearchStateDispatchContext)
 	// const [showOptions, setShowOptions] = React.useState(false)
 
 	// const toggleOptions = React.useCallback(() => {
@@ -85,7 +85,7 @@ export function FacetHeader<
 			<H3
 				collapse={props.facetState.collapse}
 				onClick={() => {
-					dispatch({
+					props.dispatch({
 						type: "TOGGLE_COLLAPSE",
 						facetID: props.facet.ID,
 					})

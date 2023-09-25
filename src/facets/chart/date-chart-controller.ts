@@ -5,7 +5,7 @@ import { addFilter } from "../../context/state/use-search/request-with-facets-cr
 import { FacetController } from "../controller"
 import { ElasticSearchResponse, FacetType } from "../../common"
 import { SearchState } from "../../context/state"
-import { ChartFacetAction } from "./actions"
+import { FacetsDataReducerAction } from "../../context/state/actions"
 
 function capitalize(str: string) {
 	return str.charAt(0).toUpperCase() + str.slice(1)
@@ -77,27 +77,20 @@ export class DateChartController extends FacetController<DateChartFacetConfig, D
 
 	type = FacetType.Date
 
-	reducer(state: SearchState, action: ChartFacetAction): SearchState {
-		const facetState = state.facetStates.get(this.ID) as DateChartFacetState
-		const nextState = { ...facetState }
-
-		// <STATE>
-		if (action.subType === 'CHART_FACET_TOGGLE_COLLAPSE') {
-			nextState.collapse = !nextState.collapse
-			return this.updateFacetState(nextState, state)
-		}
-		// <\STATE>
-
+	reducer(state: SearchState, action: FacetsDataReducerAction): SearchState {
 		const facetFilter = state.facetFilters.get(this.ID) as DateChartFacetFilter
 
 		// <FILTER>
-		if (action.subType === 'REMOVE_FILTER') {
+		if (action.type === 'REMOVE_FILTER') {
 			return this.updateFacetFilter(undefined, state)
 		}
 
 		if (
-			action.subType === 'CHART_FACET_SET_FILTER' ||
-			action.subType === 'CHART_FACET_SET_RANGE'
+			action.type === 'UPDATE_FACET_FILTER' &&
+			(
+				action.subType === 'CHART_FACET_SET_FILTER' ||
+				action.subType === 'CHART_FACET_SET_RANGE'
+			)
 		) {
 			if (facetFilter === action.value) return state
 			return this.updateFacetFilter(action.value, state)

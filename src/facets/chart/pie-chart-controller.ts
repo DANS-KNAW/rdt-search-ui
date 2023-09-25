@@ -6,7 +6,7 @@ import { FacetController } from "../controller"
 import { ElasticSearchResponse, FacetType } from "../../common"
 import { KeyCount } from "../list/state"
 import { SearchState } from "../../context/state"
-import { ChartFacetAction } from "./actions"
+import { FacetsDataReducerAction } from "../../context/state/actions"
 
 function capitalize(str: string) {
 	return str.charAt(0).toUpperCase() + str.slice(1)
@@ -39,27 +39,19 @@ export class PieChartController extends FacetController<ChartFacetConfig, PieCha
 
 	type = FacetType.Pie
 
-	reducer(state: SearchState, action: ChartFacetAction): SearchState {
-		const facetState = state.facetStates.get(this.ID) as PieChartFacetState
-		const nextState = { ...facetState }
-
-		// <STATE>
-		if (action.subType === 'CHART_FACET_TOGGLE_COLLAPSE') {
-			nextState.collapse = !nextState.collapse
-			return this.updateFacetState(nextState, state)
-		}
-		// <\STATE>
-
+	reducer(state: SearchState, action: FacetsDataReducerAction): SearchState {
 		const facetFilter = state.facetFilters.get(this.ID)
 
 		// <FILTER>
-		if (action.subType === 'REMOVE_FILTER') {
+		if (action.type === 'REMOVE_FILTER') {
 			return this.updateFacetFilter(undefined, state)
 		}
 
-		if (action.subType === 'CHART_FACET_SET_FILTER') {
+		if (
+			action.type === 'UPDATE_FACET_FILTER' &&
+			action.subType === 'CHART_FACET_SET_FILTER'
+		) {
 			if (facetFilter?.value === action.value) return state
-
 			return this.updateFacetFilter(action.value, state)
 		}
 		// <\FILTER>

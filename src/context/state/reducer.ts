@@ -16,6 +16,20 @@ export function searchStateReducer(controllers: FacetControllers) {
 			}
 		}
 
+		if (action.type === 'TOGGLE_COLLAPSE') {
+			const facetStates = new Map(state.facetStates)
+			const facetState = facetStates.get(action.facetID)!
+			facetStates.set(action.facetID, {
+				...facetState,
+				collapse: !facetState.collapse
+			})
+
+			return {
+				...state,
+				facetStates
+			}
+		}
+
 		if (action.type === 'UPDATE_FACET_STATE') {
 			const controller = controllers.get(action.facetID)
 			const nextState = controller?.reducer(state, action)
@@ -23,6 +37,12 @@ export function searchStateReducer(controllers: FacetControllers) {
 		}
 
 		if (action.type === 'UPDATE_FACET_FILTER') {
+			const controller = controllers.get(action.facetID)
+			const nextState = controller?.reducer(state, action)
+			if (nextState) return nextState
+		}
+
+		if (action.type === 'REMOVE_FILTER') {
 			const controller = controllers.get(action.facetID)
 			const nextState = controller?.reducer(state, action)
 			if (nextState) return nextState
@@ -60,14 +80,14 @@ export function searchStateReducer(controllers: FacetControllers) {
 			}
 		}
 
-		// if (action.type === 'LOAD_SEARCH') {
-		// 	return {
-		// 		...state,
-		// 		query: action.query,
-		// 		facetFilters: action.filters,
-		// 		currentPage: 1,
-		// 	}
-		// }
+		if (action.type === 'LOAD_SEARCH') {
+			return {
+				...state,
+				query: action.query,
+				facetFilters: action.filters,
+				currentPage: 1,
+			}
+		}
 
 		if (action.type === 'SET_QUERY') {
 			return {

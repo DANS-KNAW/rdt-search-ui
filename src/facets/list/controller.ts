@@ -4,9 +4,9 @@ import type { ListFacetState, ListFacetConfig, ListFacetValues, ListFacetFilter 
 import { addFilter } from "../../context/state/use-search/request-with-facets-creator"
 import { FacetController } from "../controller"
 import { ElasticSearchResponse, FacetFilterObject, FacetType, SortBy, SortDirection } from "../../common"
-import { ListFacetAction } from "./actions"
 import { SearchState } from "../../context/state"
 import { LIST_FACET_SCROLL_CUT_OFF } from "./view/list-view"
+import { FacetsDataReducerAction } from "../../context/state/actions"
 
 function capitalize(str: string) {
 	return str.charAt(0).toUpperCase() + str.slice(1)
@@ -33,54 +33,45 @@ export class ListFacetController extends FacetController<ListFacetConfig, ListFa
 	// TODO move to state?
 	// viewState: ListFacetViewState = listFacetViewStates[0]
 
-	reducer(state: SearchState, action: ListFacetAction): SearchState {
+	reducer(state: SearchState, action: FacetsDataReducerAction): SearchState {
 		const facetState = state.facetStates.get(this.ID) as ListFacetState
 		const nextState = { ...facetState }
 
 		// <STATE>
-		if (action.subType === 'LIST_FACET_TOGGLE_COLLAPSE') {
-			nextState.collapse = !facetState.collapse
-			// return this.updateFacetState(facetState, state)
-		}
+		if (action.type === 'UPDATE_FACET_STATE') {
+			if (action.subType === 'LIST_FACET_SHOW_ALL') {
+				// TODO remove scroll?
+				nextState.scroll = true
 
-		if (action.subType === 'LIST_FACET_SHOW_ALL') {
-			// TODO remove scroll?
-			nextState.scroll = true
+				nextState.page = 1
+				nextState.size = state.query?.length
+					? LIST_FACET_SCROLL_CUT_OFF
+					: action.total
+			}
 
-			nextState.page = 1
-			nextState.size = state.query?.length
-				? LIST_FACET_SCROLL_CUT_OFF
-				: action.total
-			// return this.updateFacetState(facetState, state)
-		}
+			if (action.subType === 'LIST_FACET_SET_PAGE') {
+				nextState.page = action.page
+				nextState.size = action.page * this.config.size!
+				nextState.scroll = false
+			}
 
-		if (action.subType === 'LIST_FACET_SET_PAGE') {
-			nextState.page = action.page
-			nextState.size = action.page * this.config.size!
-			nextState.scroll = false
-			// return this.updateFacetState(facetState, state)
-		}
+			if (action.subType === 'LIST_FACET_SET_QUERY') {
+				nextState.page = 1
+				nextState.query = action.query.length ? action.query : undefined
+				nextState.scroll = false
+				nextState.size = this.config.size!
+			}
 
-		if (action.subType === 'LIST_FACET_SET_QUERY') {
-			nextState.page = 1
-			nextState.query = action.query.length ? action.query : undefined
-			nextState.scroll = false
-			nextState.size = this.config.size!
-			// return this.updateFacetState(facetState, state)
-		}
+			if (action.subType === 'LIST_FACET_SET_SORT') {
+				nextState.page = 1
+				nextState.sort = action.sort
+				nextState.size = this.config.size!
+			}
 
-		if (action.subType === 'LIST_FACET_SET_SORT') {
-			nextState.page = 1
-			nextState.sort = action.sort
-			nextState.size = this.config.size!
-			// return this.updateFacetState(facetState, state)
+			return this.updateFacetState(nextState, state)
 		}
 		// <\STATE>
 
-		if (action.type === 'UPDATE_FACET_STATE') {
-			return this.updateFacetState(nextState, state)
-
-		}
 
 		const facetFilterObject = state.facetFilters.get(this.ID) as FacetFilterObject<ListFacetFilter> | undefined
 		const facetFilter = facetFilterObject == null
@@ -88,12 +79,15 @@ export class ListFacetController extends FacetController<ListFacetConfig, ListFa
 			: new Set(facetFilterObject.value)
 
 		// <FILTER>
-		if (action.subType === 'REMOVE_FILTER') {
-			const nextFilter = removeFilterValue(facetFilter, action.value)
+		if (action.type === 'REMOVE_FILTER') {
+			const nextFilter = removeFilterValue(facetFilter, action.value!)
 			return this.updateFacetFilter(nextFilter, state)
 		}
 
-		if (action.subType === 'LIST_FACET_TOGGLE_FILTER') {
+		if (
+			action.type === 'UPDATE_FACET_FILTER' &&
+			action.subType === 'LIST_FACET_TOGGLE_FILTER'
+		) {
 			facetState.page = 1
 			facetState.size = this.config.size!
 			facetState.query = undefined

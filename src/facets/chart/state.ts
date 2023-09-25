@@ -1,7 +1,7 @@
 import { ChartFacetController } from "./controller"
 import type { BaseFacetConfig, BaseFacetState, FacetFilter } from "../../common/types/search/facets"
 import type { KeyCount } from "../list/state"
-import { ChartFacetAction } from "./actions"
+import { FacetsDataReducerAction } from "../../context/state/actions"
 
 export interface ChartFacetConfig extends BaseFacetConfig {
 }
@@ -37,7 +37,7 @@ export interface ChartFacetProps<
 	State extends ChartFacetState,
 	Filter extends FacetFilter
 > {
-	dispatch: React.Dispatch<ChartFacetAction>
+	dispatch: React.Dispatch<FacetsDataReducerAction>
 	facet: ChartFacetController<Config, State, Filter>
 	facetState: State
 	filter: Filter

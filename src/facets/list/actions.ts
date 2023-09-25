@@ -21,21 +21,12 @@ interface ListFacetSetSort extends UpdateFacetState {
     subType: 'LIST_FACET_SET_SORT'
     sort: ListFacetSort
 }
-
-interface ListFacetToggleCollapse extends UpdateFacetState {
-    subType: 'LIST_FACET_TOGGLE_COLLAPSE'
-}
 // <\UPDATE_FACET_STATE>
 
 
 // <UPDATE_FACET_FILTER>
 interface ListFacetToggleFilter extends UpdateFacetFilter {
     subType: 'LIST_FACET_TOGGLE_FILTER'
-    value: string
-}
-
-interface ListFacetRemoveFilter extends UpdateFacetFilter {
-    subType: 'REMOVE_FILTER'
     value: string
 }
 // <\UPDATE_FACET_FILTER>
@@ -45,7 +36,4 @@ export type ListFacetAction =
     ListFacetSetPage |
     ListFacetSetQuery |
     ListFacetSetSort |
-    ListFacetToggleFilter |
-    ListFacetRemoveFilter |
-    ListFacetToggleCollapse
-
+    ListFacetToggleFilter

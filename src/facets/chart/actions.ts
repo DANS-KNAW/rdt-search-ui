@@ -1,4 +1,4 @@
-import { UpdateFacetFilter, UpdateFacetState } from "../../context/state/actions"
+import { UpdateFacetFilter } from "../../context/state/actions"
 
 interface ChartFacetSetFilter extends UpdateFacetFilter {
     subType: 'CHART_FACET_SET_FILTER'
@@ -10,18 +10,7 @@ interface ChartFacetSetRange extends UpdateFacetFilter {
     value: [number, number]
 }
 
-interface ChartFacetRemoveFilter extends UpdateFacetFilter {
-    subType: 'REMOVE_FILTER'
-}
-
-interface ChartFacetToggleCollapse extends UpdateFacetState {
-    subType: 'CHART_FACET_TOGGLE_COLLAPSE'
-    facetID: string
-}
-
 export type ChartFacetAction =
     ChartFacetSetFilter |
-    ChartFacetSetRange |
-    ChartFacetRemoveFilter |
-    ChartFacetToggleCollapse
+    ChartFacetSetRange
 

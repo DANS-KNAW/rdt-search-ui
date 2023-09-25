@@ -1,11 +1,9 @@
 import type { ElasticSearchResponse } from "../common/types/search"
 import type { BaseFacetConfig, BaseFacetState, FacetFilter } from "../common/types/search/facets"
 import type { Bucket } from "../context/state/use-search/response-with-facets-parser"
-import type { ListFacetAction } from './list/actions'
 import { FacetType } from "../common/enum"
 import { SearchState } from "../context/state"
-import { MapFacetAction } from "./map/actions"
-import { ChartFacetAction } from "./chart/actions"
+import { FacetsDataReducerAction } from "../context/state/actions"
 
 export abstract class FacetController<
 	FacetConfig extends BaseFacetConfig,
@@ -34,7 +32,7 @@ export abstract class FacetController<
 	// If there is no filter, return undefined
 	abstract createPostFilter(filter: Filter): any
 
-    abstract reducer(state: SearchState, action: ListFacetAction | MapFacetAction | ChartFacetAction): SearchState
+    abstract reducer(state: SearchState, action: FacetsDataReducerAction): SearchState
 
 	abstract responseParser(buckets: Bucket[], response: ElasticSearchResponse): any
 

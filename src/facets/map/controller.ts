@@ -1,6 +1,5 @@
 import type { Bucket } from "../../context/state/use-search/response-with-facets-parser"
 import type { MapFacetState, MapFacetConfig, MapFacetValue, MapFacetFilter } from "./state"
-import type { MapFacetAction } from './actions'
 
 import ngeohash from 'ngeohash'
 
@@ -9,6 +8,7 @@ import { MapFacet } from "./view"
 import { FacetController } from "../controller"
 import { ElasticSearchResponse, FacetFilterObject, FacetType } from "../../common"
 import { SearchState } from "../../context/state"
+import { FacetsDataReducerAction } from "../../context/state/actions"
 
 function capitalize(str: string) {
 	return str.charAt(0).toUpperCase() + str.slice(1)
@@ -18,17 +18,15 @@ export class MapFacetController extends FacetController<MapFacetConfig, MapFacet
 	type = FacetType.Map
 	View = MapFacet
 
-	reducer(state: SearchState, action: MapFacetAction): SearchState {
+	reducer(state: SearchState, action: FacetsDataReducerAction): SearchState {
 		const facetState = state.facetStates.get(this.ID) as MapFacetState
 		const nextState = { ...facetState }
 
 		// <STATE>
-		if (action.type === 'TOGGLE_COLLAPSE') {
-			nextState.collapse = !nextState.collapse
-			return this.updateFacetState(nextState, state)
-		}
-
-		if (action.subType === 'MAP_FACET_TOGGLE_SEARCH_ON_ZOOM') {
+		if (
+			action.type === 'UPDATE_FACET_STATE' &&
+			action.subType === 'MAP_FACET_TOGGLE_SEARCH_ON_ZOOM'
+		) {
 			nextState.searchOnZoom = !nextState.searchOnZoom
 			return this.updateFacetState(nextState, state)
 		}
@@ -37,11 +35,14 @@ export class MapFacetController extends FacetController<MapFacetConfig, MapFacet
 		const facetFilter = state.facetFilters.get(this.ID) as FacetFilterObject<MapFacetFilter> | undefined
 
 		// <FILTER>
-		if (action.subType === 'REMOVE_FILTER') {
+		if (action.type === 'REMOVE_FILTER') {
 			return this.updateFacetFilter(undefined, state)
 		}
 
-		if (action.subType === 'MAP_FACET_SET_FILTER') {
+		if (
+			action.type === 'UPDATE_FACET_FILTER' &&
+			action.subType === 'MAP_FACET_SET_FILTER'
+		) {
 			// Only update the filter when it has changed,
 			// this happens when the filter is not yet set (undefined)
 			// and the user triggers a reset (again undefined)

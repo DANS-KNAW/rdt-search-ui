@@ -4,7 +4,6 @@ import { ListFacetAction } from '../../facets/list/actions'
 import { MapFacetAction } from '../../facets/map/actions'
 import { ChartFacetAction } from '../../facets/chart/actions'
 
-
 export interface UpdateFacetState {
 	type: "UPDATE_FACET_STATE"
 	facetID: string
@@ -23,6 +22,12 @@ interface SetFacetStates {
 interface RemoveFilter {
 	type: 'REMOVE_FILTER'
 	facetID: string
+	value?: string
+}
+
+interface ToggleCollapse {
+    type: 'TOGGLE_COLLAPSE'
+    facetID: string
 }
 
 interface UpdateFacetValues {
@@ -79,4 +84,5 @@ export type FacetsDataReducerAction =
 	SetSearchFilter |
 	SetSearchResult |
 	SetSortOrder |
+	ToggleCollapse |
 	UpdateFacetValues
