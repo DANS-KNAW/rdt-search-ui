@@ -143,6 +143,9 @@ function AppLoader({ children, controllers, searchProps }: AppLoaderProps) {
 	)
 }
 
+/**
+ * Initializes and returns a map of facet controllers based on the `children` prop.
+ */
 function useControllers(children: React.ReactNode): FacetControllers {
 	const [controllers, setControllers] = React.useState<FacetControllers>(new Map())
 
@@ -160,6 +163,14 @@ function useControllers(children: React.ReactNode): FacetControllers {
 	return controllers
 }
 
+/**
+ * Converts a string from camelCase to kebab-case.
+ * @example camelCaseToKebabCase('camelCase') => 'camel-case'
+ */
+function camelCaseToKebabCase(str: string) {
+	return str.replace(/([A-Z])/g, '-$1').toLowerCase()
+}
+
 // function compareProps(prevProps: any, nextProps: any) {
 // 	console.log('COMPAREING')
 // 	Object.keys(prevProps).forEach(key => {
@@ -169,7 +180,3 @@ function useControllers(children: React.ReactNode): FacetControllers {
 // 	console.log('=-=-=-=-=-=-=-=')
 // 	return false
 // }
-
-function camelCaseToKebabCase(str: string) {
-	return str.replace(/([A-Z])/g, '-$1').toLowerCase()
-}
