@@ -18,9 +18,9 @@
 		"outDir": "build"
 	},
 	"include": [
+		"src/global.d.ts",
 		"src/index.tsx",
-		"src/facets/chart/view/pie.tsx",
-		"src/facets/chart/view/date.tsx",
+		"src/facets/chart/view/index.tsx",
 		"src/facets/map/view/index.tsx",
 		"src/facets/list/view/index.tsx"
 	]

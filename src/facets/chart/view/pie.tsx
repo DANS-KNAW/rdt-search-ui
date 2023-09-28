@@ -1,5 +1,5 @@
 import React from 'react'
-import { ChartFacet } from '.'
+import { ChartFacet } from './chart'
 import { PieChartController } from '../pie-chart-controller'
 import { ChartFacetConfig, ChartFacetProps, PieChartFacetFilter, PieChartFacetState } from '../state'
 import { isConfig } from '../../common'

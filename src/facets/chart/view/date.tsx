@@ -1,5 +1,5 @@
 import React from 'react'
-import { ChartFacet } from '.'
+import { ChartFacet } from './chart'
 import { DateChartController } from '../date-chart-controller'
 import type { ChartFacetProps, DateChartFacetConfig, DateChartFacetFilter, DateChartFacetState } from '../state'
 import { isConfig } from '../../common'
