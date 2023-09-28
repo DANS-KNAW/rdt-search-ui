@@ -39,13 +39,19 @@ export function searchStateReducer(controllers: FacetControllers) {
 		if (action.type === 'UPDATE_FACET_FILTER') {
 			const controller = controllers.get(action.facetID)
 			const nextState = controller?.reducer(state, action)
-			if (nextState) return nextState
+			if (nextState) {
+				nextState.currentPage = 1
+				return nextState
+			}
 		}
 
 		if (action.type === 'REMOVE_FILTER') {
 			const controller = controllers.get(action.facetID)
 			const nextState = controller?.reducer(state, action)
-			if (nextState) return nextState
+			if (nextState) {
+				nextState.currentPage = 1
+				return nextState
+			}
 		}
 
 		if (action.type === 'SET_SEARCH_RESULT') {
