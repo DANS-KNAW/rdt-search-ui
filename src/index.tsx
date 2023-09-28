@@ -1,17 +1,19 @@
+import type { DashboardProps, StyleProps } from './context/props'
+import type { FacetController } from './facets/controller'
+import type { ResultBodyProps } from './context/state/use-search/types'
+
 import React, { Children, isValidElement } from 'react'
-import { EsDataType, SortBy, SortDirection, FacetType, Colors } from './common'
 import { SearchStateContext, SearchStateDispatchContext, intialSearchState } from './context/state'
 
 import { searchStateReducer } from './context/state/reducer'
 import App from './app'
 import { Dashboard } from './dashboard'
 
-import type { ResultBodyProps } from './common'
+// import type { ResultBodyProps } from './common'
+import { FacetType, SortBy, SortDirection } from './enum'
 import { SearchProps, SearchPropsContext, UserSearchProps, defaultSearchProps } from './context/props'
 import { Label } from './views/ui/label'
-import type { DashboardProps, StyleProps } from './context/props'
 import { DropDown } from './views/ui/drop-down'
-import type { FacetController } from './facets/controller'
 import { FacetControllersContext, type FacetControllers } from './context/controllers'
 import { useSearch } from './context/state/use-search'
 
@@ -20,9 +22,7 @@ styles
 
 export * from './date.utils'
 export {
-	Colors,
 	DropDown,
-	EsDataType,
 	FacetType,
 	Label,
 	SearchStateContext,

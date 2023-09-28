@@ -1,4 +1,4 @@
-import type { BaseFacetConfig, BaseFacetState } from "../../common/types/search/facets"
+import type { BaseFacetConfig, BaseFacetState } from "../../context/state/facets"
 
 export interface MapFacetConfig extends BaseFacetConfig {
 	searchOnZoom?: boolean 

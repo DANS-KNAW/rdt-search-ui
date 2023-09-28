@@ -1,5 +1,5 @@
-import type { FSResponse } from '../../common'
 import type { SearchProps } from '../../context/props'
+import type { FSResponse } from '../../context/state/use-search/types'
 
 import React from 'react'
 import styled from 'styled-components'

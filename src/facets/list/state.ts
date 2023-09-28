@@ -1,6 +1,6 @@
-import type { BaseFacetConfig, BaseFacetState } from "../../common/types/search/facets"
+import type { BaseFacetConfig, BaseFacetState } from "../../context/state/facets"
 
-import { SortBy, SortDirection } from "../../common/enum"
+import { SortBy, SortDirection } from "../../enum"
 
 export interface ListFacetConfig extends BaseFacetConfig {
 	size?: number

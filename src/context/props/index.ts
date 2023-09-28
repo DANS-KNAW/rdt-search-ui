@@ -1,6 +1,5 @@
 import React from "react"
-import { Colors } from "../../common/enum"
-import { ResultBodyProps, SortOrder } from "../../common/types/search"
+import { ResultBodyProps, SortOrder } from "../state/use-search/types"
 import { UITexts, uiTexts } from "./ui-texts"
 import { SearchState } from "../state"
 
@@ -97,8 +96,8 @@ export const defaultSearchProps: SearchProps = {
 	resultsPerPage: 20,
 	sortOrder: new Map(),
 	style: {
-		background: Colors.White,
-		spotColor: Colors.BlueBright,
+		background: '#FFFFFF',
+		spotColor: '#ADD8E6',
 		buttonBackground: '#F6F6F6'
 	},
 	track_total_hits: true,

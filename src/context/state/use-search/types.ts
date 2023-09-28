@@ -1,9 +1,8 @@
-import React from 'react'
-import { SortDirection, SearchTab } from '../../enum'
+import { SortDirection } from '../../../enum'
 
-import type { FacetFilter, FacetFilterObject } from './facets'
+import type { FacetFilter, FacetFilterObject } from '../facets'
 
-export * from './facets'
+export * from '../facets'
 
 export type Filters = Record<string, FacetFilterObject<FacetFilter>>
 
@@ -15,17 +14,17 @@ export interface ElasticSearchFacsimile {
 	path: string
 }
 
+export interface FSResponse {
+	results: any[]
+	total: number
+}
+
 interface Hit {
 	_id: string
 	_index: string
 	_score: number
 	_source: any
 	_type: string
-}
-
-export interface FSResponse {
-	results: any[]
-	total: number
 }
 
 export interface ElasticSearchResponse {
@@ -49,10 +48,3 @@ export interface FormattedFilter {
 export interface ResultBodyProps {
 	result: ElasticSearchResponse['hits']['hits'][0]['_source']
 }
-
-export interface DocereResultBodyProps extends ResultBodyProps {
-	activeId: string
-	children?: React.ReactNode
-	searchTab: SearchTab
-}
-

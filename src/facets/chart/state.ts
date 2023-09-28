@@ -1,5 +1,5 @@
 import { ChartFacetController } from "./controller"
-import type { BaseFacetConfig, BaseFacetState, FacetFilter } from "../../common/types/search/facets"
+import type { BaseFacetConfig, BaseFacetState, FacetFilter } from "../../context/state/facets"
 import type { KeyCount } from "../list/state"
 import { FacetsDataReducerAction } from "../../context/state/actions"
 

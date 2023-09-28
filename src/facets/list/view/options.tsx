@@ -5,7 +5,7 @@ import clsx from 'clsx'
 
 import type { ListFacetProps } from '.'
 import { SearchPropsContext } from '../../../context/props'
-import { SortBy, SortDirection } from '../../../common/enum'
+import { SortBy, SortDirection } from '../../../enum'
 import inputStyles from '../../../views/ui/input.module.css'
 
 export const OptionsWrapper = styled('div')`

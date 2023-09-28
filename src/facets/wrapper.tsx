@@ -1,4 +1,4 @@
-import type { BaseFacetConfig, BaseFacetState, FacetFilter } from '../common'
+import type { BaseFacetConfig, BaseFacetState, FacetFilter } from '../context/state/facets'
 
 import React from 'react'
 import clsx from 'clsx'

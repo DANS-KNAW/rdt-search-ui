@@ -1,14 +1,14 @@
-import type { SortOrder } from '../../../../common'
 
 import React from 'react'
 import styled from 'styled-components'
-import { SortDirection } from '../../../../common'
 
 // import { Button } from '../../../ui/button'
 import { SearchStateDispatchContext } from '../../../../context/state'
 import { FacetController } from '../../../../facets/controller'
 import clsx from 'clsx'
 import buttonStyle from '../../../ui/button.module.css'
+import { SortDirection } from '../../../../enum'
+import { SortOrder } from '../../../../context/state/use-search/types'
 
 interface OOProps { active: boolean }
 const Wrapper = styled.div`

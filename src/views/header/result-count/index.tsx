@@ -1,8 +1,9 @@
+import type { SearchState } from '../../../context/state'
+import type { FSResponse } from '../../../context/state/use-search/types'
+
 import React from 'react'
 
-import { FSResponse } from '../../../common'
 import { SearchPropsContext } from '../../../context/props'
-import { SearchState } from '../../../context/state'
 
 import styles from '../index.module.css'
 
@@ -10,7 +11,7 @@ interface Props {
 	currentPage: SearchState['currentPage']
 	searchResult: FSResponse
 }
-export default function ResultCount(props: Props) {
+export function ResultCount(props: Props) {
 	const { resultsPerPage, uiTexts } = React.useContext(SearchPropsContext)
 	const [fromTo, setFromTo] = React.useState<[number, number]>()
 

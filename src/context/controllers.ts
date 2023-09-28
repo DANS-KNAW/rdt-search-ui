@@ -1,6 +1,6 @@
 import React from "react"
 import type { FacetController } from "../facets/controller"
-import type { BaseFacetConfig, BaseFacetState, FacetFilter } from "../common/types/search/facets"
+import type { BaseFacetConfig, BaseFacetState, FacetFilter } from "./state/facets"
 
 export const FacetControllersContext =  React.createContext<FacetControllers>(new Map())
 

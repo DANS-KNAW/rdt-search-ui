@@ -3,9 +3,9 @@ import React from 'react'
 import { DropDown } from '../../../ui/drop-down'
 import OrderOption from './option'
 
-import { SortOrder } from '../../../../common'
 import { SearchPropsContext } from '../../../../context/props'
 import { FacetControllersContext } from '../../../../context/controllers'
+import { SortOrder } from '../../../../context/state/use-search/types'
 
 interface Props {
 	sortOrder: SortOrder

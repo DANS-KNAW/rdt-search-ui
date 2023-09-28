@@ -20,31 +20,30 @@ export const Facets = ({ children, controllers, facetClassname, searchProps, sea
 	return (
 		<div id="facets">
 			{
-				Children
-					.map(children, (child, index) => {
-						if (!isValidElement(child)) return
-						const facet = Array.from(controllers.values())[index]
+				Children.map(children, (child, index) => {
+					if (!isValidElement(child)) return
+					const facet = Array.from(controllers.values())[index]
 
-						return (
-							<div
-								className={clsx('facet-container', facetClassname )}
-								key={facet.ID}
-								style={{
-									gridArea: searchProps.dashboard?.areas != null
-										? facet.ID
-										: undefined
-								}}
-							>
-								<child.type
-									dispatch={dispatch}
-									facet={facet}
-									facetState={searchState.facetStates.get(facet.ID)!}
-									filter={searchState.facetFilters.get(facet.ID)?.value}
-									values={searchState.facetValues[facet.ID]}
-								/>
-							</div>
-						)
-					})
+					return (
+						<div
+							className={clsx('facet-container', facetClassname )}
+							key={facet.ID}
+							style={{
+								gridArea: searchProps.dashboard?.areas != null
+									? facet.ID
+									: undefined
+							}}
+						>
+							<child.type
+								dispatch={dispatch}
+								facet={facet}
+								facetState={searchState.facetStates.get(facet.ID)!}
+								filter={searchState.facetFilters.get(facet.ID)?.value}
+								values={searchState.facetValues[facet.ID]}
+							/>
+						</div>
+					)
+				})
 			}
 		</div>
 	)

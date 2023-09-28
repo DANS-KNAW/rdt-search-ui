@@ -1,6 +1,6 @@
-import type { ElasticSearchResponse, FSResponse } from '../../../common'
-import { FacetControllers } from '../../controllers'
+import type { ElasticSearchResponse, FSResponse } from './types'
 
+import { FacetControllers } from '../../controllers'
 import { ESResponseParser } from './response-parser'
 
 export interface Bucket {

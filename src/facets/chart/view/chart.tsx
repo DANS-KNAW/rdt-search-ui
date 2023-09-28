@@ -6,7 +6,7 @@ import * as echarts from 'echarts'
 
 import FacetWrapper from '../../wrapper'
 import debounce from 'lodash.debounce'
-import { FacetFilter } from '../../../common/types/search/facets'
+import { FacetFilter } from '../../../context/state/facets'
 
 const ChartFacetWrapper = styled(FacetWrapper)`
 	height: 100%;

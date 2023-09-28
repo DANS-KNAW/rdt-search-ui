@@ -1,7 +1,7 @@
-import type { ElasticSearchResponse } from "../common/types/search"
-import type { BaseFacetConfig, BaseFacetState, FacetFilter } from "../common/types/search/facets"
+import type { ElasticSearchResponse } from "../context/state/use-search/types"
+import type { BaseFacetConfig, BaseFacetState, FacetFilter } from "../context/state/facets"
 import type { Bucket } from "../context/state/use-search/response-with-facets-parser"
-import { FacetType } from "../common/enum"
+import { FacetType } from "../enum"
 import { SearchState } from "../context/state"
 import { FacetsDataReducerAction } from "../context/state/actions"
 

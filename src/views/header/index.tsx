@@ -1,9 +1,10 @@
+import type { FSResponse } from '../../context/state/use-search/types'
+
 import React from 'react'
 
 import { Pagination } from '../pagination'
-import ResultCount from './result-count'
+import { ResultCount } from './result-count'
 
-import { FSResponse } from '../../common'
 import { SearchState, SearchStateDispatchContext } from '../../context/state'
 import { SortBy } from './result-count/order-by'
 import { LoadSearch } from '../active-filters/save-search/load-search'

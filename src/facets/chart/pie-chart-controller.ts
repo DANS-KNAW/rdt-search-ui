@@ -1,12 +1,13 @@
 import type { Bucket } from "../../context/state/use-search/response-with-facets-parser"
 import type { ChartFacetConfig, PieChartFacetFilter, PieChartFacetState  } from "./state"
+import type { ElasticSearchResponse } from "../../context/state/use-search/types"
+import type { KeyCount } from "../list/state"
+import type { SearchState } from "../../context/state"
+import type { FacetsDataReducerAction } from "../../context/state/actions"
 
 import { addFilter } from "../../context/state/use-search/request-with-facets-creator"
 import { FacetController } from "../controller"
-import { ElasticSearchResponse, FacetType } from "../../common"
-import { KeyCount } from "../list/state"
-import { SearchState } from "../../context/state"
-import { FacetsDataReducerAction } from "../../context/state/actions"
+import { FacetType } from "../../enum"
 
 function capitalize(str: string) {
 	return str.charAt(0).toUpperCase() + str.slice(1)

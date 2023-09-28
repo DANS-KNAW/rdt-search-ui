@@ -1,12 +1,12 @@
 import React from 'react'
 
 import { ActiveFilterValue } from './value'
-// import { Button } from '../ui/button'
 import { SearchPropsContext } from '../../context/props'
 
 import { SearchStateContext, SearchStateDispatchContext } from '../../context/state'
 import { FacetControllersContext } from '../../context/controllers'
 import { SaveSearch } from './save-search/save-search'
+
 import buttonStyle from '../ui/button.module.css'
 import styles from './index.module.css'
 

@@ -1,14 +1,16 @@
 import type { Bucket } from "../../context/state/use-search/response-with-facets-parser"
 import type { MapFacetState, MapFacetConfig, MapFacetValue, MapFacetFilter } from "./state"
+import type { FacetFilterObject } from "../../context/state/facets"
+import type { ElasticSearchResponse } from "../../context/state/use-search/types"
 
 import ngeohash from 'ngeohash'
 
 import { addFilter } from "../../context/state/use-search/request-with-facets-creator"
 import { MapFacet } from "./view"
 import { FacetController } from "../controller"
-import { ElasticSearchResponse, FacetFilterObject, FacetType } from "../../common"
 import { SearchState } from "../../context/state"
 import { FacetsDataReducerAction } from "../../context/state/actions"
+import { FacetType } from "../../enum"
 
 function capitalize(str: string) {
 	return str.charAt(0).toUpperCase() + str.slice(1)

@@ -11,7 +11,7 @@ import { fetchSearchResult } from './fetch'
 import { ESRequest } from './request-creator'
 import { FacetControllers } from '../../controllers'
 import { FacetController } from '../../../facets/controller'
-import { BaseFacetConfig, BaseFacetState, FacetFilter } from '../../../common/types/search/facets'
+import { BaseFacetConfig, BaseFacetState, FacetFilter } from '../facets'
 
 interface UseSearchProps {
 	props: SearchProps

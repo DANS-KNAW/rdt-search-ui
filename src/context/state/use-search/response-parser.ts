@@ -1,4 +1,4 @@
-import type { ElasticSearchResponse, FSResponse } from '../../../common'
+import type { ElasticSearchResponse, FSResponse } from "./types";
 
 export function ESResponseParser(response: ElasticSearchResponse): FSResponse {
 	return {
