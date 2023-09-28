@@ -6,7 +6,6 @@ import { addFilter } from "../../context/state/use-search/request-with-facets-cr
 import { FacetController } from "../controller"
 import { SearchState } from "../../context/state"
 import { FacetsDataReducerAction } from "../../context/state/actions"
-import { FacetType } from "../../enum"
 
 function capitalize(str: string) {
 	return str.charAt(0).toUpperCase() + str.slice(1)
@@ -75,8 +74,6 @@ export class DateChartController extends FacetController<DateChartFacetConfig, D
 		}
 
 	}
-
-	type = FacetType.Date
 
 	reducer(state: SearchState, action: FacetsDataReducerAction): SearchState {
 		const facetFilter = state.facetFilters.get(this.ID) as DateChartFacetFilter

@@ -10,20 +10,21 @@ import App from './app'
 import { Dashboard } from './dashboard'
 
 // import type { ResultBodyProps } from './common'
-import { FacetType, SortBy, SortDirection } from './enum'
+import { SortBy, SortDirection } from './enum'
 import { SearchProps, SearchPropsContext, UserSearchProps, defaultSearchProps } from './context/props'
 import { Label } from './views/ui/label'
 import { DropDown } from './views/ui/drop-down'
 import { FacetControllersContext, type FacetControllers } from './context/controllers'
 import { useSearch } from './context/state/use-search'
 
-import styles from './facets/wrapper.module.css'
-styles
+import s1 from './facets/wrapper.module.css'
+import s2 from './facets/chart/view/index.module.css'
+s1 
+s2
 
 export * from './date.utils'
 export {
 	DropDown,
-	FacetType,
 	Label,
 	SearchStateContext,
 	SortBy,

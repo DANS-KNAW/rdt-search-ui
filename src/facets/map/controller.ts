@@ -10,14 +10,12 @@ import { MapFacet } from "./view"
 import { FacetController } from "../controller"
 import { SearchState } from "../../context/state"
 import { FacetsDataReducerAction } from "../../context/state/actions"
-import { FacetType } from "../../enum"
 
 function capitalize(str: string) {
 	return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
 export class MapFacetController extends FacetController<MapFacetConfig, MapFacetState, MapFacetFilter> {
-	type = FacetType.Map
 	View = MapFacet
 
 	reducer(state: SearchState, action: FacetsDataReducerAction): SearchState {

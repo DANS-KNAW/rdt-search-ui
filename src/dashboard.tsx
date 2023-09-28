@@ -11,7 +11,7 @@ import { FacetControllers } from './context/controllers'
 // import { FACETS_WIDTH } from './constants'
 
 const Wrapper = styled.div`
-	background: ${props => props.background}};
+	background: ${props => props.background};
 	display: grid;
 	grid-gap: 32px;
 	grid-template-rows: fit-content(0) 1fr;

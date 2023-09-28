@@ -7,7 +7,6 @@ import type { FacetsDataReducerAction } from "../../context/state/actions"
 
 import { addFilter } from "../../context/state/use-search/request-with-facets-creator"
 import { FacetController } from "../controller"
-import { FacetType } from "../../enum"
 
 function capitalize(str: string) {
 	return str.charAt(0).toUpperCase() + str.slice(1)
@@ -37,8 +36,6 @@ export class PieChartController extends FacetController<ChartFacetConfig, PieCha
 			]
 		}
 	}
-
-	type = FacetType.Pie
 
 	reducer(state: SearchState, action: FacetsDataReducerAction): SearchState {
 		const facetFilter = state.facetFilters.get(this.ID)

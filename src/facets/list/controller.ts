@@ -8,7 +8,7 @@ import { FacetController } from "../controller"
 import { SearchState } from "../../context/state"
 import { LIST_FACET_SCROLL_CUT_OFF } from "./view/list-view"
 import { FacetsDataReducerAction } from "../../context/state/actions"
-import { SortBy, SortDirection, FacetType } from "../../enum"
+import { SortBy, SortDirection } from "../../enum"
 
 function capitalize(str: string) {
 	return str.charAt(0).toUpperCase() + str.slice(1)
@@ -30,11 +30,6 @@ interface ListAggregationTerms {
 }
 
 export class ListFacetController extends FacetController<ListFacetConfig, ListFacetState, ListFacetFilter> {
-	type = FacetType.List
-
-	// TODO move to state?
-	// viewState: ListFacetViewState = listFacetViewStates[0]
-
 	reducer(state: SearchState, action: FacetsDataReducerAction): SearchState {
 		const facetState = state.facetStates.get(this.ID) as ListFacetState
 		const nextState = { ...facetState }
@@ -107,75 +102,6 @@ export class ListFacetController extends FacetController<ListFacetConfig, ListFa
 
 		return state
 	}
-
-	// actions = {
-	// 	showAll: (total: number) => {
-	// 		this.update({
-	// 			page: 1,
-	// 			size: this.state.query?.length
-	// 				? LIST_FACET_SCROLL_CUT_OFF
-	// 				: total,
-	// 			scroll: true
-	// 		})
-	// 	},
-	// 	setPage: (page: number) => {
-	// 		this.update({
-	// 			size: page * this.config.size!,
-	// 			page,
-	// 			scroll: false
-	// 		})
-	// 	},
-	// 	setQuery: (query: string) => {
-	// 		this.update({
-	// 			page: 1,
-	// 			query: query.length ? query : undefined,
-	// 			scroll: false,
-	// 			size: this.config.size!
-	// 		})
-	// 	},
-	// 	setSort: (sort: ListFacetSort) => {
-	// 		this.update({
-	// 			page: 1,
-	// 			query: this.state.query?.length ? this.state.query : undefined,
-	// 			sort,
-	// 			size: this.config.size!,
-	// 		})
-	// 	},
-	// 	toggleFilter: (key: string) => {
-	// 		this.state.page = 1
-	// 		this.state.size = this.config.size!
-	// 		this.state.query = undefined
-
-	// 		if (this.state.filter?.has(key)) {
-	// 			this.actions.removeFilter(key)
-	// 		} else {
-	// 			const filter = new Set(this.state.filter)
-	// 			filter.add(key)
-	// 			this.update({ filter })
-	// 		} 
-	// 	},
-	// 	toggleCollapse: () => {
-	// 		this.update({
-	// 			collapse: !this.state.collapse
-	// 		})
-	// 	},
-	// 	removeFilter: (value: string) => {
-	// 		const filter = new Set(this.state.filter)
-	// 		filter.delete(value)
-
-	// 		this.update({
-	// 			filter: filter.size ? filter : undefined
-	// 		})
-	// 	}
-	// }
-
-	// private dispatchChange() {
-	// 	const detail = { ID: this.ID, state: { ...this.state } }
-
-	// 	this.dispatchEvent(
-	// 		new CustomEvent(EventName.FacetStateChange, { detail })
-	// 	)
-	// }
 
 	// Config
 	protected initConfig(config: ListFacetConfig): ListFacetConfig {
@@ -264,25 +190,12 @@ export class ListFacetController extends FacetController<ListFacetConfig, ListFa
 	responseParser(buckets: Bucket[], response: ElasticSearchResponse): ListFacetValues {
 		if (response.aggregations == null) return { bucketsCount: 0, total: 0, values: [] }
 
-		// TODO move to SearchState?
-		// const total = state.query == null
-		// 	? response.aggregations[`${this.ID}-count`][`${this.ID}-count`].value
-		// 	: buckets.length
-
-
-		// this.viewState = getViewState(total, this.config.size!, state.size, state.query)
-
 		return {
 			bucketsCount: buckets.length,
 			total: response.aggregations[`${this.ID}-count`][`${this.ID}-count`].value,
 			values: buckets.map((b: Bucket) => ({ key: b.key.toString(), count: b.doc_count }))
 		}
 	}
-
-	// reset() {
-	// 	this.viewState = listFacetViewStates[0]
-	// 	this.state = { ...this.initialState }
-	// }
 }
 
 export default ListFacetController

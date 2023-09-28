@@ -1,38 +1,20 @@
 import type { ChartFacetConfig, ChartFacetProps, ChartFacetState } from '../state'
 
 import React from 'react'
-import styled from 'styled-components'
 import * as echarts from 'echarts'
 
 import FacetWrapper from '../../wrapper'
 import debounce from 'lodash.debounce'
 import { FacetFilter } from '../../../context/state/facets'
 
-const ChartFacetWrapper = styled(FacetWrapper)`
-	height: 100%;
-
-	.container {
-		width: 100%;
-	}
-
-	&.pie-chart-facet .inner-container {
-		height: 100%;
-		min-height: 160px;
-	}
-
-	&.bar-chart-facet .inner-container,
-	&.date-chart-facet .inner-container {
-		height: 100%;
-		min-height: 280px;
-	}
-`
+import styles from './index.module.css'
 
 export function ChartFacet<
 	Config extends ChartFacetConfig,
 	State extends ChartFacetState,
 	Filter extends FacetFilter
 > (
-	props: ChartFacetProps<Config, State, Filter>
+	props: ChartFacetProps<Config, State, Filter> & { className: string }
 ) {
 	// Ref to the chart instance
 	const chart = React.useRef<echarts.ECharts | null>(null)
@@ -86,15 +68,14 @@ export function ChartFacet<
 	}, [props.values])
 
 	return (
-		<ChartFacetWrapper
-			className={`${props.facet.type}-chart-facet`}
+		<FacetWrapper
 			{...props}
 		>
 			<div
-				className="inner-container"
+				className={styles.innerContainer}
 				ref={containerRef}
 			>
 			</div>
-		</ChartFacetWrapper>
+		</FacetWrapper>
 	)
 }

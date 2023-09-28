@@ -1,0 +1,16 @@
+.pie,
+.date {
+    height: 100%;
+}
+
+.pie .inner-container {
+    min-height: 160px;
+}
+
+.date .inner-container {
+    min-height: 280px;
+}
+
+.inner-container {
+    height: 100%;
+}
