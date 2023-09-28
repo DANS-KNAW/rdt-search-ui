@@ -97,7 +97,7 @@ export const defaultSearchProps: SearchProps = {
 	sortOrder: new Map(),
 	style: {
 		background: '#FFFFFF',
-		spotColor: '#ADD8E6',
+		spotColor: '#0088CC',
 		buttonBackground: '#F6F6F6'
 	},
 	track_total_hits: true,
