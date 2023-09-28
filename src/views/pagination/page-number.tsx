@@ -15,7 +15,7 @@ export const PaginationButton = styled.button`
 
 interface PnProps { active: boolean, _style: SearchProps['style'] }
 const PageNumberWrapper = styled(PaginationButton)`
-	background-color: ${(props: PnProps) => props.active ? props._style.activePageBackground : 'none'};
+	background-color: ${(props: PnProps) => props.active ? props._style.buttonBackground : 'none'};
 	border-radius: .25em;
 	color: ${(props: PnProps) => props.active ? '#444' : 'inherit'};
 	font-weight: ${(props: PnProps) => props.active ? 'bold' : 'normal'};

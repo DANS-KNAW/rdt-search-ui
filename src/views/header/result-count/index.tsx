@@ -1,23 +1,14 @@
 import React from 'react'
-import styled from 'styled-components'
-
-import { SortBy } from './order-by'
 
 import { FSResponse } from '../../../common'
 import { SearchPropsContext } from '../../../context/props'
 import { SearchState } from '../../../context/state'
 
-const Wrapper = styled.div`
-	grid-column: 1;
-	grid-row: 2;
-	height: 48px;
-	line-height: 46px;
-`
+import styles from '../index.module.css'
 
 interface Props {
 	currentPage: SearchState['currentPage']
 	searchResult: FSResponse
-	sortOrder: SearchState['sortOrder']
 }
 export default function ResultCount(props: Props) {
 	const { resultsPerPage, uiTexts } = React.useContext(SearchPropsContext)
@@ -35,13 +26,20 @@ export default function ResultCount(props: Props) {
 
 	if (fromTo == null) return null
 
+	const fromToOf = props.searchResult.total >= resultsPerPage
+		? `${fromTo[0]} - ${fromTo[1]} 
+		   ${uiTexts.of}`
+		: ''
+
+	const content = `
+		${fromToOf}
+		${props.searchResult.total} 
+		${props.searchResult.total === 1 ? uiTexts.result : uiTexts.results}
+	`
+
 	return (
-		<Wrapper>
-			{fromTo[0]}-{fromTo[1]} {uiTexts.of} {props.searchResult.total} {props.searchResult.total === 1 ? uiTexts.result : uiTexts.results}
-			<SortBy
-				// setSortOrder={props.setSortOrder}
-				sortOrder={props.sortOrder}
-			/>
-		</Wrapper>
+		<div className={styles.resultCount}>
+			{content}
+		</div>
 	)
 }

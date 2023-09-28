@@ -2,9 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import debounce from 'lodash.debounce'
 
-import { DropDownBody } from '../ui/drop-down'
-
-const SuggestionsDropDownBody = styled(DropDownBody)`
+const SuggestionsDropDownBody = styled.div`
 	border-top: 0;
 	margin-top: 1px;
 `
@@ -21,9 +19,7 @@ export function AutoSuggest(props: Props) {
 	const [suggestions, setSuggestions] = useSuggestions(props)
 
 	return (
-		<SuggestionsDropDownBody
-			show={suggestions.length > 0}
-		>
+		<SuggestionsDropDownBody>
 			{
 				suggestions.map((suggestion, index) =>
 					<div

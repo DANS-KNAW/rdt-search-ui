@@ -1,11 +1,13 @@
 import React from "react"
-import styled from "styled-components"
 import md5 from 'md5'
 import { DropDown } from "../../ui/drop-down"
-import { SearchProps, SearchPropsContext } from "../../../context/props"
-import { Button } from "../../ui/button"
+import { SearchProps } from "../../../context/props"
 import { SearchState } from "../../../context/state"
 import { serializeObject, useSavedSearches } from './use-saved-searches'
+
+import styles from './save-search.module.css'
+import buttonStyle from "../../ui/button.module.css"
+import inputStyle from "../../ui/input.module.css"
 
 export interface SearchFilters {
 	filters: SearchState['facetFilters']
@@ -31,9 +33,9 @@ export function SaveSearch(props: {
 
 	return (
 		<DropDown
+			caret
 			label="Save search"
 			right
-			z={10000}
 		>
 			<SavedSearches
 				activeFilters={props.activeFilters}
@@ -45,29 +47,12 @@ export function SaveSearch(props: {
 	)
 }
 
-const Wrapper = styled.div`
-	min-width: 400px;
-
-	.input-wrapper {
-		display: grid;
-		grid-template-columns: 360px fit-content(0);
-		grid-gap: 1rem;
-		margin: 1rem 0 2rem 0;
-
-		input {
-			font-size: 1rem;
-			padding: .1rem .25rem;
-		}
-	}
-`
-
 const SavedSearches = (props: {
 	activeFilters: SearchFilters
 	hash: string | undefined
 	savedSearches: ReturnType<typeof useSavedSearches>[0]
 	saveSearch: ReturnType<typeof useSavedSearches>[1]
 }) => {
-	const { style } = React.useContext(SearchPropsContext)
 	const [name, setName] = React.useState<string>()
 
 	const save = React.useCallback(async () => {
@@ -84,21 +69,27 @@ const SavedSearches = (props: {
 	if (props.hash == null) return null
 
 	return (
-		<Wrapper>
+		<div className={styles.wrapper}>
 			<h3>Search name</h3>
-			<div className="input-wrapper">
+			<div className={styles.inputWrapper}>
 				<input
-					type="text"
-					value={name || ''}
-					placeholder={props.hash}
+					className={inputStyle.input}
 					onChange={ev => setName(ev.currentTarget.value)}
 					onKeyDown={ev => {
 						if (ev.key === 'Enter') save()
 					}}
+					placeholder={props.hash}
+					type="text"
+					value={name || ''}
 				/>
-				<Button onClick={save} spotColor={style.spotColor}>Save</Button>
+				<button
+					className={buttonStyle.button}
+					onClick={save}
+				>
+					Save
+				</button>
 			</div>	
-		</Wrapper>
+		</div>
 	)
 }
 
@@ -113,5 +104,4 @@ function useHash(activeFilters: SearchFilters | undefined) {
 	}, [activeFilters])
 
 	return hash
-
 }

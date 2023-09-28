@@ -1,0 +1,18 @@
+.button {
+	background: var(--rdt-button-background);
+	border-radius: 4px;
+	border: 1px solid var(--rdt-button-background);
+	color: var(--rdt-spot-color);
+	cursor: pointer;
+	font-size: 0.8rem;
+	height: 28px;
+	line-height: 28px;
+	outline: none;
+	padding: 0px 10px;
+	position: relative;
+	white-space: nowrap;
+
+	&:hover {
+		border: 1px solid #CCC;
+	}
+}

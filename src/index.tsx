@@ -9,26 +9,30 @@ import { Dashboard } from './dashboard'
 import type { ResultBodyProps } from './common'
 import { SearchProps, SearchPropsContext, UserSearchProps, defaultSearchProps } from './context/props'
 import { Label } from './views/ui/label'
-import type { DashboardProps } from './context/props'
+import type { DashboardProps, StyleProps } from './context/props'
 import { DropDown } from './views/ui/drop-down'
 import type { FacetController } from './facets/controller'
 import { FacetControllersContext, type FacetControllers } from './context/controllers'
 import { useSearch } from './context/state/use-search'
 
+import styles from './facets/wrapper.module.css'
+styles
+
 export * from './date.utils'
 export {
+	Colors,
+	DropDown,
 	EsDataType,
+	FacetType,
+	Label,
 	SearchStateContext,
 	SortBy,
 	SortDirection,
-	Label,
-	FacetType,
-	DropDown,
-	Colors
 }
 export type {
 	DashboardProps,
 	ResultBodyProps,
+	StyleProps,
 	UserSearchProps
 }
 
@@ -69,6 +73,11 @@ export function FacetedSearch(props: UserSearchProps) {
 				...props.style
 			}
 		}
+
+		Object.keys(sp.style).forEach(key => {
+			const value = (sp.style as any)[key]
+			document.documentElement.style.setProperty(`--rdt-${camelCaseToKebabCase(key)}`, value);
+		})
 
 		setSearchProps(sp)
 	}, [props, children])
@@ -160,3 +169,7 @@ function useControllers(children: React.ReactNode): FacetControllers {
 // 	console.log('=-=-=-=-=-=-=-=')
 // 	return false
 // }
+
+function camelCaseToKebabCase(str: string) {
+	return str.replace(/([A-Z])/g, '-$1').toLowerCase()
+}

@@ -8,7 +8,6 @@ import { SearchPropsContext } from '../../../../context/props'
 import { FacetControllersContext } from '../../../../context/controllers'
 
 interface Props {
-	// setSortOrder: SetSortOrder
 	sortOrder: SortOrder
 }
 export const SortBy = React.memo(function SortBy(props: Props) {
@@ -21,8 +20,9 @@ export const SortBy = React.memo(function SortBy(props: Props) {
 
 	return (
 		<DropDown
+			caret
 			label={label}
-			z={998}
+			style={{ zIndex: 2 }}
 		>
 			{
 				Array.from(controllers.values())

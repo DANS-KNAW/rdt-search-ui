@@ -1,29 +1,15 @@
 import React from 'react'
-import styled, { css } from 'styled-components'
 
 import { Pagination } from '../pagination'
 import ResultCount from './result-count'
 
 import { FSResponse } from '../../common'
 import { SearchState, SearchStateDispatchContext } from '../../context/state'
-import { SearchProps, SearchPropsContext } from '../../context/props'
+import { SortBy } from './result-count/order-by'
+import { LoadSearch } from '../active-filters/save-search/load-search'
+import { SearchPropsContext } from '../../context/props'
 
-export const headerStyle = css`
-	background: ${(props: Pick<SearchProps, 'style'>) => props.style.background};
-	border-bottom: 1px solid #CCC;
-	box-sizing: border-box;
-	box-shadow: 0 1.5rem 1.5rem ${(props: Pick<SearchProps, 'style'>) => props.style.background};
-	color: #888;
-	font-size: .85em;
-`
-
-const Wrapper = styled.header`
-	${headerStyle}
-	color: #888;
-	display: grid;
-	font-size: .85em;
-	grid-template-columns: 3fr 2fr;
-`
+import styles from './index.module.css'
 
 interface Props {
 	currentPage: SearchState['currentPage']
@@ -31,25 +17,30 @@ interface Props {
 	sortOrder: SearchState['sortOrder']
 }
 export const ResultHeader = function Header(props: Props) {
-	const { style } = React.useContext(SearchPropsContext)
+	const { url } = React.useContext(SearchPropsContext)
 	const dispatch = React.useContext(SearchStateDispatchContext)
 	if (props.searchResult == null) return null
 
 	return (
-		<Wrapper
+		<header
+			className={styles.header}
 			id="rdt-search__result-header"
-			style={style}
 		>
 			<ResultCount
 				currentPage={props.currentPage}
 				searchResult={props.searchResult}
-				sortOrder={props.sortOrder}
 			/>
+			<div className={styles.buttons}>
+				<SortBy
+					sortOrder={props.sortOrder}
+				/>
+				<LoadSearch url={url} />
+			</div>
 			<Pagination
 				currentPage={props.currentPage}
 				dispatch={dispatch}
 				total={props.searchResult.total}
 			/>
-		</Wrapper>
+		</header>
 	)
 }

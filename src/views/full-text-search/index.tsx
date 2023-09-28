@@ -1,11 +1,20 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import debounce from 'lodash.debounce'
 import { AutoSuggest } from './auto-suggest'
 import { InputWrapper } from './input'
 import { SearchPropsContext } from '../../context/props'
 import { SearchStateContext, SearchStateDispatchContext } from '../../context/state'
-import { headerStyle } from '../header'
+
+// Same as ../header
+export const headerStyle = css`
+	background: var(--rdt-background);
+	border-bottom: 1px solid #CCC;
+	box-sizing: border-box;
+	box-shadow: 0 1.5rem 1.5rem var(--rdt-background);
+	color: #888;
+	font-size: .85em;
+`
 
 export * from './input'
 
@@ -40,7 +49,7 @@ function hideLoader(loaderRef: any) {
 }
 
 export function FullTextSearch() {
-	const { autoSuggest, style } = React.useContext(SearchPropsContext)
+	const { autoSuggest } = React.useContext(SearchPropsContext)
 	const state = React.useContext(SearchStateContext)
 	const dispatch = React.useContext(SearchStateDispatchContext)
 	const loaderRef = React.useRef<HTMLDivElement>(null)
@@ -48,7 +57,6 @@ export function FullTextSearch() {
 	const [inputValue, setInputValue] = React.useState('')
 	const setQuery = debounce(
 		(value: string) => {
-			// props.setQuery(value)
 			dispatch({ type: 'SET_QUERY', value })
 			hideLoader(loaderRef)
 		},
@@ -71,7 +79,6 @@ export function FullTextSearch() {
 	return (
 		<Wrapper
 			id="rdt-search__full-text"
-			style={style}
 		>
 			<InputWrapper
 				handleInputChange={handleInputChange}

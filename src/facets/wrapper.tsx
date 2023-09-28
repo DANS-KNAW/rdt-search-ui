@@ -1,38 +1,15 @@
 import type { BaseFacetConfig, BaseFacetState, FacetFilter } from '../common'
 
 import React from 'react'
-import styled from "styled-components"
 import clsx from 'clsx'
 
-import { FacetHeader } from './header'
 import { FacetController } from './controller'
 import { FacetsDataReducerAction } from '../context/state/actions'
 
-const Wrapper = styled.div`
-	color: #444;
-	display: grid;
-	grid-template-rows: fit-content(0) 1fr;
-	height: 100%;
-	transition: margin 100ms;
+import { HelpDropDown } from '../views/ui/drop-down/help'
+import { SearchPropsContext } from '../context/props'
 
-	&:hover {
-		header > button,
-		header > h3:before {
-			opacity: 1;
-		}
-	}
-
-
-	.facet__header > button,
-	.facet__header > h3:before {
-		opacity: ${(p: { collapse: boolean }) => p.collapse ? 1 : 0};
-		transition: opacity 300ms;
-	}
-
-	.facet__body--collapsed {
-		display: none;
-	}
-`
+import styles from './wrapper.module.css'
 
 interface Props<
 	FacetConfig extends BaseFacetConfig,
@@ -53,29 +30,56 @@ function FacetWrapper<
 	Filter extends FacetFilter
 >(props: Props<FacetConfig, FacetState, Filter>) {
 	return (
-		<Wrapper
-			className={clsx("facet", props.className)}
-			collapse={props.facetState.collapse}
+		<div
+			className={clsx(
+				styles.wrapper, 
+				{
+					[styles.stateCollapsed]: props.facetState.collapse,
+				},
+				props.className
+			)}
 		>
-			<FacetHeader
-				dispatch={props.dispatch}
-				facet={props.facet}
-				facetState={props.facetState}
-				filter={props.filter}
-				// hasOptions={props.Options != null}
-				// Options={props.Options}
-			/>
-			<div
-				className={clsx(
-					"facet__body",
-					props.facetState.collapse && "facet__body--collapsed"
-				)}
-			
-			>
+			<header className={styles.header}>
+				<h3
+					className={styles.h3}
+					onClick={() => {
+						props.dispatch({
+							type: "TOGGLE_COLLAPSE",
+							facetID: props.facet.ID,
+						})
+					}}
+				>
+					{props.facet.config.title}
+					{
+						props.facetState.collapse &&
+						<ActiveIndicator<Filter> filter={props.filter} />
+					}
+				</h3>
+				<HelpDropDown className={styles.helpDropDown}>
+					{props.facet.config.description}
+				</HelpDropDown>
+			</header>
+			<div className={styles.body}>
 				{props.children}
 			</div>
-		</Wrapper>
+		</div>
 	)
 }
 
 export default React.memo(FacetWrapper)
+
+// TODO handle different kinds of filters (like MapFacetFilter)
+function ActiveIndicator<FacetFilter>(props: { filter: FacetFilter | undefined }) {
+	const { uiTexts } = React.useContext(SearchPropsContext)
+
+	if (props.filter == null) return null
+	const size = props.filter != null ? 1 : 0
+
+	if (size === 0) return null
+
+	return (
+		<small>
+			{size} {uiTexts.active}
+		</small>
+	)
+}

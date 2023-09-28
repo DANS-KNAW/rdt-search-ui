@@ -5,7 +5,7 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "scripts": {
-    "watch": "./scripts/watch.sh",
+    "watch": "node ./scripts/watch.js",
     "watch:types": "tsc --emitDeclarationOnly --declaration -w"
   },
   "author": "",
@@ -25,6 +25,7 @@
     "@types/react": "^18.0.33",
     "@types/styled-components": "^5.1.26",
     "esbuild": "^0.17.15",
+    "esbuild-css-modules-plugin": "^3.0.2",
     "tslib": "^2.5.0",
     "typescript": "^5.0.3"
   },

@@ -6,9 +6,9 @@ import styled from 'styled-components'
 import ListFacetValue from './value'
 
 import { Pagination } from '../../../views/pagination'
-import { Button } from '../../../views/ui/button'
-import { SearchPropsContext } from '../../../context/props'
+// import { Button } from '../../../views/ui/button'
 import { FacetsDataReducerAction } from '../../../context/state/actions'
+import buttonStyle from '../../../views/ui/button.module.css'
 
 export const LIST_FACET_SCROLL_CUT_OFF = 50
 
@@ -23,7 +23,6 @@ export const Wrapper = styled('div')`
 
 export function ListView(props: ListFacetProps) {
 	const ulRef = React.useRef<HTMLUListElement>(null)
-	const { style } = React.useContext(SearchPropsContext)
 	const [page, setPage] = usePage(props, props.dispatch)
 	const values = useValues(props, page)
 
@@ -86,16 +85,16 @@ export function ListView(props: ListFacetProps) {
 						setCurrentPage={setPage}
 					/> :
 					props.viewState.scrollButton &&
-					<Button
+					<button
+						className={buttonStyle.button}
 						onClick={showAll}
-						spotColor={style.spotColor}
 					>
 						{
 							props.viewState.query
 								? <>Show more</>
 								: <>Show all ({props.values.total})</>
 						}
-					</Button>
+					</button>
 			}
 		</Wrapper>
 	)

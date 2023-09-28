@@ -1,69 +1,18 @@
 import React from 'react'
-import styled from 'styled-components'
 
 import { ActiveFilterValue } from './value'
-import { Button } from '../ui/button'
+// import { Button } from '../ui/button'
 import { SearchPropsContext } from '../../context/props'
 
 import { SearchStateContext, SearchStateDispatchContext } from '../../context/state'
 import { FacetControllersContext } from '../../context/controllers'
 import { SaveSearch } from './save-search/save-search'
-import { LoadSearch } from './save-search/load-search'
-
-// Background color and box shadow are only visible when the active filters
-// are sticky at the top of the page and the search result is scrolled.
-const Wrapper = styled.ul`
-	background: ${({ background }: { background: string}) => background};
-	box-shadow: ${({ background }) => background} 0px 1.5rem 1.5rem;
-	display: flex;
-	flex-wrap: wrap;
-	font-size: .8rem;
-	list-style: none;
-	margin: 0;
-	padding: 0;
-
-	li.active-filters__item {
-		display: flex;
-		height: 36px;
-		margin-bottom: .5rem;
-	}
-
-	li.active-filters__facet {
-		align-items: center;
-		border-radius: 2px;
-		border: 1px solid #DDD;
-		box-shadow: 0 0 10px #EEE;
-		padding: .25rem .5rem;
- 		margin-right: 1rem;
-	}
-		
-	.active-filters__title {
-		line-height: 1rem;
-		margin-right: .5rem;
-		white-space: nowrap;
-	}
-
-	ul.active-filters__values {
-		display: flex;
-		list-style: none;
-		margin: 0;
-		padding: 0;
-	}
-
-	li.active-filters__buttons {
-		margin-left: .5rem;
-		margin-right: .5rem;
-		white-space: nowrap;
-
-		& > button:first-of-type {
-			margin-right: 1rem;
-		}
-	}
-`
+import buttonStyle from '../ui/button.module.css'
+import styles from './index.module.css'
 
 export function ActiveFilters() {
 	const controllers = React.useContext(FacetControllersContext)
-	const { url, style, uiTexts } = React.useContext(SearchPropsContext)
+	const { dashboard, url, uiTexts } = React.useContext(SearchPropsContext)
 	const state = React.useContext(SearchStateContext) 
 	const dispatch = React.useContext(SearchStateDispatchContext) 
 
@@ -79,26 +28,14 @@ export function ActiveFilters() {
 		})
 	}, [])
 
-	// If there are no active filters, just render an empty div
-	// in order not to mess up the grid layout
 	if (!state.query.length && !state.facetFilters.size) {
-		return (
-			<Wrapper
-				background={style.background}
-				id="active-filters"
-			>
-				<li>
-					<LoadSearch url={url} />
-				</li>
-			</Wrapper>
-		)
+		// In dashboard mode return <ul> to keep the layout from collapsing
+		// TODO fix in CSS?
+		return dashboard != null ? <ul></ul> : null
 	}
 
 	return (
-		<Wrapper
-			background={style.background}
-			id="active-filters"
-		>
+		<ul className={styles.ul}>
 			{
 				state.query?.length > 0 &&
 				<ActiveFilterItem title="Full text query">
@@ -131,13 +68,13 @@ export function ActiveFilters() {
 						</ActiveFilterItem>
 					)
 			}
-			<li className="active-filters__item active-filters__buttons">
-				<Button
+			<li className={styles.buttons}>
+				<button
+					className={buttonStyle.button}
 					onClick={reset}
-					spotColor={style.spotColor}
 				>
 					{uiTexts.clearSearch}
-				</Button>
+				</button>
 				<SaveSearch
 					url={url}
 					activeFilters={{
@@ -146,11 +83,9 @@ export function ActiveFilters() {
 					}}
 				/>
 			</li>
-		</Wrapper>
+		</ul>
 	)
 }
-
-			{/* TODO make query undefined */}
 
 interface ItemProps {
 	children: React.ReactNode
@@ -158,14 +93,14 @@ interface ItemProps {
 }
 function ActiveFilterItem({ children, title }: ItemProps) {
 	return (
-		<li className="active-filters__item active-filters__facet">
+		<li className={styles.facet}>
 			<div
-				className="active-filters__title"
+				className={styles.title}
 				title={`Facet title: ${title}`}
 			>
 				{title}
 			</div>
-			<ul className="active-filters__values">
+			<ul className={styles.values}>
 				{children}
 			</ul>
 		</li>

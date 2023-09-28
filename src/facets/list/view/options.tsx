@@ -1,13 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
 import debounce from 'lodash.debounce'
-
-import { inputStyle } from '../../../views/full-text-search'
+import clsx from 'clsx'
 
 import type { ListFacetProps } from '.'
 import { SearchPropsContext } from '../../../context/props'
 import { SortBy, SortDirection } from '../../../common/enum'
-import clsx from 'clsx'
+import inputStyles from '../../../views/ui/input.module.css'
 
 export const OptionsWrapper = styled('div')`
 	font-size: .75rem;
@@ -16,15 +15,6 @@ export const OptionsWrapper = styled('div')`
 	grid-gap: 6px;
 	height: 1.5rem;
 	margin-bottom: .5rem;	
-
-	input {
-		${inputStyle}
-		border: 1px solid #DDD;
-		border-radius: .2rem;
-		height: 100%;
-		padding-left: .25rem;
-		width: 100%;
-	}
 
 	button {
 		background: none;
@@ -71,6 +61,7 @@ function Options(props: ListFacetProps) {
 	return (
 		<OptionsWrapper color={style.spotColor}>
 			<input
+				className={inputStyles.input}
 				onChange={handleFilterInputChange}
 				type="text"
 				value={filterInputValue}

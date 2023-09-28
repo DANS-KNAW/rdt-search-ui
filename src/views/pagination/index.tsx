@@ -12,8 +12,6 @@ const Wrapper = styled.div`
 	align-items: center;
 	color: #AAA;
 	display: grid;
-	grid-column: 2;
-	grid-row: 2;
 	grid-template-columns: 16px auto 16px;
 	height: 48px;
 `

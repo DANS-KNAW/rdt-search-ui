@@ -4,10 +4,11 @@ import React from 'react'
 import styled from 'styled-components'
 import { SortDirection } from '../../../../common'
 
-import { Button } from '../../../ui/button'
-import { SearchPropsContext } from '../../../../context/props'
+// import { Button } from '../../../ui/button'
 import { SearchStateDispatchContext } from '../../../../context/state'
 import { FacetController } from '../../../../facets/controller'
+import clsx from 'clsx'
+import buttonStyle from '../../../ui/button.module.css'
 
 interface OOProps { active: boolean }
 const Wrapper = styled.div`
@@ -54,7 +55,6 @@ interface Props {
 	sortOrder: SortOrder
 }
 function OrderOption(props: Props) {
-	const { style } = React.useContext(SearchPropsContext)
 	const dispatch = React.useContext(SearchStateDispatchContext)
 
 	const setDirection = React.useCallback((ev: React.MouseEvent) => {
@@ -89,10 +89,9 @@ function OrderOption(props: Props) {
 			</div>
 			{
 				direction != null &&
-				<Button
-					className="toggle-direction"
+				<button
+					className={clsx(buttonStyle.button, 'toggle-direction')}
 					onClick={setDirection}
-					spotColor={style.spotColor}
 					title={direction === SortDirection.Desc ? 'Descending' : 'Ascending'}
 				>
 					{
@@ -100,7 +99,7 @@ function OrderOption(props: Props) {
 							? <Desc />
 							: <Asc />
 					}
-				</Button>
+				</button>
 			}
 		</Wrapper>		
 	)
