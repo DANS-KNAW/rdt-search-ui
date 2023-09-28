@@ -1,0 +1,66 @@
+.wrapper {
+	color: #444;
+	display: grid;
+	grid-template-rows: fit-content(0) 1fr;
+	height: 100%;
+}
+
+
+.wrapper:hover {
+	.help-drop-down,
+	h3:before {
+		opacity: 1;
+	}
+}
+
+.header {
+	display: grid;
+	grid-template-columns: 1fr fit-content(0);
+	margin-bottom: .5rem;
+}
+
+.help-drop-down {
+	justify-content: end;
+	opacity: 0;
+}
+
+.h3 {
+	cursor: pointer;
+	display: inline-block;
+	font-size: 1rem;
+	margin: 0;
+	user-select: none;
+	white-space: nowrap;
+}
+
+.h3:before {
+	color: var(--rdt-spot-color);
+	content: '>';
+	font-size: 0.5rem;
+	line-height: 1.5rem;
+	margin-left: -1rem;
+	opacity: 0;
+	position: absolute;
+	transform: rotate(90deg) scale(0.75, 2);
+}
+
+.h3 small {
+	color: #888;
+	font-size: .7rem;
+	font-weight: normal;
+	margin-left: .5rem;
+}
+
+/*     // | \\     */
+/*   //// |  \\\   */
+/*      STATES     */
+/*   \\\\ | ////   */
+/*     \\ | //     */
+
+.wrapper.state-collapsed h3:before {
+	transform: rotate(0deg) scale(0.75, 2);
+}
+
+.wrapper.state-collapsed .body {
+	display: none;
+}

@@ -21,9 +21,9 @@ export interface DashboardProps {
 	areas?: string[]
 }
 
-export interface UserStyle {
+export interface StyleProps {
 	// Set the background color of the active page number in the Pagination component
-	activePageBackground?: string
+	buttonBackground?: string
 
 	// Set the general background color
 	background?: string
@@ -49,7 +49,7 @@ export interface UserSearchProps {
 	sortOrder?: SortOrder
 
 	// TODO rename to theme? style is a React attribute
-	style?: UserStyle
+	style?: StyleProps
 	uiTexts?: UITexts
 
 	/* Optional and can be undefined, see SearchProps */
@@ -65,7 +65,7 @@ export interface UserSearchProps {
 // except for the SearchHomeComponent and className props
 type RedefinedProps = 'children' | 'className' | 'dashboard' | 'facetsConfig' | 'onActiveFiltersChange' | 'SearchHomeComponent' | 'style'
 export type SearchProps = Required<Omit<UserSearchProps, RedefinedProps>> & {
-	style: Required<UserStyle>
+	style: Required<StyleProps>
 
 	// Optional props
 	className?: UserSearchProps['className']
@@ -99,7 +99,7 @@ export const defaultSearchProps: SearchProps = {
 	style: {
 		background: Colors.White,
 		spotColor: Colors.BlueBright,
-		activePageBackground: '#F6F6F6'
+		buttonBackground: '#F6F6F6'
 	},
 	track_total_hits: true,
 	uiTexts: uiTexts

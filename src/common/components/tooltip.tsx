@@ -4,7 +4,10 @@ import styled from "styled-components"
 import { Colors } from '../enum'
 
 /* Tooltip can be a child of a white-space wrapped element */
-interface P { offset: number | undefined, zIndexOffset?: number | undefined }
+interface P {
+	offset: number | undefined,
+	zIndexOffset?: number | undefined
+}
 const Wrapper = styled.div`
 	margin-left: calc(50% - 160px + ${(p: P) => { return p.offset ? p.offset : 0}}px);
 	margin-top: .6rem;
@@ -18,12 +21,13 @@ const Wrapper = styled.div`
 `
 
 /* Set font-size on TooltipBody, because it is also used when note is in the aside */
-const TooltipBody = styled.div`
+const TooltipBody = styled.div<{ color: string | undefined }>`
 	background: white;
-	border-color: ${(props: { color: string | undefined }) => props.color};
+	border-color: ${props => props.color};
 	border-style: solid;
 	border-width: 2px;
-	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+	box-shadow: 0 10px 20px rgba(0,0,0,0.19),
+				0 6px 6px rgba(0,0,0,0.23);
 	box-sizing: border-box;
 	color: #666;
 	font-family: Roboto, sans-serif;
@@ -34,8 +38,8 @@ const TooltipBody = styled.div`
 `
 TooltipBody.defaultProps = { color: Colors.Blue }
 
-const Svg = styled.svg`
-	left: calc(50% - ${(p: P) => p.offset}px - 10px);
+const Svg = styled.svg<P>`
+	left: calc(50% - ${p => p.offset}px - 10px);
 	position: absolute;
 	top: -19px;
 `
