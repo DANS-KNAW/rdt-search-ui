@@ -5,6 +5,8 @@ import { SearchStateDispatchContext } from "../../../context/state"
 import { SavedSearch, useSavedSearches } from "./use-saved-searches"
 import styles from './load-search.module.css'
 
+const dropdownStyle = { zIndex: 2 }
+
 export function LoadSearch(props: {
 	url: SearchProps['url']
 }) {
@@ -16,6 +18,7 @@ export function LoadSearch(props: {
 		<DropDown
 			caret
 			label="Load search"
+			style={dropdownStyle}
 		>
 			<LoadSearches
 				savedSearches={savedSearches}
