@@ -1,7 +1,8 @@
+import type { SearchHighlight } from "@elastic/elasticsearch/lib/api/types"
+
 import React from "react"
 import { ResultBodyProps, SortOrder } from "../state/use-search/types"
 import { UITexts, uiTexts } from "./ui-texts"
-import { SearchState } from "../state"
 
 export interface DashboardProps {
 	rows?: number
@@ -31,13 +32,20 @@ export interface StyleProps {
 	spotColor?: string
 }
 
-export interface UserSearchProps {
-	/* Required */
+
+/**
+ * Required SearchProps
+ */
+interface RequiredSearchProps {
 	ResultBodyComponent: React.FC<ResultBodyProps>
 	url: string
 	children: React.ReactNode
+}
 
-	/* Optional with defaults */
+/**
+ * Optional SearchProps with defaults
+ */ 
+interface OptionalWithDefaultsSearchProps {
 	autoSuggest?: (query: string) => Promise<string[]>
 	excludeResultFields?: string[]
 	onClickResult?: (result: any, ev: React.MouseEvent<HTMLLIElement>) => void
@@ -48,40 +56,53 @@ export interface UserSearchProps {
 	sortOrder?: SortOrder
 
 	// TODO rename to theme? style is a React attribute
+	//		or not necessary, because replacing with CSS?
 	style?: StyleProps
 	uiTexts?: UITexts
+}
 
-	/* Optional and can be undefined, see SearchProps */
+/** 
+ * Optional SearchProps without defaults (can be undefined)
+ */
+interface OptionalSearchProps {
 	className?: string /* className prop is used by StyledComponents */
 	dashboard?: DashboardProps 
+
+	// Fields to search full text. The field names are passed to 
+	// ElasticSearch so boosters can be applied to the fields.
+	// ie: ['title^3', 'description^2', 'body']
+	fullTextFields?: string[]
+
+	// Set the ES highlight directly from the config,
+	// gives more finegrained control over returned snippets
+	fullTextHighlight?: SearchHighlight
+
 	SearchHomeComponent?: React.FC<any>
-	onActiveFiltersChange?: (activeFilters: SearchState['facetFilters'], query: string) => void
 }
 
-// export type FacetConfigs = Map<string, FacetConfig>
+/**
+ * External props, added to component declaration
+ */
+export type ExternalSearchProps = RequiredSearchProps & OptionalWithDefaultsSearchProps & OptionalSearchProps
 
-// Redefine the UserSearchProps to make some props required,
-// except for the SearchHomeComponent and className props
-type RedefinedProps = 'children' | 'className' | 'dashboard' | 'facetsConfig' | 'onActiveFiltersChange' | 'SearchHomeComponent' | 'style'
-export type SearchProps = Required<Omit<UserSearchProps, RedefinedProps>> & {
-	style: Required<StyleProps>
-
-	// Optional props
-	className?: UserSearchProps['className']
-	dashboard?: UserSearchProps['dashboard']
-	SearchHomeComponent?: UserSearchProps['SearchHomeComponent']
-	onActiveFiltersChange?: UserSearchProps['onActiveFiltersChange']
-}
+/**
+ * Internal props = external props + defaults
+ */
+export type SearchProps = 
+	Required<RequiredSearchProps & OptionalWithDefaultsSearchProps> &
+	OptionalSearchProps &
+	{
+		style: Required<StyleProps>
+	}
 
 export const defaultSearchProps: SearchProps = {
 	/**
 	 * These defaults will never be used, because these props are required and
 	 * therefor always overriden by the user props
 	 */
+	children: null,
 	ResultBodyComponent: () => null,
 	url: '',
-	// facets: [],
-	/* */
 
 	autoSuggest: async function autoSuggest(query: string) {
 		console.log('[RDT-SEARCH-UI] autoSuggest:', query)

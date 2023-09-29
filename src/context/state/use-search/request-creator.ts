@@ -12,7 +12,7 @@ interface AggregationRequest {
 
 type Aggregations = { [id: string]: AggregationRequest }
 
-type Highlight = { fields: { text: {} }, require_field_match: boolean }
+type Highlight = { fields: { [field: string]: {} }, require_field_match: boolean }
 
 export interface Payload {
 	// Create aggregations to fill the facets with bucket data
@@ -41,12 +41,11 @@ export interface Payload {
 
 
 export class ESRequest {
-	// TODO remove
 	private postFilters = new Map<string, any>()
 
 	payload: Payload = {}
 
-	constructor(protected state: SearchState, props: SearchProps, protected controllers: FacetControllers) {
+	constructor(protected state: SearchState, protected props: SearchProps, protected controllers: FacetControllers) {
 		this.setSource(props)
 		this.payload.size = props.resultsPerPage
 
@@ -83,20 +82,10 @@ export class ESRequest {
 		// and used when creating the aggregations
 		for (const facet of this.controllers.values()) {
 			const filter = this.state.facetFilters.get(facet.ID)?.value
-        	// const field = facets.get(facetID)!.field
-			// const { field } = facet.config
 			const postFilter = facet.createPostFilter(filter)
 			if (postFilter != null) {
 				this.postFilters.set(facet.ID, postFilter)
 			}
-
-			// if (ListFacetUtils.is(facetState) && facetState.filters.size > 0) {
-			// 	this.postFilters.set(facetID, ListFacetUtils.createPostFilter(field, facetID, facetState))
-			// } else if (HistogramFacetUtils.is(facetState) && facetState.filters.length > 0) {
-			// 	this.postFilters.set(facetID, HistogramFacetUtils.createPostFilter(field, facetID, facetState))
-			// } else if (MapFacetUtils.is(facetState) && Array.isArray(facetState.filters)) {
-			// 	this.postFilters.set(facetID, MapFacetUtils.createPostFilter(field, facetID, facetState))
-			// }
 		}
 
 		// Transfer post filters to payload

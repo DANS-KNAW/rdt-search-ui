@@ -11,7 +11,7 @@ import { Dashboard } from './dashboard'
 
 // import type { ResultBodyProps } from './common'
 import { SortBy, SortDirection } from './enum'
-import { SearchProps, SearchPropsContext, UserSearchProps, defaultSearchProps } from './context/props'
+import { SearchProps, SearchPropsContext, ExternalSearchProps, defaultSearchProps } from './context/props'
 import { Label } from './views/ui/label'
 import { DropDown } from './views/ui/drop-down'
 import { FacetControllersContext, type FacetControllers } from './context/controllers'
@@ -34,13 +34,13 @@ export type {
 	DashboardProps,
 	ResultBodyProps,
 	StyleProps,
-	UserSearchProps
+	ExternalSearchProps as RDTSearchUIProps
 }
 
 export default FacetedSearch
 
 
-export function FacetedSearch(props: UserSearchProps) {
+export function FacetedSearch(props: ExternalSearchProps) {
 	const [children, setChildren] = React.useState<React.ReactNode>(undefined)
 	const [searchProps, setSearchProps] = React.useState<SearchProps | undefined>(undefined)
 

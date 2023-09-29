@@ -4,15 +4,6 @@ import type { SortOrder, FSResponse } from "./use-search/types"
 import React from "react"
 import { FacetsDataReducerAction } from "./actions"
 
-
-	// const [currentPage, setCurrentPage] = React.useState(1)
-	// const [sortOrder, setSortOrder] = React.useState<SortOrder>(searchProps.sortOrder)
-	// const [searchResult, facetValues] = useSearch({
-	// 	currentPage,
-	// 	sortOrder,
-	// 	searchState
-	// })
-
 /**
  * SearchState
  * 
@@ -20,7 +11,6 @@ import { FacetsDataReducerAction } from "./actions"
  * context is also used in other parts of the Docere UI to adjust the
  * search state.
  */
-
 
 type FacetStates = Map<string, BaseFacetState>
 

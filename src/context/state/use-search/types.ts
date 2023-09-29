@@ -14,8 +14,14 @@ export interface ElasticSearchFacsimile {
 	path: string
 }
 
+export interface Result {
+	id: string
+	highlight?: Record<string, string[]>
+	[key: string]: any
+}
+
 export interface FSResponse {
-	results: any[]
+	results: Result[]
 	total: number
 }
 
@@ -25,6 +31,7 @@ interface Hit {
 	_score: number
 	_source: any
 	_type: string
+	highlight?: Record<string, string[]>
 }
 
 export interface ElasticSearchResponse {
@@ -46,5 +53,5 @@ export interface FormattedFilter {
 }
 
 export interface ResultBodyProps {
-	result: ElasticSearchResponse['hits']['hits'][0]['_source']
+	result: Result
 }

@@ -1,11 +1,11 @@
-import type { ElasticSearchResponse, FSResponse } from "./types";
+import type { ElasticSearchResponse, FSResponse, Result } from "./types";
 
 export function ESResponseParser(response: ElasticSearchResponse): FSResponse {
 	return {
 		results: response.hits.hits
-			.map((hit: any): any => ({
+			.map((hit: any): Result => ({
 				id: hit._id,
-				snippets: hit.highlight ? hit.highlight.text : [],
+				highlight: hit.highlight,
 				...hit._source
 			})),
 		total: response.hits.total?.value || 0,
