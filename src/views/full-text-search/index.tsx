@@ -20,6 +20,7 @@ export * from './input'
 
 export const Wrapper = styled.div`
 	${headerStyle}
+	position: relative;
 
 	#loader {
 		background: linear-gradient(to right, white 0%, #AAA 80%, white 100%);
