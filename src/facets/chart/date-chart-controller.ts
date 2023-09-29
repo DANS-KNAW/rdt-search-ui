@@ -53,6 +53,7 @@ export class DateChartController extends FacetController<DateChartFacetConfig, D
 			]
 		} else if (this.range) {
 			const { min, max, currentMin, currentMax } = this.range
+
 			dataZoom = [
 				{
 					start: (currentMin - min) / (max - min) * 100,
@@ -225,7 +226,7 @@ export class DateChartController extends FacetController<DateChartFacetConfig, D
 			min: this.range?.min || currentMin,
 			currentMin,
 			currentMax: currentMax - 1, // subtract 1ms to get the last ms of the year/quarter/month/day/hour/minute
-			max: this.range?.max || lastKey,
+			max: this.range?.max || currentMax - 1,
 		}
 	}
 }

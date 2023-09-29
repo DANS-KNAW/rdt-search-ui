@@ -62,7 +62,7 @@ export function ChartFacet<
 			chart.current == null
 		) return
 
-		const options = props.facet.updateOptions(props.values)
+		const options = props.facet.updateOptions(props.values, props.filter)
 
 		chart.current.setOption(options)
 	}, [props.values])

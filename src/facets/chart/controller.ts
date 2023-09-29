@@ -9,5 +9,8 @@ export abstract class ChartFacetController<
     Filter extends FacetFilter
 > extends FacetController<FacetConfig, FacetState, Filter> {
     abstract setOptions(): EChartsOption
-    abstract updateOptions(values: ChartFacetProps<FacetConfig, FacetState, Filter>['values']): EChartsOption
+    abstract updateOptions(
+        values: ChartFacetProps<FacetConfig, FacetState, Filter>['values'],
+        filter: ChartFacetProps<FacetConfig, FacetState, Filter>['filter']
+    ): EChartsOption
 }
