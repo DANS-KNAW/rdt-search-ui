@@ -74,7 +74,6 @@ export const DropDown = React.memo(
 				</button>
 				<div
 					className={styles.body}
-					onClick={ev => ev.stopPropagation()}
 				>
 					{children}
 				</div>

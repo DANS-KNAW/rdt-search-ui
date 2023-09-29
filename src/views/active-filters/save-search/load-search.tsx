@@ -1,8 +1,6 @@
 import React from "react"
-import styled from "styled-components"
 import { DropDown } from "../../ui/drop-down"
 import { SearchProps } from "../../../context/props"
-// import { Button } from "../../ui/button"
 import { SearchStateDispatchContext } from "../../../context/state"
 import { SavedSearch, useSavedSearches } from "./use-saved-searches"
 import styles from './load-search.module.css'
@@ -26,16 +24,13 @@ export function LoadSearch(props: {
 	)
 }
 
-const Wrapper = styled.div`
-`
-
 const LoadSearches = (props: {
 	savedSearches: SavedSearch[]
 }) => {
 	const dispatch = React.useContext(SearchStateDispatchContext)
 
 	return (
-		<Wrapper className={styles.loadSearch}>
+		<div className={styles.loadSearch}>
 			<ul className={styles.list}>
 				{
 					props.savedSearches.map((savedSearch, index) => (
@@ -56,7 +51,7 @@ const LoadSearches = (props: {
 					))
 				}
 			</ul>
-		</Wrapper>
+		</div>
 	)
 }
 
