@@ -1,12 +1,13 @@
 {
-  "name": "rdt-search-ui",
+  "name": "@dans-framework/rdt-search-ui",
   "version": "1.0.0",
   "description": "",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "scripts": {
     "watch": "node ./scripts/watch.js",
-    "watch:types": "tsc --emitDeclarationOnly --declaration -w"
+    "watch:types": "tsc --emitDeclarationOnly --declaration -w",
+    "build": "node ./scripts/build.js && tsc --emitDeclarationOnly --declaration"
   },
   "author": "",
   "license": "ISC",
