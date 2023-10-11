@@ -2,8 +2,8 @@
   "name": "@dans-framework/rdt-search-ui",
   "version": "1.0.0",
   "description": "",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "type": "module",
+  "main": "src/index.tsx",
   "scripts": {
     "watch": "node ./scripts/watch.js",
     "watch:types": "tsc --emitDeclarationOnly --declaration -w",
@@ -35,6 +35,5 @@
     "react": "^18.2.0",
     "styled-components": "^5.3.10"
   },
-  "type": "module",
   "sideEffects": false
 }

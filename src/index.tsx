@@ -1,6 +1,6 @@
 import type { DashboardProps, StyleProps } from './context/props'
 import type { FacetController } from './facets/controller'
-import type { ResultBodyProps } from './context/state/use-search/types'
+import type { ResultBodyProps, Result } from './context/state/use-search/types'
 
 import React, { Children, isValidElement } from 'react'
 import { SearchStateContext, SearchStateDispatchContext, intialSearchState } from './context/state'
@@ -9,7 +9,6 @@ import { searchStateReducer } from './context/state/reducer'
 import App from './app'
 import { Dashboard } from './dashboard'
 
-// import type { ResultBodyProps } from './common'
 import { SortBy, SortDirection } from './enum'
 import { SearchProps, SearchPropsContext, ExternalSearchProps, defaultSearchProps } from './context/props'
 import { Label } from './views/ui/label'
@@ -17,28 +16,32 @@ import { DropDown } from './views/ui/drop-down'
 import { FacetControllersContext, type FacetControllers } from './context/controllers'
 import { useSearch } from './context/state/use-search'
 
-import s1 from './facets/wrapper.module.css'
-import s2 from './facets/chart/view/index.module.css'
-s1 
-s2
+import { DateChartFacet, PieChartFacet } from './facets/chart/view'
+import { ListFacet } from './facets/list/view'
 
 export * from './date.utils'
+
+// need to export all the components here, as package.json 'export' does not work nicely with typescript 
+// and we can unfortunately only use the 'main' key
 export {
 	DropDown,
 	Label,
 	SearchStateContext,
 	SortBy,
 	SortDirection,
+	DateChartFacet, 
+	PieChartFacet,
+	ListFacet,
 }
 export type {
 	DashboardProps,
 	ResultBodyProps,
 	StyleProps,
-	ExternalSearchProps as RDTSearchUIProps
+	ExternalSearchProps as RDTSearchUIProps,
+	Result
 }
 
 export default FacetedSearch
-
 
 export function FacetedSearch(props: ExternalSearchProps) {
 	const [children, setChildren] = React.useState<React.ReactNode>(undefined)
