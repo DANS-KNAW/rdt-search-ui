@@ -5,7 +5,7 @@
 	height: 100%;
 }
 
-.wrapper:hover .help-drop-down,
+.wrapper:hover .helpDropDown,
 .wrapper:hover h3:before {
 	opacity: 1;
 }
