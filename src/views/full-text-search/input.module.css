@@ -1,29 +1,28 @@
-.input-wrapper {
+.inputWrapper {
 	display: grid;
 	grid-template-columns: 32px 1fr 32px;
 	height: 49px;
 	align-items: center;
-
-	& > svg {
-		/* align-self: center; */
-		fill: #CCC;
-		height: 18px;
-		width: 18px;
-	}
 }
 
-.input-wrapper input {
+.inputWrapper > svg {
+	fill: #CCC;
+	height: 18px;
+	width: 18px;
+} 
+
+.inputWrapper input {
 	background: none;
 	border: none;
 	font-size: 1.2rem;
 }
 
-.help-button,
-.close-button {
+.helpButton,
+.closeButton {
 	justify-self: right;
 }
 
-.close-button {
+.closeButton {
 	background: none;
 	border: none;
 	color: var(--rdt-spot-color);

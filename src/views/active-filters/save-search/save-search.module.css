@@ -2,7 +2,7 @@
 	min-width: 400px;
 }
 
-.input-wrapper {
+.inputWrapper {
     display: grid;
     grid-template-columns: 360px fit-content(0);
     grid-gap: 1rem;
