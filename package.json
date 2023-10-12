@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "main": "src/index.tsx",
+  "main": "lib/index.tsx",
   "scripts": {
     "watch": "node ./scripts/watch.js",
     "watch:types": "tsc --emitDeclarationOnly --declaration -w",

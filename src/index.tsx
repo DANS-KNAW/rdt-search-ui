@@ -19,30 +19,6 @@ import { useSearch } from './context/state/use-search'
 import { DateChartFacet, PieChartFacet } from './facets/chart/view'
 import { ListFacet } from './facets/list/view'
 
-export * from './date.utils'
-
-// need to export all the components here, as package.json 'export' does not work nicely with typescript 
-// and we can unfortunately only use the 'main' key
-export {
-	DropDown,
-	Label,
-	SearchStateContext,
-	SortBy,
-	SortDirection,
-	DateChartFacet, 
-	PieChartFacet,
-	ListFacet,
-}
-export type {
-	DashboardProps,
-	ResultBodyProps,
-	StyleProps,
-	ExternalSearchProps as RDTSearchUIProps,
-	Result
-}
-
-export default FacetedSearch
-
 export function FacetedSearch(props: ExternalSearchProps) {
 	const [children, setChildren] = React.useState<React.ReactNode>(undefined)
 	const [searchProps, setSearchProps] = React.useState<SearchProps | undefined>(undefined)
