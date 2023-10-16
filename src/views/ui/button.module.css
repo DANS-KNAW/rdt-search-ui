@@ -11,8 +11,8 @@
 	padding: 0px 10px;
 	position: relative;
 	white-space: nowrap;
+}
 
-	&:hover {
-		border: 1px solid #CCC;
-	}
+.button:hover {
+	border: 1px solid #CCC;
 }

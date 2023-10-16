@@ -3,14 +3,14 @@
     height: 100%;
 }
 
-.pie .inner-container {
+.pie .innerContainer {
     min-height: 160px;
 }
 
-.date .inner-container {
+.date .innerContainer {
     min-height: 280px;
 }
 
-.inner-container {
+.innerContainer {
     height: 100%;
 }
