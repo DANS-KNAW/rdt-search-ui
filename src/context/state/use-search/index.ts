@@ -74,7 +74,9 @@ export function useSearch({
 
 		// The URL, query or facet filters have changed, update the search result and facets
 		} else {
-			fetchSearchResultWithFacets(state, props, controllers)
+			// Make sure we only do this when there's something in the facetStates, as this function gets called a few times.
+			// Otherwise this could overwrite the previously fetched data with incomplete data, as it's not synchronous
+			state.facetStates.size !== 0 && fetchSearchResultWithFacets(state, props, controllers)
 				.then(([searchResult, facetValues]) => {
 					dispatch({
 						type: 'SET_SEARCH_RESULT',
