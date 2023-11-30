@@ -1,1 +1,1 @@
-export const FACETS_WIDTH = 340
+export const FACETS_WIDTH = 340;

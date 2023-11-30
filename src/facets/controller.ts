@@ -1,68 +1,81 @@
-import type { ElasticSearchResponse } from "../context/state/use-search/types"
-import type { BaseFacetConfig, BaseFacetState, FacetFilter } from "../context/state/facets"
-import type { Bucket } from "../context/state/use-search/response-with-facets-parser"
-import { SearchState } from "../context/state"
-import { FacetsDataReducerAction } from "../context/state/actions"
+import type { ElasticSearchResponse } from "../context/state/use-search/types";
+import type {
+  BaseFacetConfig,
+  BaseFacetState,
+  FacetFilter,
+} from "../context/state/facets";
+import type { Bucket } from "../context/state/use-search/response-with-facets-parser";
+import { SearchState } from "../context/state";
+import { FacetsDataReducerAction } from "../context/state/actions";
 
 export abstract class FacetController<
-	FacetConfig extends BaseFacetConfig,
-	FacetState extends BaseFacetState,
-	Filter extends FacetFilter
+  FacetConfig extends BaseFacetConfig,
+  FacetState extends BaseFacetState,
+  Filter extends FacetFilter,
 > extends EventTarget {
-	ID: string
-	config: FacetConfig
+  ID: string;
+  config: FacetConfig;
 
-	constructor(initialConfig: FacetConfig) {
-		super()
+  constructor(initialConfig: FacetConfig) {
+    super();
 
-		this.ID = initialConfig.id
-			? initialConfig.id
-			: `${initialConfig.field}-${Math.random().toString().slice(2, 8)}`
-		// TODO move config to state or props?
-		this.config = this.initConfig(initialConfig)
-	}
+    this.ID = initialConfig.id
+      ? initialConfig.id
+      : `${initialConfig.field}-${Math.random().toString().slice(2, 8)}`;
+    // TODO move config to state or props?
+    this.config = this.initConfig(initialConfig);
+  }
 
-	abstract formatFilter(filter: Filter): string[]
-	abstract createAggregation(postFilters: any, filter: Filter, state: FacetState): any
+  abstract formatFilter(filter: Filter): string[];
+  abstract createAggregation(
+    postFilters: any,
+    filter: Filter,
+    state: FacetState,
+  ): any;
 
-	// Create a post filter, which is used by ES to filter the search results
-	// If there is no filter, return undefined
-	abstract createPostFilter(filter: Filter): any
+  // Create a post filter, which is used by ES to filter the search results
+  // If there is no filter, return undefined
+  abstract createPostFilter(filter: Filter): any;
 
-    abstract reducer(state: SearchState, action: FacetsDataReducerAction): SearchState
+  abstract reducer(
+    state: SearchState,
+    action: FacetsDataReducerAction,
+  ): SearchState;
 
-	abstract responseParser(buckets: Bucket[], response: ElasticSearchResponse): any
+  abstract responseParser(
+    buckets: Bucket[],
+    response: ElasticSearchResponse,
+  ): any;
 
-	protected abstract initConfig(config: FacetConfig): FacetConfig
-	abstract initState(): FacetState
+  protected abstract initConfig(config: FacetConfig): FacetConfig;
+  abstract initState(): FacetState;
 
+  updateFacetState(nextFacetState: FacetState, state: SearchState) {
+    const facetStates = new Map(state.facetStates);
+    facetStates.set(this.ID, nextFacetState);
 
-	updateFacetState(nextFacetState: FacetState, state: SearchState) {
-		const facetStates = new Map(state.facetStates)
-		facetStates.set(this.ID, nextFacetState)
+    return {
+      ...state,
+      facetStates,
+    };
+  }
 
-		return {
-			...state,
-			facetStates
-		}
-	}
+  updateFacetFilter(filter: Filter | undefined, state: SearchState) {
+    const facetFilters = new Map(state.facetFilters);
 
-	updateFacetFilter(filter: Filter | undefined, state: SearchState) {
-		const facetFilters = new Map(state.facetFilters)	
+    if (filter == null) {
+      facetFilters.delete(this.ID);
+    } else {
+      facetFilters.set(this.ID, {
+        title: this.config.title || "",
+        value: filter,
+        formatted: this.formatFilter(filter),
+      });
+    }
 
-		if (filter == null) {
-			facetFilters.delete(this.ID)
-		} else {
-			facetFilters.set(this.ID, {
-				title: this.config.title || '',
-				value: filter,
-				formatted: this.formatFilter(filter)
-			})
-		}
-
-		return {
-			...state,
-			facetFilters
-		}
-	}
+    return {
+      ...state,
+      facetFilters,
+    };
+  }
 }

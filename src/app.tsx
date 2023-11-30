@@ -1,122 +1,118 @@
-import React from 'react'
-import styled from 'styled-components'
+import React from "react";
+import styled from "styled-components";
 
-import { ResultHeader } from './views/header'
-import { SearchResult } from './views/search-result'
-import { FullTextSearch } from './views/full-text-search'
-import { ToggleView } from './views/toggle-view'
-import { ActiveFilters } from './views/active-filters'
+import { ResultHeader } from "./views/header";
+import { SearchResult } from "./views/search-result";
+import { FullTextSearch } from "./views/full-text-search";
+import { ToggleView } from "./views/toggle-view";
+import { ActiveFilters } from "./views/active-filters";
 
-
-import { SearchProps } from './context/props'
-import { SearchState } from './context/state'
-import { FACETS_WIDTH } from './constants'
-import { Facets } from './facets'
-import { FacetControllers } from './context/controllers'
+import { SearchProps } from "./context/props";
+import { SearchState } from "./context/state";
+import { FACETS_WIDTH } from "./constants";
+import { Facets } from "./facets";
+import { FacetControllers } from "./context/controllers";
 
 const Wrapper = styled.div`
-	background: ${(props: WProps) => props.style.background};
-	display: grid;
-	grid-template-columns: ${FACETS_WIDTH}px 1fr;
-	grid-template-rows: fit-content(0) fit-content(0) 1fr;
-	grid-row-gap: 32px;
-	grid-column-gap: 64px;
-	max-width: 100vw;
-	min-width: 100%;
+  background: ${(props: WProps) => props.style.background};
+  display: grid;
+  grid-template-columns: ${FACETS_WIDTH}px 1fr;
+  grid-template-rows: fit-content(0) fit-content(0) 1fr;
+  grid-row-gap: 32px;
+  grid-column-gap: 64px;
+  max-width: 100vw;
+  min-width: 100%;
 
-	& > * {
-		padding: 0 16px;
-	}
+  & > * {
+    padding: 0 16px;
+  }
 
-	#facets {
-		grid-column: 1;
-		min-width: ${FACETS_WIDTH}px;
-		grid-row: 2 / -1;
-	}
+  #facets {
+    grid-column: 1;
+    min-width: ${FACETS_WIDTH}px;
+    grid-row: 2 / -1;
+  }
 
-	#facets .facet-container {
-		margin-bottom: 2rem;
-	}
+  #facets .facet-container {
+    margin-bottom: 2rem;
+  }
 
-	#active-filters,
-	#rdt-search__search-result {
-		grid-column: 2;
-		/* grid-row: 2 / -1; */
-		min-width: 400px;
-	}	
+  #active-filters,
+  #rdt-search__search-result {
+    grid-column: 2;
+    /* grid-row: 2 / -1; */
+    min-width: 400px;
+  }
 
-	#rdt-search__toggle-view {
-		display: none;
-	}
+  #rdt-search__toggle-view {
+    display: none;
+  }
 
-	@media (max-width: 892px) {
-		grid-template-columns: 1fr;
-		#rdt-search__toggle-view {
-			display: grid;
-		}
+  @media (max-width: 892px) {
+    grid-template-columns: 1fr;
+    #rdt-search__toggle-view {
+      display: grid;
+    }
 
-		#rdt-search__search-result,
-		#rdt-search__result-header {
-			display: ${(props: WProps) => props.showResults ? 'grid' : 'none'};
-		}
+    #rdt-search__search-result,
+    #rdt-search__result-header {
+      display: ${(props: WProps) => (props.showResults ? "grid" : "none")};
+    }
 
-		#facets,
-		#active-filters,
-		#rdt-search__full-text {
-			display: ${(props: WProps) => props.showResults ? 'none' : 'grid'};
-		}
-	}
-`
+    #facets,
+    #active-filters,
+    #rdt-search__full-text {
+      display: ${(props: WProps) => (props.showResults ? "none" : "grid")};
+    }
+  }
+`;
 
-interface WProps extends Pick<SearchProps, 'style'> {
-	showResults: boolean
+interface WProps extends Pick<SearchProps, "style"> {
+  showResults: boolean;
 }
 
 interface Props {
-	children: React.ReactNode
-	controllers: FacetControllers
-	searchProps: SearchProps
-	searchState: SearchState
+  children: React.ReactNode;
+  controllers: FacetControllers;
+  searchProps: SearchProps;
+  searchState: SearchState;
 }
 export default function FacetedSearch({
-	children,
-	controllers,
-	searchProps,
-	searchState
+  children,
+  controllers,
+  searchProps,
+  searchState,
 }: Props) {
-	const [showResults, setShowResults] = React.useState(true)
+  const [showResults, setShowResults] = React.useState(true);
 
-	return (
-		<Wrapper
-			className={searchProps.className}
-			showResults={showResults}
-			style={searchProps.style}
-		>
-			<FullTextSearch />
-			<ResultHeader
-				currentPage={searchState.currentPage}
-				searchResult={searchState.searchResult}
-				sortOrder={searchState.sortOrder}
-			/>
-			<ActiveFilters />
-			<Facets
-				controllers={controllers}
-				searchProps={searchProps}
-				searchState={searchState}
-			>
-				{children}
-			</Facets>
-			<SearchResult
-				currentPage={searchState.currentPage}
-				ResultBodyComponent={searchProps.ResultBodyComponent}
-				onClickResult={searchProps.onClickResult}
-				resultBodyProps={searchProps.resultBodyProps}
-				searchResult={searchState.searchResult}
-			/>
-			<ToggleView
-				showResults={showResults}
-				setShowResults={setShowResults}
-			/>
-		</Wrapper>
-	)
+  return (
+    <Wrapper
+      className={searchProps.className}
+      showResults={showResults}
+      style={searchProps.style}
+    >
+      <FullTextSearch />
+      <ResultHeader
+        currentPage={searchState.currentPage}
+        searchResult={searchState.searchResult}
+        sortOrder={searchState.sortOrder}
+      />
+      <ActiveFilters />
+      <Facets
+        controllers={controllers}
+        searchProps={searchProps}
+        searchState={searchState}
+      >
+        {children}
+      </Facets>
+      <SearchResult
+        currentPage={searchState.currentPage}
+        ResultBodyComponent={searchProps.ResultBodyComponent}
+        onClickResult={searchProps.onClickResult}
+        resultBodyProps={searchProps.resultBodyProps}
+        searchResult={searchState.searchResult}
+      />
+      <ToggleView showResults={showResults} setShowResults={setShowResults} />
+    </Wrapper>
+  );
 }

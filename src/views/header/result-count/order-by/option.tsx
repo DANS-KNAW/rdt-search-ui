@@ -1,136 +1,222 @@
-
-import React from 'react'
-import styled from 'styled-components'
+import React from "react";
+import styled from "styled-components";
 
 // import { Button } from '../../../ui/button'
-import { SearchStateDispatchContext } from '../../../../context/state'
-import { FacetController } from '../../../../facets/controller'
-import clsx from 'clsx'
-import buttonStyle from '../../../ui/button.module.css'
-import { SortDirection } from '../../../../enum'
-import { SortOrder } from '../../../../context/state/use-search/types'
+import { SearchStateDispatchContext } from "../../../../context/state";
+import { FacetController } from "../../../../facets/controller";
+import clsx from "clsx";
+import buttonStyle from "../../../ui/button.module.css";
+import { SortDirection } from "../../../../enum";
+import { SortOrder } from "../../../../context/state/use-search/types";
 
-interface OOProps { active: boolean }
+interface OOProps {
+  active: boolean;
+}
 const Wrapper = styled.div`
-	align-items: center;
-	border-bottom: 1px solid #eee;
-	color: ${(props: OOProps) => props.active ? '#222 !important' : 'inherit' };
-	display: grid;
-	grid-template-columns: 4fr 1fr;
-	grid-gap: 1em;
-	height: 2rem;
-	text-transform: capitalize;
-	white-space: nowrap;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  color: ${(props: OOProps) => (props.active ? "#222 !important" : "inherit")};
+  display: grid;
+  grid-template-columns: 4fr 1fr;
+  grid-gap: 1em;
+  height: 2rem;
+  text-transform: capitalize;
+  white-space: nowrap;
 
-	&:last-of-type {
-		border: 0;
-	}
+  &:last-of-type {
+    border: 0;
+  }
 
-	& > .title {
-		cursor: pointer;
-		font-weight: ${(props: OOProps) => props.active ? 'bold' : 'normal' };
-	}
+  & > .title {
+    cursor: pointer;
+    font-weight: ${(props: OOProps) => (props.active ? "bold" : "normal")};
+  }
 
-	& > button.toggle-direction {
-		border: 1px solid #AAA;
-		justify-self: end;
-		display: grid;
-		align-content: center;
+  & > button.toggle-direction {
+    border: 1px solid #aaa;
+    justify-self: end;
+    display: grid;
+    align-content: center;
 
-		width: 1.2rem;
-		height: 1.2rem;
-		padding: .2rem;
-	}
-`
+    width: 1.2rem;
+    height: 1.2rem;
+    padding: 0.2rem;
+  }
+`;
 
-function updateSortOrder(sortOrder: SortOrder, field: string, direction: SortDirection = SortDirection.Desc) {
-	if (sortOrder.has(field) && sortOrder.get(field) === direction) sortOrder.delete(field)
-	else sortOrder.set(field, direction)
+function updateSortOrder(
+  sortOrder: SortOrder,
+  field: string,
+  direction: SortDirection = SortDirection.Desc,
+) {
+  if (sortOrder.has(field) && sortOrder.get(field) === direction)
+    sortOrder.delete(field);
+  else sortOrder.set(field, direction);
 
-	return new Map(sortOrder)
+  return new Map(sortOrder);
 }
 
 interface Props {
-	facet: FacetController<any, any, any>
-	sortOrder: SortOrder
+  facet: FacetController<any, any, any>;
+  sortOrder: SortOrder;
 }
 function OrderOption(props: Props) {
-	const dispatch = React.useContext(SearchStateDispatchContext)
+  const dispatch = React.useContext(SearchStateDispatchContext);
 
-	const setDirection = React.useCallback((ev: React.MouseEvent) => {
-		ev.stopPropagation()
+  const setDirection = React.useCallback(
+    (ev: React.MouseEvent) => {
+      ev.stopPropagation();
 
-		const nextDirection = props.sortOrder.get(props.facet.config.field) === SortDirection.Desc ?
-			SortDirection.Asc :
-			SortDirection.Desc
+      const nextDirection =
+        props.sortOrder.get(props.facet.config.field) === SortDirection.Desc
+          ? SortDirection.Asc
+          : SortDirection.Desc;
 
-		const sortOrder = updateSortOrder(props.sortOrder, props.facet.config.field, nextDirection)
-		dispatch({ type: 'SET_SORT_ORDER', sortOrder })
-	}, [props.sortOrder])
+      const sortOrder = updateSortOrder(
+        props.sortOrder,
+        props.facet.config.field,
+        nextDirection,
+      );
+      dispatch({ type: "SET_SORT_ORDER", sortOrder });
+    },
+    [props.sortOrder],
+  );
 
-	const setFacetId = React.useCallback((ev: React.MouseEvent) => {
-		ev.stopPropagation()
-		const direction = props.sortOrder.get(props.facet.config.field)
-		const sortOrder = updateSortOrder(props.sortOrder, props.facet.config.field, direction)
+  const setFacetId = React.useCallback(
+    (ev: React.MouseEvent) => {
+      ev.stopPropagation();
+      const direction = props.sortOrder.get(props.facet.config.field);
+      const sortOrder = updateSortOrder(
+        props.sortOrder,
+        props.facet.config.field,
+        direction,
+      );
 
-		dispatch({ type: 'SET_SORT_ORDER', sortOrder })
-	}, [props.sortOrder])
+      dispatch({ type: "SET_SORT_ORDER", sortOrder });
+    },
+    [props.sortOrder],
+  );
 
-	const direction = props.sortOrder.get(props.facet.config.field)
+  const direction = props.sortOrder.get(props.facet.config.field);
 
-	return (
-		<Wrapper
-			active={direction != null}
-			key={props.facet.ID}
-			onClick={setFacetId}
-		>
-			<div className="title">
-				{props.facet.config.title}
-			</div>
-			{
-				direction != null &&
-				<button
-					className={clsx(buttonStyle.button, 'toggle-direction')}
-					onClick={setDirection}
-					title={direction === SortDirection.Desc ? 'Descending' : 'Ascending'}
-				>
-					{
-						direction === SortDirection.Desc
-							? <Desc />
-							: <Asc />
-					}
-				</button>
-			}
-		</Wrapper>		
-	)
+  return (
+    <Wrapper
+      active={direction != null}
+      key={props.facet.ID}
+      onClick={setFacetId}
+    >
+      <div className='title'>{props.facet.config.title}</div>
+      {direction != null && (
+        <button
+          className={clsx(buttonStyle.button, "toggle-direction")}
+          onClick={setDirection}
+          title={direction === SortDirection.Desc ? "Descending" : "Ascending"}
+        >
+          {direction === SortDirection.Desc ? <Desc /> : <Asc />}
+        </button>
+      )}
+    </Wrapper>
+  );
 }
 
-export default React.memo(OrderOption)
+export default React.memo(OrderOption);
 
-export function Asc({ title = "Ascending", color = '#444' }: { title?: string, color?: string }) {
-	return (
-		<svg
-			viewBox="0 0 400 400"
-		>
-			<title>{title}</title>
-			<line x1="260" y1="30" x2="370" y2="30" stroke={color} strokeLinecap="round" strokeWidth="60" />
-			<line x1="110" y1="256" x2="370" y2="256" stroke={color} strokeLinecap="round" strokeWidth="60" />
-			<line x1="180" y1="143" x2="370" y2="143" stroke={color} strokeLinecap="round" strokeWidth="60" />
-			<line x1="30" y1="370" x2="370" y2="370" stroke={color} strokeLinecap="round" strokeWidth="60" />
-		</svg>
-	)
+export function Asc({
+  title = "Ascending",
+  color = "#444",
+}: {
+  title?: string;
+  color?: string;
+}) {
+  return (
+    <svg viewBox='0 0 400 400'>
+      <title>{title}</title>
+      <line
+        x1='260'
+        y1='30'
+        x2='370'
+        y2='30'
+        stroke={color}
+        strokeLinecap='round'
+        strokeWidth='60'
+      />
+      <line
+        x1='110'
+        y1='256'
+        x2='370'
+        y2='256'
+        stroke={color}
+        strokeLinecap='round'
+        strokeWidth='60'
+      />
+      <line
+        x1='180'
+        y1='143'
+        x2='370'
+        y2='143'
+        stroke={color}
+        strokeLinecap='round'
+        strokeWidth='60'
+      />
+      <line
+        x1='30'
+        y1='370'
+        x2='370'
+        y2='370'
+        stroke={color}
+        strokeLinecap='round'
+        strokeWidth='60'
+      />
+    </svg>
+  );
 }
 
-export function Desc({ title = "Descending", color = '#444' }: { title?: string, color?: string }) {
-	return (
-		<svg
-			viewBox="0 0 400 400"
-		>
-			<title>{title}</title>
-			<line x1="30" y1="30" x2="370" y2="30" stroke={color} strokeLinecap="round" strokeWidth="60" />
-			<line x1="110" y1="143" x2="370" y2="143" stroke={color} strokeLinecap="round" strokeWidth="60" />
-			<line x1="180" y1="256" x2="370" y2="256" stroke={color} strokeLinecap="round" strokeWidth="60" />
-			<line x1="260" y1="370" x2="370" y2="370" stroke={color} strokeLinecap="round" strokeWidth="60" />
-		</svg>
-	)
+export function Desc({
+  title = "Descending",
+  color = "#444",
+}: {
+  title?: string;
+  color?: string;
+}) {
+  return (
+    <svg viewBox='0 0 400 400'>
+      <title>{title}</title>
+      <line
+        x1='30'
+        y1='30'
+        x2='370'
+        y2='30'
+        stroke={color}
+        strokeLinecap='round'
+        strokeWidth='60'
+      />
+      <line
+        x1='110'
+        y1='143'
+        x2='370'
+        y2='143'
+        stroke={color}
+        strokeLinecap='round'
+        strokeWidth='60'
+      />
+      <line
+        x1='180'
+        y1='256'
+        x2='370'
+        y2='256'
+        stroke={color}
+        strokeLinecap='round'
+        strokeWidth='60'
+      />
+      <line
+        x1='260'
+        y1='370'
+        x2='370'
+        y2='370'
+        stroke={color}
+        strokeLinecap='round'
+        strokeWidth='60'
+      />
+    </svg>
+  );
 }

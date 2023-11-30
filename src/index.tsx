@@ -1,146 +1,161 @@
-import type { DashboardProps, StyleProps } from './context/props'
-import type { FacetController } from './facets/controller'
-import type { ResultBodyProps, Result } from './context/state/use-search/types'
-
-import React, { Children, isValidElement } from 'react'
-import { SearchStateContext, SearchStateDispatchContext, intialSearchState } from './context/state'
-
-import { searchStateReducer } from './context/state/reducer'
-import App from './app'
-import { Dashboard } from './dashboard'
-
-import { SortBy, SortDirection } from './enum'
-import { SearchProps, SearchPropsContext, ExternalSearchProps, defaultSearchProps } from './context/props'
-import { Label } from './views/ui/label'
-import { DropDown } from './views/ui/drop-down'
-import { FacetControllersContext, type FacetControllers } from './context/controllers'
-import { useSearch } from './context/state/use-search'
-
-import { DateChartFacet, PieChartFacet } from './facets/chart/view'
-import { ListFacet } from './facets/list/view'
+import React, { Children, isValidElement } from "react";
+import {
+  SearchStateContext,
+  SearchStateDispatchContext,
+  intialSearchState,
+} from "./context/state";
+import { searchStateReducer } from "./context/state/reducer";
+import App from "./app";
+import { Dashboard } from "./dashboard";
+import {
+  SearchProps,
+  SearchPropsContext,
+  ExternalSearchProps,
+  defaultSearchProps,
+} from "./context/props";
+import {
+  FacetControllersContext,
+  type FacetControllers,
+} from "./context/controllers";
+import { useSearch } from "./context/state/use-search";
+import type { FacetController } from "./facets/controller";
 
 export function FacetedSearch(props: ExternalSearchProps) {
-	const [children, setChildren] = React.useState<React.ReactNode>(undefined)
-	const [searchProps, setSearchProps] = React.useState<SearchProps | undefined>(undefined)
+  const [children, setChildren] = React.useState<React.ReactNode>(undefined);
+  const [searchProps, setSearchProps] = React.useState<SearchProps | undefined>(
+    undefined,
+  );
 
-	React.useEffect(() => {
-		// Only set children once
-		if (props.children == null || children != null) return
+  React.useEffect(() => {
+    // Only set children once
+    if (props.children == null || children != null) return;
 
-		const _children = (
-			// Make sure it is an element and not a string, number, ...
-			isValidElement(props.children) &&
-			// If children is a fragment, get the children of the fragment
-			props.children.type.toString() === Symbol.for('react.fragment').toString()
-		)	
-			? props.children.props.children
-			: props.children
+    const _children =
+      // Make sure it is an element and not a string, number, ...
+      isValidElement(props.children) &&
+      // If children is a fragment, get the children of the fragment
+      props.children.type.toString() === Symbol.for("react.fragment").toString()
+        ? props.children.props.children
+        : props.children;
 
-		setChildren(_children)
-	}, [props.children])
+    setChildren(_children);
+  }, [props.children]);
 
-	// After children have been set, set the search props.
-	// Everytime the props change, the search props will be updated
-	React.useEffect(() => {
-		if (children == null) return
+  // After children have been set, set the search props.
+  // Everytime the props change, the search props will be updated
+  React.useEffect(() => {
+    if (children == null) return;
 
-		// Extend the search props with default values
-		const sp: SearchProps = {
-			...defaultSearchProps,
-			...props,
-			style: {
-				...defaultSearchProps.style,
-				...props.style
-			}
-		}
+    // Extend the search props with default values
+    const sp: SearchProps = {
+      ...defaultSearchProps,
+      ...props,
+      style: {
+        ...defaultSearchProps.style,
+        ...props.style,
+      },
+    };
 
-		Object.keys(sp.style).forEach(key => {
-			const value = (sp.style as any)[key]
-			document.documentElement.style.setProperty(`--rdt-${camelCaseToKebabCase(key)}`, value);
-		})
+    Object.keys(sp.style).forEach((key) => {
+      const value = (sp.style as any)[key];
+      document.documentElement.style.setProperty(
+        `--rdt-${camelCaseToKebabCase(key)}`,
+        value,
+      );
+    });
 
-		setSearchProps(sp)
-	}, [props, children])
+    setSearchProps(sp);
+  }, [props, children]);
 
-	const controllers = useControllers(children)
+  const controllers = useControllers(children);
 
-	if (searchProps == null || controllers.size === 0) return
+  if (searchProps == null || controllers.size === 0) return;
 
-	return (
-		// <React.StrictMode>
-			<SearchPropsContext.Provider value={searchProps}>
-				<AppLoader searchProps={searchProps} controllers={controllers}>{children}</AppLoader>
-			</SearchPropsContext.Provider>
-		// </React.StrictMode>
-	)
+  return (
+    // <React.StrictMode>
+    <SearchPropsContext.Provider value={searchProps}>
+      <AppLoader searchProps={searchProps} controllers={controllers}>
+        {children}
+      </AppLoader>
+    </SearchPropsContext.Provider>
+    // </React.StrictMode>
+  );
 }
 
 interface AppLoaderProps {
-	children: React.ReactNode
-	controllers: FacetControllers
-	searchProps: SearchProps
+  children: React.ReactNode;
+  controllers: FacetControllers;
+  searchProps: SearchProps;
 }
 
 function AppLoader({ children, controllers, searchProps }: AppLoaderProps) {
-	const [state, dispatch] = React.useReducer(searchStateReducer(controllers), intialSearchState)
+  const [state, dispatch] = React.useReducer(
+    searchStateReducer(controllers),
+    intialSearchState,
+  );
 
-	useSearch({
-		props: searchProps,
-		state,
-		dispatch,
-		controllers
-	})
+  useSearch({
+    props: searchProps,
+    state,
+    dispatch,
+    controllers,
+  });
 
-	const Component = searchProps.dashboard ? Dashboard : App
+  const Component = searchProps.dashboard ? Dashboard : App;
 
-	React.useEffect(() => {
-		if (!controllers.size) return
-		const facetStates = new Map()
-		for (const [id, controller] of controllers.entries()) {
-			facetStates.set(id, controller.initState())
-		}
+  React.useEffect(() => {
+    if (!controllers.size) return;
+    const facetStates = new Map();
+    for (const [id, controller] of controllers.entries()) {
+      facetStates.set(id, controller.initState());
+    }
 
-		dispatch({
-			type: 'SET_FACET_STATES',
-			facetStates
-		})
-	}, [controllers])
+    dispatch({
+      type: "SET_FACET_STATES",
+      facetStates,
+    });
+  }, [controllers]);
 
-	return (
-		<FacetControllersContext.Provider value={controllers}>
-			<SearchStateDispatchContext.Provider value={dispatch}>
-				<SearchStateContext.Provider value={state}>
-					<Component
-						controllers={controllers}
-						searchProps={searchProps}
-						searchState={state}
-					>
-						{children}
-					</Component>
-				</SearchStateContext.Provider>
-			</SearchStateDispatchContext.Provider>
-		</FacetControllersContext.Provider>
-	)
+  return (
+    <FacetControllersContext.Provider value={controllers}>
+      <SearchStateDispatchContext.Provider value={dispatch}>
+        <SearchStateContext.Provider value={state}>
+          <Component
+            controllers={controllers}
+            searchProps={searchProps}
+            searchState={state}
+          >
+            {children}
+          </Component>
+        </SearchStateContext.Provider>
+      </SearchStateDispatchContext.Provider>
+    </FacetControllersContext.Provider>
+  );
 }
 
 /**
  * Initializes and returns a map of facet controllers based on the `children` prop.
  */
 function useControllers(children: React.ReactNode): FacetControllers {
-	const [controllers, setControllers] = React.useState<FacetControllers>(new Map())
+  const [controllers, setControllers] = React.useState<FacetControllers>(
+    new Map(),
+  );
 
-	React.useEffect(() => {
-		if (children == null || controllers.size > 0) return
+  React.useEffect(() => {
+    if (children == null || controllers.size > 0) return;
 
-		// Initialise the facet controllers
-		const facets = Children.map(children, (child: any) =>
-			 new child.type.controller(child.props.config)
-		)
+    // Initialise the facet controllers
+    const facets = Children.map(
+      children,
+      (child: any) => new child.type.controller(child.props.config),
+    );
 
-		setControllers(new Map(facets.map((f: FacetController<any, any, any>) => [f.ID, f])))
-	}, [children, controllers])
+    setControllers(
+      new Map(facets.map((f: FacetController<any, any, any>) => [f.ID, f])),
+    );
+  }, [children, controllers]);
 
-	return controllers
+  return controllers;
 }
 
 /**
@@ -148,7 +163,7 @@ function useControllers(children: React.ReactNode): FacetControllers {
  * @example camelCaseToKebabCase('camelCase') => 'camel-case'
  */
 function camelCaseToKebabCase(str: string) {
-	return str.replace(/([A-Z])/g, '-$1').toLowerCase()
+  return str.replace(/([A-Z])/g, "-$1").toLowerCase();
 }
 
 // function compareProps(prevProps: any, nextProps: any) {

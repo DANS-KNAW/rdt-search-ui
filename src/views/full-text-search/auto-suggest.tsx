@@ -1,90 +1,82 @@
-import React from 'react'
-import styled from 'styled-components'
-import debounce from 'lodash.debounce'
+import React from "react";
+import styled from "styled-components";
+import debounce from "lodash.debounce";
 
 const SuggestionsDropDownBody = styled.div`
-	border-top: 0;
-	margin-top: 1px;
-`
+  border-top: 0;
+  margin-top: 1px;
+`;
 
 interface Props {
-	autoSuggest: (query: string) => Promise<string[]>
-	onClick: (query: string) => void
-	value: string
+  autoSuggest: (query: string) => Promise<string[]>;
+  onClick: (query: string) => void;
+  value: string;
 }
 
-const cache: {[key: string]: string[]} = {}
+const cache: { [key: string]: string[] } = {};
 
 export function AutoSuggest(props: Props) {
-	const [suggestions, setSuggestions] = useSuggestions(props)
+  const [suggestions, setSuggestions] = useSuggestions(props);
 
-	return (
-		<SuggestionsDropDownBody>
-			{
-				suggestions.map((suggestion, index) =>
-					<div
-						key={index}
-						onClick={() => {
-							setSuggestions([])
-							props.onClick(suggestion)
-						}}
-					>
-						{suggestion}
-					</div>
-				)
-			}
-		</SuggestionsDropDownBody>
-	)
+  return (
+    <SuggestionsDropDownBody>
+      {suggestions.map((suggestion, index) => (
+        <div
+          key={index}
+          onClick={() => {
+            setSuggestions([]);
+            props.onClick(suggestion);
+          }}
+        >
+          {suggestion}
+        </div>
+      ))}
+    </SuggestionsDropDownBody>
+  );
 }
-
 
 function useSuggestions(props: Props): [string[], React.Dispatch<string[]>] {
-	const [suggestions, setSuggestions] = React.useState<string[]>([])
+  const [suggestions, setSuggestions] = React.useState<string[]>([]);
 
-	/**
-	 * Debounced callback function for updating the suggestions.
-	 * 
-	 * When the user types in the input value, the autoSuggest function
-	 * is not fired on every keyDown, but calls autoSuggest with the
-	 * combined keyDowns 300ms after the last keyDown event
-	 */ 
-	const updateSuggestions = React.useCallback(
-		debounce(
-			value => {
-				if (cache.hasOwnProperty(value)) {
-					setSuggestions(cache[value])
-				} else {
-					props.autoSuggest(value)
-						.then(suggestions => {
-							// If there is only one suggestions which is equal
-							// to the input value, show nothing.
-							if (
-								suggestions.length === 1 &&
-								suggestions[0].toLowerCase() === value.toLowerCase()
-							) {
-								suggestions = []
-							}
+  /**
+   * Debounced callback function for updating the suggestions.
+   *
+   * When the user types in the input value, the autoSuggest function
+   * is not fired on every keyDown, but calls autoSuggest with the
+   * combined keyDowns 300ms after the last keyDown event
+   */
+  const updateSuggestions = React.useCallback(
+    debounce((value) => {
+      if (cache.hasOwnProperty(value)) {
+        setSuggestions(cache[value]);
+      } else {
+        props.autoSuggest(value).then((suggestions) => {
+          // If there is only one suggestions which is equal
+          // to the input value, show nothing.
+          if (
+            suggestions.length === 1 &&
+            suggestions[0].toLowerCase() === value.toLowerCase()
+          ) {
+            suggestions = [];
+          }
 
-							cache[value] = suggestions
-							setSuggestions(suggestions)
-						})
-				}
-			},
-			300
-		),
-		[]
-	)
+          cache[value] = suggestions;
+          setSuggestions(suggestions);
+        });
+      }
+    }, 300),
+    [],
+  );
 
-	// Update the suggestions whenever the input value changes
-	React.useEffect(() => {
-		updateSuggestions(props.value)
-	}, [props.value])
+  // Update the suggestions whenever the input value changes
+  React.useEffect(() => {
+    updateSuggestions(props.value);
+  }, [props.value]);
 
-	return [suggestions, setSuggestions]
+  return [suggestions, setSuggestions];
 }
 
-
-// interface State { 
+// interface State {
 // 	suggestions: string[]
 // }
 // export default class AutoSuggest extends React.PureComponent<Props, State> {
