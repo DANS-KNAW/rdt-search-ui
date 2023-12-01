@@ -55,11 +55,11 @@ export function ToggleView(props: Props) {
   );
 
   return (
-    <Tabs id='rdt-search__toggle-view' onClick={toggle}>
-      <Tab active={!props.showResults} className='filters'>
+    <Tabs id="rdt-search__toggle-view" onClick={toggle}>
+      <Tab active={!props.showResults} className="filters">
         Filters
       </Tab>
-      <Tab active={props.showResults} className='results'>
+      <Tab active={props.showResults} className="results">
         Results
       </Tab>
     </Tabs>

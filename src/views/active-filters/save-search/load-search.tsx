@@ -13,7 +13,7 @@ export function LoadSearch(props: { url: SearchProps["url"] }) {
   if (savedSearches.length === 0) return null;
 
   return (
-    <DropDown caret label='Load search' style={dropdownStyle}>
+    <DropDown caret label="Load search" style={dropdownStyle}>
       <LoadSearches savedSearches={savedSearches} />
     </DropDown>
   );

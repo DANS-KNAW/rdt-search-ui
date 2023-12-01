@@ -95,17 +95,17 @@ export function Pagination(props: PaginationProps) {
   if (isNaN(pageCount) || pageCount === 1) return null;
 
   return (
-    <Wrapper className='rdt-search__pagination'>
+    <Wrapper className="rdt-search__pagination">
       {props.currentPage !== 1 ? (
         <Prev onClick={toPrev} color={context.style.spotColor}>
           ◂
         </Prev>
       ) : (
-        <Prev color='#DDD' disabled>
+        <Prev color="#DDD" disabled>
           ◂
         </Prev>
       )}
-      <PageNumbers className='pagenumbers'>
+      <PageNumbers className="pagenumbers">
         {first.length > 0 && first.map(toPageNumber)}
         {first.length > 0 && current.length > 0 && (
           <PaginationButton
@@ -131,7 +131,7 @@ export function Pagination(props: PaginationProps) {
           ▸
         </Next>
       ) : (
-        <Next color='#DDD' disabled>
+        <Next color="#DDD" disabled>
           ▸
         </Next>
       )}

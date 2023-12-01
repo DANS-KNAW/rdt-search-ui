@@ -45,14 +45,14 @@ export function ActiveFilterValue(props: {
 }) {
   return (
     <Li
-      as='li'
+      as="li"
       data-facet-id={props.facetID}
       data-value={props.value}
       onClick={props.removeFilter}
       title={props.title}
     >
-      <div className='active-filters__value'>{props.value}</div>
-      <div className='active-filters__close'>✕</div>
+      <div className="active-filters__value">{props.value}</div>
+      <div className="active-filters__close">✕</div>
     </Li>
   );
 }

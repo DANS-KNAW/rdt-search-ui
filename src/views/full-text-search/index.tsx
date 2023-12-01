@@ -78,7 +78,7 @@ export function FullTextSearch() {
   }, [state.query]);
 
   return (
-    <Wrapper id='rdt-search__full-text'>
+    <Wrapper id="rdt-search__full-text">
       <InputWrapper
         handleInputChange={handleInputChange}
         inputValue={inputValue}
@@ -94,7 +94,7 @@ export function FullTextSearch() {
           value={inputValue}
         />
       )}
-      <div id='loader' ref={loaderRef} />
+      <div id="loader" ref={loaderRef} />
     </Wrapper>
   );
 }

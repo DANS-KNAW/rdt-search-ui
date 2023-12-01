@@ -23,7 +23,7 @@ export const ResultHeader = function Header(props: Props) {
   if (props.searchResult == null) return null;
 
   return (
-    <header className={styles.header} id='rdt-search__result-header'>
+    <header className={styles.header} id="rdt-search__result-header">
       <ResultCount
         currentPage={props.currentPage}
         searchResult={props.searchResult}

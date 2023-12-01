@@ -26,7 +26,7 @@ export function SearchResult(props: Props) {
   if (props.searchResult == null) return null;
 
   return (
-    <Section id='rdt-search__search-result'>
+    <Section id="rdt-search__search-result">
       <ResultList>
         {props.searchResult.results.map((hit, i) => (
           <Result key={i} onClick={(ev) => props.onClickResult(hit, ev)}>

@@ -40,11 +40,11 @@ export function ActiveFilters() {
   return (
     <ul className={styles.ul}>
       {state.query?.length > 0 && (
-        <ActiveFilterItem title='Full text query'>
+        <ActiveFilterItem title="Full text query">
           <ActiveFilterValue
-            key='full-text-query'
+            key="full-text-query"
             removeFilter={() => dispatch({ type: "SET_QUERY", value: "" })}
-            title='Full text query'
+            title="Full text query"
             value={state.query}
           />
         </ActiveFilterItem>

@@ -34,7 +34,7 @@ export function SaveSearch(props: {
   }
 
   return (
-    <DropDown caret label='Save search' right>
+    <DropDown caret label="Save search" right>
       <SavedSearches
         activeFilters={props.activeFilters}
         hash={hash}
@@ -77,7 +77,7 @@ const SavedSearches = (props: {
             if (ev.key === "Enter") save();
           }}
           placeholder={props.hash}
-          type='text'
+          type="text"
           value={name || ""}
         />
         <button className={buttonStyle.button} onClick={save}>

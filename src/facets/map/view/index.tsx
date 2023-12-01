@@ -43,13 +43,13 @@ function _MapFacet(props: MapFacetProps) {
   if (props.facetState == null) return;
 
   return (
-    <MapFacetWrapper {...props} className='map-facet'>
-      <div className='inner-container'>
+    <MapFacetWrapper {...props} className="map-facet">
+      <div className="inner-container">
         <MapView {...props} dispatch={props.dispatch} />
-        <div className='controls'>
+        <div className="controls">
           <input
-            id='search-on-zoom-checkbox'
-            type='checkbox'
+            id="search-on-zoom-checkbox"
+            type="checkbox"
             checked={props.facetState.searchOnZoom}
             onChange={() => {
               props.dispatch({
@@ -59,7 +59,7 @@ function _MapFacet(props: MapFacetProps) {
               });
             }}
           />
-          <label htmlFor='search-on-zoom-checkbox'>Search on zoom</label>
+          <label htmlFor="search-on-zoom-checkbox">Search on zoom</label>
         </div>
       </div>
     </MapFacetWrapper>

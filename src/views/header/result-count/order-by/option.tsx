@@ -105,7 +105,7 @@ function OrderOption(props: Props) {
       key={props.facet.ID}
       onClick={setFacetId}
     >
-      <div className='title'>{props.facet.config.title}</div>
+      <div className="title">{props.facet.config.title}</div>
       {direction != null && (
         <button
           className={clsx(buttonStyle.button, "toggle-direction")}
@@ -129,43 +129,43 @@ export function Asc({
   color?: string;
 }) {
   return (
-    <svg viewBox='0 0 400 400'>
+    <svg viewBox="0 0 400 400">
       <title>{title}</title>
       <line
-        x1='260'
-        y1='30'
-        x2='370'
-        y2='30'
+        x1="260"
+        y1="30"
+        x2="370"
+        y2="30"
         stroke={color}
-        strokeLinecap='round'
-        strokeWidth='60'
+        strokeLinecap="round"
+        strokeWidth="60"
       />
       <line
-        x1='110'
-        y1='256'
-        x2='370'
-        y2='256'
+        x1="110"
+        y1="256"
+        x2="370"
+        y2="256"
         stroke={color}
-        strokeLinecap='round'
-        strokeWidth='60'
+        strokeLinecap="round"
+        strokeWidth="60"
       />
       <line
-        x1='180'
-        y1='143'
-        x2='370'
-        y2='143'
+        x1="180"
+        y1="143"
+        x2="370"
+        y2="143"
         stroke={color}
-        strokeLinecap='round'
-        strokeWidth='60'
+        strokeLinecap="round"
+        strokeWidth="60"
       />
       <line
-        x1='30'
-        y1='370'
-        x2='370'
-        y2='370'
+        x1="30"
+        y1="370"
+        x2="370"
+        y2="370"
         stroke={color}
-        strokeLinecap='round'
-        strokeWidth='60'
+        strokeLinecap="round"
+        strokeWidth="60"
       />
     </svg>
   );
@@ -179,43 +179,43 @@ export function Desc({
   color?: string;
 }) {
   return (
-    <svg viewBox='0 0 400 400'>
+    <svg viewBox="0 0 400 400">
       <title>{title}</title>
       <line
-        x1='30'
-        y1='30'
-        x2='370'
-        y2='30'
+        x1="30"
+        y1="30"
+        x2="370"
+        y2="30"
         stroke={color}
-        strokeLinecap='round'
-        strokeWidth='60'
+        strokeLinecap="round"
+        strokeWidth="60"
       />
       <line
-        x1='110'
-        y1='143'
-        x2='370'
-        y2='143'
+        x1="110"
+        y1="143"
+        x2="370"
+        y2="143"
         stroke={color}
-        strokeLinecap='round'
-        strokeWidth='60'
+        strokeLinecap="round"
+        strokeWidth="60"
       />
       <line
-        x1='180'
-        y1='256'
-        x2='370'
-        y2='256'
+        x1="180"
+        y1="256"
+        x2="370"
+        y2="256"
         stroke={color}
-        strokeLinecap='round'
-        strokeWidth='60'
+        strokeLinecap="round"
+        strokeWidth="60"
       />
       <line
-        x1='260'
-        y1='370'
-        x2='370'
-        y2='370'
+        x1="260"
+        y1="370"
+        x2="370"
+        y2="370"
         stroke={color}
-        strokeLinecap='round'
-        strokeWidth='60'
+        strokeLinecap="round"
+        strokeWidth="60"
       />
     </svg>
   );

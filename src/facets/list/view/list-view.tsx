@@ -58,7 +58,7 @@ export function ListView(props: ListFacetProps) {
 
   return (
     <Wrapper>
-      <ul className='values' ref={ulRef}>
+      <ul className="values" ref={ulRef}>
         {values.map((value) => (
           <ListFacetValue
             active={

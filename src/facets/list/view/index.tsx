@@ -40,7 +40,7 @@ export function _ListFacet(props: ListFacetProps) {
   );
 
   return (
-    <FacetWrapper {...props} className='list-facet'>
+    <FacetWrapper {...props} className="list-facet">
       {props.values != null && (viewState.pagination || viewState.query) && (
         <Options {...props}></Options>
       )}

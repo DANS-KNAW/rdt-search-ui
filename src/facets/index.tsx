@@ -24,7 +24,7 @@ export const Facets = ({
   if (searchState.facetStates.size === 0) return null;
 
   return (
-    <div id='facets'>
+    <div id="facets">
       {Children.map(children, (child, index) => {
         if (!isValidElement(child)) return;
         const facet = Array.from(controllers.values())[index];

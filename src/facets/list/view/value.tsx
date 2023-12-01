@@ -60,12 +60,12 @@ function ListFacetValueView(props: Props) {
       title={props.value.key}
     >
       <span
-        className='value'
+        className="value"
         dangerouslySetInnerHTML={{
           __html: props.keyFormatter(props.value.key, props.query),
         }}
       />
-      <span className='count'>{props.value.count}</span>
+      <span className="count">{props.value.count}</span>
     </Wrapper>
   );
 }

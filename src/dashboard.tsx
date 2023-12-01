@@ -68,12 +68,12 @@ export function Dashboard({
       background={searchProps.style.background}
       className={clsx("dashboard", searchProps.className)}
       dashboard={searchProps.dashboard!}
-      id='rdt-search'
+      id="rdt-search"
     >
       <ActiveFilters />
       <Facets
         controllers={controllers}
-        facetClassname='facet-container--card'
+        facetClassname="facet-container--card"
         searchProps={searchProps}
         searchState={searchState}
       >
