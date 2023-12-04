@@ -74,8 +74,6 @@ export function ChartFacet<
     chart.current.resize();
   }, [props.values]);
 
-
-
   return (
     <FacetWrapper {...props}>
       <div className={styles.innerContainer} ref={containerRef}></div>
