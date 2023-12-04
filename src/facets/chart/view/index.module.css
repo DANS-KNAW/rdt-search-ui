@@ -1,16 +1,3 @@
-.pie,
-.date {
-    height: 100%;
-}
-
-.pie .innerContainer {
-    min-height: 160px;
-}
-
-.date .innerContainer {
-    min-height: 280px;
-}
-
 .innerContainer {
-    height: 100%;
+    height: 20rem;
 }

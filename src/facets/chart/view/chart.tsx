@@ -57,6 +57,8 @@ export function ChartFacet<
       }, 1000),
     );
 
+    window.addEventListener("resize", debounce(() => chart.current?.resize(), 200));
+
     return () => chart.current?.dispose();
   }, []);
 
@@ -67,7 +69,12 @@ export function ChartFacet<
     const options = props.facet.updateOptions(props.values, props.filter);
 
     chart.current.setOption(options);
+
+    //resize to make sure it fits container
+    chart.current.resize();
   }, [props.values]);
+
+
 
   return (
     <FacetWrapper {...props}>

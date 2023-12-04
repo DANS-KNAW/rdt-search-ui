@@ -3,51 +3,76 @@ import { SearchStateDispatchContext, type SearchState } from "../context/state";
 import type { FacetControllers } from "../context/controllers";
 
 import React, { Children, isValidElement } from "react";
-import clsx from "clsx";
+import Grid from '@mui/material/Unstable_Grid2';
 
 interface Props {
   facetClassname?: string;
   children: React.ReactNode;
   controllers: FacetControllers;
-  searchProps: SearchProps;
+  searchProps?: SearchProps;
   searchState: SearchState;
+  layout?: string;
 }
 
 export const Facets = ({
   children,
   controllers,
-  facetClassname,
-  searchProps,
   searchState,
+  layout,
 }: Props) => {
   const dispatch = React.useContext(SearchStateDispatchContext);
   if (searchState.facetStates.size === 0) return null;
 
-  return (
-    <div id="facets">
-      {Children.map(children, (child, index) => {
-        if (!isValidElement(child)) return;
-        const facet = Array.from(controllers.values())[index];
+  const facets = Children.map(children, (child, index) => {
+    if (!isValidElement(child)) return;
+    return Array.from(controllers.values(), x => ({facet: x, type: child.type}) )[index];
+  }) || [];
 
-        return (
-          <div
-            className={clsx("facet-container", facetClassname)}
-            key={facet.ID}
-            style={{
-              gridArea:
-                searchProps.dashboard?.areas != null ? facet.ID : undefined,
-            }}
-          >
-            <child.type
+  const sidebarFacet = facets.find( f => f.facet.ID === 'indi');
+  const mainFacets = facets.filter( f => f.facet.ID === 'date' || f.facet.ID === 'rights' || f.facet.ID === 'lang');
+  const minorFacets = facets.filter( f => f.facet.ID === 'pw' || f.facet.ID === 'wf' || f.facet.ID === 'reltype' || f.facet.ID === 'restype');
+
+  const dashboard = layout === 'dashboard';
+
+  return (
+    <Grid container spacing={2}>
+      <Grid sm={dashboard ? 6 : 12} md={dashboard ? 4 : 12} lg={dashboard ? 3 : 12}>
+        {sidebarFacet && 
+          <sidebarFacet.type
+            dispatch={dispatch}
+            facet={sidebarFacet.facet}
+            facetState={searchState.facetStates.get(sidebarFacet.facet.ID)!}
+            filter={searchState.facetFilters.get(sidebarFacet.facet.ID)?.value}
+            values={searchState.facetValues[sidebarFacet.facet.ID]}
+          />
+        }
+      </Grid>
+      <Grid sm={dashboard ? 6 : 12} md={dashboard ? 8 : 12} lg={dashboard ? 9 : 12} container>
+        {mainFacets.map(f => 
+          <Grid xs={f.facet.ID !== 'date' && dashboard ? 6 : 12}>
+            <f.type
+              key={f.facet.ID}
               dispatch={dispatch}
-              facet={facet}
-              facetState={searchState.facetStates.get(facet.ID)!}
-              filter={searchState.facetFilters.get(facet.ID)?.value}
-              values={searchState.facetValues[facet.ID]}
+              facet={f.facet}
+              facetState={searchState.facetStates.get(f.facet.ID)!}
+              filter={searchState.facetFilters.get(f.facet.ID)?.value}
+              values={searchState.facetValues[f.facet.ID]} 
             />
-          </div>
-        );
-      })}
-    </div>
+          </Grid>
+        )}
+      </Grid>
+      {minorFacets.map(f =>
+        <Grid xs={12} sm={dashboard ? 6 : 12} lg={dashboard ? 3 : 12}>
+          <f.type
+            key={f.facet.ID}
+            dispatch={dispatch}
+            facet={f.facet}
+            facetState={searchState.facetStates.get(f.facet.ID)!}
+            filter={searchState.facetFilters.get(f.facet.ID)?.value}
+            values={searchState.facetValues[f.facet.ID]} 
+          />
+        </Grid>
+      )}
+    </Grid>
   );
 };
