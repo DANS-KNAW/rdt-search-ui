@@ -2,7 +2,9 @@ import React from "react";
 import clsx from "clsx";
 
 import styles from "./index.module.css";
-import buttonStyle from "../../ui/button.module.css";
+import Button from '@mui/material/Button';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 interface Props {
   children: React.ReactNode;
@@ -61,18 +63,15 @@ export const DropDown = React.memo(function DropDown({
       )}
       style={style}
     >
-      <button
-        className={clsx(buttonStyle.button, styles.button)}
+      <Button
         onClick={handleClick}
         ref={ref}
+        variant="contained"
+        sx={{mr: 1}}
+        endIcon={caret && (active ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />)}
       >
         {label}
-        {caret && (
-          <span>
-            <span>&gt;</span>
-          </span>
-        )}
-      </button>
+      </Button>
       <div className={styles.body}>{children}</div>
     </div>
   );

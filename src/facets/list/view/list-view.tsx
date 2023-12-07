@@ -6,9 +6,9 @@ import styled from "styled-components";
 import ListFacetValue from "./value";
 
 import { Pagination } from "../../../views/pagination";
-// import { Button } from '../../../views/ui/button'
 import { FacetsDataReducerAction } from "../../../context/state/actions";
 import buttonStyle from "../../../views/ui/button.module.css";
+import Stack from '@mui/material/Stack';
 
 export const LIST_FACET_SCROLL_CUT_OFF = 50;
 
@@ -72,13 +72,16 @@ export function ListView(props: ListFacetProps) {
         ))}
       </ul>
       {props.viewState.pagination ? (
-        <Pagination
-          currentPage={page}
-          dispatch={props.dispatch}
-          total={props.values.total}
-          resultsPerPage={props.facet.config.size}
-          setCurrentPage={setPage}
-        />
+        <Stack alignItems="center">
+          <Pagination
+            currentPage={page}
+            dispatch={props.dispatch}
+            total={props.values.total}
+            resultsPerPage={props.facet.config.size}
+            setCurrentPage={setPage}
+            siblingCount={0}
+          />
+        </Stack>
       ) : (
         props.viewState.scrollButton && (
           <button className={buttonStyle.button} onClick={showAll}>

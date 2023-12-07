@@ -24,9 +24,11 @@ export function Dashboard({
   return (
     <Container>
       <Grid container>
-        <Grid>
-          <ActiveFilters />
-        </Grid>
+        {(searchState.query || searchState.facetFilters.entries().next().value) && 
+          <Grid xs={12}>
+            <ActiveFilters />
+          </Grid>
+        }
         <Facets
           controllers={controllers}
           searchState={searchState}

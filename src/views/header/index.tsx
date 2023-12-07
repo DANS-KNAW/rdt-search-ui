@@ -10,7 +10,7 @@ import { SortBy } from "./result-count/order-by";
 import { LoadSearch } from "../active-filters/save-search/load-search";
 import { SearchPropsContext } from "../../context/props";
 
-import styles from "./index.module.css";
+import Stack from '@mui/material/Stack';
 
 interface Props {
   currentPage: SearchState["currentPage"];
@@ -23,20 +23,22 @@ export const ResultHeader = function Header(props: Props) {
   if (props.searchResult == null) return null;
 
   return (
-    <header className={styles.header} id="rdt-search__result-header">
-      <ResultCount
-        currentPage={props.currentPage}
-        searchResult={props.searchResult}
-      />
-      <div className={styles.buttons}>
+    <>
+      <Stack direction="row" justifyContent="flex-end" mb={2}>
         <SortBy sortOrder={props.sortOrder} />
         <LoadSearch url={url} />
-      </div>
-      <Pagination
-        currentPage={props.currentPage}
-        dispatch={dispatch}
-        total={props.searchResult.total}
-      />
-    </header>
+      </Stack>
+      <Stack direction="row" justifyContent="space-between">
+        <ResultCount
+          currentPage={props.currentPage}
+          searchResult={props.searchResult}
+        />
+        <Pagination
+          currentPage={props.currentPage}
+          dispatch={dispatch}
+          total={props.searchResult.total}
+        />
+      </Stack>
+    </>
   );
 };

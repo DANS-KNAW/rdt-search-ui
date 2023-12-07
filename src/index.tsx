@@ -72,13 +72,11 @@ export function FacetedSearch(props: ExternalSearchProps) {
   if (searchProps == null || controllers.size === 0) return;
 
   return (
-    // <React.StrictMode>
     <SearchPropsContext.Provider value={searchProps}>
       <AppLoader searchProps={searchProps} controllers={controllers}>
         {children}
       </AppLoader>
     </SearchPropsContext.Provider>
-    // </React.StrictMode>
   );
 }
 
@@ -165,13 +163,3 @@ function useControllers(children: React.ReactNode): FacetControllers {
 function camelCaseToKebabCase(str: string) {
   return str.replace(/([A-Z])/g, "-$1").toLowerCase();
 }
-
-// function compareProps(prevProps: any, nextProps: any) {
-// 	console.log('COMPAREING')
-// 	Object.keys(prevProps).forEach(key => {
-// 		const isSame = prevProps[key] === nextProps[key]
-// 		console.log(`${key}\t\t${isSame}`, isSame ? '' : `${prevProps[key]} __ ${nextProps[key]}`)
-// 	})
-// 	console.log('=-=-=-=-=-=-=-=')
-// 	return false
-// }

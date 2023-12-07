@@ -47,7 +47,7 @@ interface RequiredSearchProps {
 interface OptionalWithDefaultsSearchProps {
   autoSuggest?: (query: string) => Promise<string[]>;
   excludeResultFields?: string[];
-  onClickResult?: (result: any, ev: React.MouseEvent<HTMLLIElement>) => void;
+  onClickResult?: (result: any, ev: React.MouseEvent<HTMLButtonElement>) => void;
   resultFields?: string[];
   resultBodyProps?: Record<string, any>;
   resultsPerPage?: number;

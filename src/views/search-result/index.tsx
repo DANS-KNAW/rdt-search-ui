@@ -2,17 +2,16 @@ import type { SearchProps } from "../../context/props";
 import type { FSResponse } from "../../context/state/use-search/types";
 
 import React from "react";
-import styled from "styled-components";
-
-import { ResultList, Result } from "./components";
 import { Pagination } from "../pagination";
 import { SearchState, SearchStateDispatchContext } from "../../context/state";
 
-const Section = styled.section`
-  .rdt-search__pagination {
-    margin-top: 64px;
-  }
-`;
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardActions from '@mui/material/CardActions';
+
+/* Layout for content is defined in the app and passed as props to this component */
 
 interface Props {
   currentPage: SearchState["currentPage"];
@@ -26,22 +25,32 @@ export function SearchResult(props: Props) {
   if (props.searchResult == null) return null;
 
   return (
-    <Section id="rdt-search__search-result">
-      <ResultList>
-        {props.searchResult.results.map((hit, i) => (
-          <Result key={i} onClick={(ev) => props.onClickResult(hit, ev)}>
+    <>
+      {props.searchResult.results.map((hit, i) => (
+        <Card key={i} sx={{marginBottom: 2}}>
+          <CardContent>
             <props.ResultBodyComponent
               {...props.resultBodyProps}
               result={hit}
             />
-          </Result>
-        ))}
-      </ResultList>
-      <Pagination
-        currentPage={props.currentPage}
-        dispatch={dispatch}
-        total={props.searchResult.total}
-      />
-    </Section>
+          </CardContent>
+          <CardActions>
+            <Button 
+              size="small" 
+              onClick={(ev) => props.onClickResult(hit, ev)} 
+            >
+              Detailed view
+            </Button>
+          </CardActions>
+        </Card>
+      ))}
+      <Stack display="flex" alignItems="center">
+        <Pagination
+          currentPage={props.currentPage}
+          dispatch={dispatch}
+          total={props.searchResult.total}
+        />
+      </Stack>
+    </>
   );
 }

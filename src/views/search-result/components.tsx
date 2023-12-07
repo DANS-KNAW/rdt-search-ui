@@ -7,13 +7,3 @@ export const Header = styled.header`
   grid-template-rows: auto 32px auto;
   grid-template-columns: 1fr 1fr;
 `;
-
-export const ResultList = styled.ul`
-  list-style: none;
-  margin: 0;
-  padding: 0;
-`;
-
-export const Result = styled.li`
-  cursor: pointer;
-`;

@@ -36,7 +36,7 @@ export const Facets = ({
 
   return (
     <Grid container spacing={2}>
-      <Grid sm={dashboard ? 6 : 12} md={dashboard ? 4 : 12} lg={dashboard ? 3 : 12}>
+      <Grid xs={12} sm={dashboard ? 5 : 12} md={dashboard ? 4 : 12} lg={dashboard ? 3 : 12}>
         {sidebarFacet && 
           <sidebarFacet.type
             dispatch={dispatch}
@@ -47,9 +47,9 @@ export const Facets = ({
           />
         }
       </Grid>
-      <Grid sm={dashboard ? 6 : 12} md={dashboard ? 8 : 12} lg={dashboard ? 9 : 12} container>
+      <Grid xs={12} sm={dashboard ? 7 : 12} md={dashboard ? 8 : 12} lg={dashboard ? 9 : 12} container>
         {mainFacets.map(f => 
-          <Grid xs={f.facet.ID !== 'date' && dashboard ? 6 : 12}>
+          <Grid key={f.facet.ID} xs={12} sm={f.facet.ID !== 'date' && dashboard ? 6 : 12}>
             <f.type
               key={f.facet.ID}
               dispatch={dispatch}
@@ -62,7 +62,7 @@ export const Facets = ({
         )}
       </Grid>
       {minorFacets.map(f =>
-        <Grid xs={12} sm={dashboard ? 6 : 12} lg={dashboard ? 3 : 12}>
+        <Grid key={f.facet.ID} xs={12} sm={dashboard ? 6 : 12} lg={dashboard ? 3 : 12}>
           <f.type
             key={f.facet.ID}
             dispatch={dispatch}

@@ -1,19 +1,24 @@
-import React from "react";
+import { useContext, useCallback, KeyboardEvent } from "react";
 import { SearchPropsContext } from "../../context/props";
-import { HelpDropDown } from "../ui/drop-down/help";
 
-import inputStyles from "../ui/input.module.css";
-import styles from "./input.module.css";
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
+import Tooltip from '@mui/material/Tooltip';
+import HelpIcon from '@mui/icons-material/Help';
+import CircularProgress from '@mui/material/CircularProgress';
 
 interface Props {
   handleInputChange: any;
   inputValue: string;
   setSuggestActive: any;
+  loader?: boolean;
 }
 export function InputWrapper(props: Props) {
-  const { uiTexts } = React.useContext(SearchPropsContext);
+  const { uiTexts } = useContext(SearchPropsContext);
 
-  const handleKeyDown = React.useCallback((ev: React.KeyboardEvent) => {
+  console.log(props)
+
+  const handleKeyDown = useCallback((ev: KeyboardEvent) => {
     if (
       ev.code === "Enter" || // Enter
       ev.code === "Escape" // Escape
@@ -22,34 +27,25 @@ export function InputWrapper(props: Props) {
     }
   }, []);
 
-  const handleClose = React.useCallback(() => {
-    props.setSuggestActive(false);
-    props.handleInputChange({ target: { value: "" } });
-  }, []);
-
   return (
-    <div className={styles.inputWrapper}>
-      <svg viewBox="0 0 250.313 250.313">
-        <path d="M244.186,214.604l-54.379-54.378c-0.289-0.289-0.628-0.491-0.93-0.76 c10.7-16.231,16.945-35.66,16.945-56.554C205.822,46.075,159.747,0,102.911,0S0,46.075,0,102.911 c0,56.835,46.074,102.911,102.91,102.911c20.895,0,40.323-6.245,56.554-16.945c0.269,0.301,0.47,0.64,0.759,0.929l54.38,54.38 c8.169,8.168,21.413,8.168,29.583,0C252.354,236.017,252.354,222.773,244.186,214.604z M102.911,170.146 c-37.134,0-67.236-30.102-67.236-67.235c0-37.134,30.103-67.236,67.236-67.236c37.132,0,67.235,30.103,67.235,67.236 C170.146,140.044,140.043,170.146,102.911,170.146z" />
-      </svg>
-      <input
-        className={inputStyles.input}
-        type="text"
-        onChange={props.handleInputChange}
-        onClick={() => props.setSuggestActive(false)}
-        onKeyDown={handleKeyDown}
-        placeholder={uiTexts.search_documents}
-        value={props.inputValue}
-      />
-      {props.inputValue.length > 0 ? (
-        <button className={styles.closeButton} onClick={handleClose}>
-          ✕
-        </button>
-      ) : (
-        <HelpDropDown className={styles.helpButton}>
-          {uiTexts.fullTextSearchHelp}
-        </HelpDropDown>
-      )}
-    </div>
+    <TextField
+      label={uiTexts.search_documents}
+      value={props.inputValue}
+      onClick={() => props.setSuggestActive(false)}
+      onChange={props.handleInputChange}
+      onKeyDown={handleKeyDown}
+      fullWidth 
+      InputProps={{
+        endAdornment: <InputAdornment position="end">
+          {
+            props.loader
+            ? <CircularProgress size={22} />
+            : <Tooltip title={uiTexts.fullTextSearchHelp}>
+                <HelpIcon />
+              </Tooltip>
+          }  
+        </InputAdornment>,
+      }}
+    />
   );
 }

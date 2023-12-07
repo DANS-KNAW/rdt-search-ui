@@ -1,74 +1,18 @@
 import React from "react";
-import styled from "styled-components";
-
 import { ResultHeader } from "./views/header";
 import { SearchResult } from "./views/search-result";
 import { FullTextSearch } from "./views/full-text-search";
-import { ToggleView } from "./views/toggle-view";
 import { ActiveFilters } from "./views/active-filters";
 
 import { SearchProps } from "./context/props";
 import { SearchState } from "./context/state";
-import { FACETS_WIDTH } from "./constants";
 import { Facets } from "./facets";
 import { FacetControllers } from "./context/controllers";
 
-const Wrapper = styled.div`
-  display: grid;
-  grid-template-columns: ${FACETS_WIDTH}px 1fr;
-  grid-template-rows: fit-content(0) fit-content(0) 1fr;
-  grid-row-gap: 32px;
-  grid-column-gap: 64px;
-  max-width: 100vw;
-  min-width: 100%;
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Unstable_Grid2';
 
-  & > * {
-    padding: 0 16px;
-  }
-
-  #facets {
-    grid-column: 1;
-    min-width: ${FACETS_WIDTH}px;
-    grid-row: 2 / -1;
-  }
-
-  #facets .facet-container {
-    margin-bottom: 2rem;
-  }
-
-  #active-filters,
-  #rdt-search__search-result {
-    grid-column: 2;
-    /* grid-row: 2 / -1; */
-    min-width: 400px;
-  }
-
-  #rdt-search__toggle-view {
-    display: none;
-  }
-
-  @media (max-width: 892px) {
-    grid-template-columns: 1fr;
-    #rdt-search__toggle-view {
-      display: grid;
-    }
-
-    #rdt-search__search-result,
-    #rdt-search__result-header {
-      display: ${(props: WProps) => (props.showResults ? "grid" : "none")};
-    }
-
-    #facets,
-    #active-filters,
-    #rdt-search__full-text {
-      display: ${(props: WProps) => (props.showResults ? "none" : "grid")};
-    }
-  }
-`;
-
-interface WProps extends Pick<SearchProps, "style"> {
-  showResults: boolean;
-}
+/* This is the wrapper for the search interface */
 
 interface Props {
   children: React.ReactNode;
@@ -76,42 +20,47 @@ interface Props {
   searchProps: SearchProps;
   searchState: SearchState;
 }
+
 export default function FacetedSearch({
   children,
   controllers,
   searchProps,
   searchState,
 }: Props) {
-  const [showResults, setShowResults] = React.useState(true);
 
   return (
-    <Wrapper
-      className={searchProps.className}
-      showResults={showResults}
-      style={searchProps.style}
-    >
-      <FullTextSearch />
-      <ResultHeader
-        currentPage={searchState.currentPage}
-        searchResult={searchState.searchResult}
-        sortOrder={searchState.sortOrder}
-      />
-      <ActiveFilters />
-      <Facets
-        controllers={controllers}
-        searchProps={searchProps}
-        searchState={searchState}
-      >
-        {children}
-      </Facets>
-      <SearchResult
-        currentPage={searchState.currentPage}
-        ResultBodyComponent={searchProps.ResultBodyComponent}
-        onClickResult={searchProps.onClickResult}
-        resultBodyProps={searchProps.resultBodyProps}
-        searchResult={searchState.searchResult}
-      />
-      <ToggleView showResults={showResults} setShowResults={setShowResults} />
-    </Wrapper>
+    <Container>
+      <Grid container spacing={2}>
+        <Grid xs={4} sx={{ display: "flex", alignItems: "flex-end" }}>
+          <FullTextSearch />
+        </Grid>
+        <Grid xs={8}>
+          <ResultHeader
+            currentPage={searchState.currentPage}
+            searchResult={searchState.searchResult}
+            sortOrder={searchState.sortOrder}
+          />
+        </Grid>
+        <Grid xs={4}>
+          {(searchState.query || searchState.facetFilters.entries().next().value) && <ActiveFilters /> }
+          <Facets
+            controllers={controllers}
+            searchProps={searchProps}
+            searchState={searchState}
+          >
+            {children}
+          </Facets>
+        </Grid>
+        <Grid xs={8}>
+          <SearchResult
+            currentPage={searchState.currentPage}
+            ResultBodyComponent={searchProps.ResultBodyComponent}
+            onClickResult={searchProps.onClickResult}
+            resultBodyProps={searchProps.resultBodyProps}
+            searchResult={searchState.searchResult}
+          />
+        </Grid>
+      </Grid>
+    </Container>
   );
 }

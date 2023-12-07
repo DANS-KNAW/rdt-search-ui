@@ -25,11 +25,9 @@ export function SaveSearch(props: {
 
   if (savedSearch) {
     return (
-      <div style={{ lineHeight: "36px" }}>
-        <em style={{ marginTop: "1rem" }}>
-          Saved as "{savedSearch.name || savedSearch.hash}"
-        </em>
-      </div>
+      <em style={{ marginTop: "1rem" }}>
+        Saved as "{savedSearch.name || savedSearch.hash}"
+      </em>
     );
   }
 
