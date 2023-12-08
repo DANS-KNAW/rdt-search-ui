@@ -3,9 +3,9 @@ import { DropDown } from "../../ui/drop-down";
 import { SearchProps } from "../../../context/props";
 import { SearchStateDispatchContext } from "../../../context/state";
 import { SavedSearch, useSavedSearches } from "./use-saved-searches";
-import styles from "./load-search.module.css";
-
-const dropdownStyle = { zIndex: 2 };
+import Stack from '@mui/material/Stack';
+import ListItemText from '@mui/material/ListItemText';
+import MenuItem from '@mui/material/MenuItem';
 
 export function LoadSearch(props: { url: SearchProps["url"] }) {
   const [savedSearches] = useSavedSearches(props.url);
@@ -13,7 +13,7 @@ export function LoadSearch(props: { url: SearchProps["url"] }) {
   if (savedSearches.length === 0) return null;
 
   return (
-    <DropDown caret label="Load search" style={dropdownStyle}>
+    <DropDown label="Load search">
       <LoadSearches savedSearches={savedSearches} />
     </DropDown>
   );
@@ -23,12 +23,9 @@ const LoadSearches = (props: { savedSearches: SavedSearch[] }) => {
   const dispatch = React.useContext(SearchStateDispatchContext);
 
   return (
-    <div className={styles.loadSearch}>
-      <ul className={styles.list}>
-        {props.savedSearches.map((savedSearch) => (
-          <li
-            className={styles.item}
-            key={savedSearch.hash}
+        props.savedSearches.map((savedSearch, i) => (
+          <MenuItem
+            key={i}
             onClick={() => {
               dispatch({
                 type: "LOAD_SEARCH",
@@ -37,12 +34,13 @@ const LoadSearches = (props: { savedSearches: SavedSearch[] }) => {
               });
             }}
           >
-            <div>{savedSearch.name || savedSearch.hash}</div>
-            <div>{dateString(savedSearch.date)}</div>
-          </li>
-        ))}
-      </ul>
-    </div>
+            <Stack direction="row" justifyContent="center" sx={{flex: 1, width: "100%"}} spacing={2}>
+              <ListItemText sx={{flex: 2}}>{savedSearch.name || savedSearch.hash}</ListItemText>
+              <ListItemText sx={{flex: 1, textAlign: "right", color: "neutral.dark"}}>{dateString(savedSearch.date)}</ListItemText>
+            </Stack>
+          </MenuItem>
+        ))
+
   );
 };
 

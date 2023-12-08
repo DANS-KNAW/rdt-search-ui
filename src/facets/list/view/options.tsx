@@ -1,36 +1,12 @@
 import React from "react";
-import styled from "styled-components";
 import debounce from "lodash.debounce";
-import clsx from "clsx";
 
 import type { ListFacetProps } from ".";
 import { SearchPropsContext } from "../../../context/props";
 import { SortBy, SortDirection } from "../../../enum";
-import inputStyles from "../../../views/ui/input.module.css";
-
-export const OptionsWrapper = styled("div")`
-  font-size: 0.75rem;
-  display: grid;
-  grid-template-columns: 1fr 36px 18px;
-  grid-gap: 6px;
-  height: 1.5rem;
-  margin-bottom: 0.5rem;
-
-  button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    width: 18px;
-    justify-self: end;
-    height: 1.5rem;
-
-    svg {
-      height: 100%;
-      width: 95%;
-    }
-  }
-`;
+import TextField from '@mui/material/TextField';
+import Stack from '@mui/material/Stack';
+import IconButton from '@mui/material/IconButton';
 
 function Options(props: ListFacetProps) {
   const { style } = React.useContext(SearchPropsContext);
@@ -59,68 +35,57 @@ function Options(props: ListFacetProps) {
   const ascending = props.facetState.sort.direction === SortDirection.Asc;
 
   return (
-    <OptionsWrapper color={style.spotColor}>
-      <input
-        className={inputStyles.input}
+    <Stack direction="row" justifyContent="space-between" mb={2}>
+      <TextField
         onChange={handleFilterInputChange}
-        type="text"
         value={filterInputValue}
-        placeholder="Filter"
+        label="Filter"
+        size="small"
       />
-      <button
-        className={clsx("sort-button", "sort-button__by-key", {
-          "sort-button--active": props.facetState.sort.by === SortBy.Key,
-        })}
-        onClick={() => {
-          props.dispatch({
-            type: "UPDATE_FACET_STATE",
-            subType: "LIST_FACET_SET_SORT",
-            facetID: props.facet.ID,
-            sort: {
-              by: SortBy.Key,
-              direction: ascending ? SortDirection.Desc : SortDirection.Asc,
-            },
-          });
-          // props.facet.actions.setSort({
-          // 	by: SortBy.Key,
-          // 	direction: ascending
-          // 		? SortDirection.Desc
-          // 		: SortDirection.Asc
-          // })
-        }}
-      >
-        {sortByKey && ascending ? (
-          <SortAlphaAscIcon color={sortByKey ? style.spotColor : "#CCC"} />
-        ) : (
-          <SortAlphaDescIcon color={sortByKey ? style.spotColor : "#CCC"} />
-        )}
-      </button>
-      <button
-        className={clsx("sort-button", "sort-button__by-count", {
-          "sort-button--active": props.facetState.sort.by === SortBy.Count,
-        })}
-        onClick={() => {
-          props.dispatch({
-            type: "UPDATE_FACET_STATE",
-            subType: "LIST_FACET_SET_SORT",
-            facetID: props.facet.ID,
-            sort: {
-              by: SortBy.Count,
-              direction:
-                props.facetState.sort.direction === SortDirection.Asc
-                  ? SortDirection.Desc
-                  : SortDirection.Asc,
-            },
-          });
-        }}
-      >
-        {sortByCount && ascending ? (
-          <SortNumericAscIcon color={sortByCount ? style.spotColor : "#CCC"} />
-        ) : (
-          <SortNumericDescIcon color={sortByCount ? style.spotColor : "#CCC"} />
-        )}
-      </button>
-    </OptionsWrapper>
+      <Stack direction="row">
+        <IconButton
+          onClick={() => {
+            props.dispatch({
+              type: "UPDATE_FACET_STATE",
+              subType: "LIST_FACET_SET_SORT",
+              facetID: props.facet.ID,
+              sort: {
+                by: SortBy.Key,
+                direction: ascending ? SortDirection.Desc : SortDirection.Asc,
+              },
+            });
+          }}
+        >
+          {sortByKey && ascending ? (
+            <SortAlphaAscIcon color={sortByKey ? style.spotColor : "#CCC"} />
+          ) : (
+            <SortAlphaDescIcon color={sortByKey ? style.spotColor : "#CCC"} />
+          )}
+        </IconButton>
+        <IconButton
+          onClick={() => {
+            props.dispatch({
+              type: "UPDATE_FACET_STATE",
+              subType: "LIST_FACET_SET_SORT",
+              facetID: props.facet.ID,
+              sort: {
+                by: SortBy.Count,
+                direction:
+                  props.facetState.sort.direction === SortDirection.Asc
+                    ? SortDirection.Desc
+                    : SortDirection.Asc,
+              },
+            });
+          }}
+        >
+          {sortByCount && ascending ? (
+            <SortNumericAscIcon color={sortByCount ? style.spotColor : "#CCC"} />
+          ) : (
+            <SortNumericDescIcon color={sortByCount ? style.spotColor : "#CCC"} />
+          )}
+        </IconButton>
+      </Stack>
+    </Stack>
   );
 }
 
@@ -128,7 +93,7 @@ export default React.memo(Options);
 
 function SortAlphaAscIcon({ color = "#444" }: { color: string }) {
   return (
-    <svg viewBox="0 0 18 18">
+    <svg viewBox="0 0 18 18" width="18" height="18">
       <title>Sort alphabetically from A - Z</title>
       <path
         d="m 7.0175,12.841934 -1.22,1.180645 V 2.2258063 C 5.7975,1.8290322 5.4575,1.5 5.0475,1.5 c -0.41,0 -0.75,0.3290322 -0.75,0.7258063 V 14.022579 l -1.22,-1.180645 c -0.29,-0.280645 -0.77,-0.280645 -1.06,0 -0.29,0.280645 -0.29,0.745162 0,1.025807 l 2.5,2.419353 c 0.07,0.06775 0.15,0.11613 0.24,0.15484 0.09,0.03871 0.19,0.05807 0.29,0.05807 0.1,0 0.2,-0.01936 0.29,-0.05807 0.09,-0.03871 0.17,-0.08709 0.24,-0.15484 l 2.5,-2.419353 c 0.29,-0.280645 0.29,-0.745162 0,-1.025807 -0.29,-0.280645 -0.77,-0.280645 -1.06,0 z"
@@ -148,7 +113,8 @@ function SortAlphaAscIcon({ color = "#444" }: { color: string }) {
 
 function SortAlphaDescIcon({ color = "#444" }: { color: string }) {
   return (
-    <svg viewBox="0 0 18 18">
+    <svg viewBox="0 0 18 18" width="18" height="18">
+      <title>Sort by count</title>
       <path
         d="m 7.0175,12.841934 -1.22,1.180645 V 2.2258063 C 5.7975,1.8290322 5.4575,1.5 5.0475,1.5 c -0.41,0 -0.75,0.3290322 -0.75,0.7258063 V 14.022579 l -1.22,-1.180645 c -0.29,-0.280645 -0.77,-0.280645 -1.06,0 -0.29,0.280645 -0.29,0.745162 0,1.025807 l 2.5,2.419353 c 0.07,0.06775 0.15,0.11613 0.24,0.15484 0.09,0.03871 0.19,0.05807 0.29,0.05807 0.1,0 0.2,-0.01936 0.29,-0.05807 0.09,-0.03871 0.17,-0.08709 0.24,-0.15484 l 2.5,-2.419353 c 0.29,-0.280645 0.29,-0.745162 0,-1.025807 -0.29,-0.280645 -0.77,-0.280645 -1.06,0 z"
         fill={color}
@@ -167,7 +133,7 @@ function SortAlphaDescIcon({ color = "#444" }: { color: string }) {
 
 function SortNumericAscIcon({ color = "#444" }: { color: string }) {
   return (
-    <svg viewBox="0 0 12 12">
+    <svg viewBox="0 0 12 12" width="18" height="18">
       <path
         d="M 9.71,1 V 5.4 H 8.662 V 1.8384096 H 8.611 L 7.4,2.5472618 V 1.7476369 L 8.662,1 h 1.046 z"
         fill={color}
@@ -186,7 +152,7 @@ function SortNumericAscIcon({ color = "#444" }: { color: string }) {
 
 function SortNumericDescIcon({ color = "#444" }: { color: string }) {
   return (
-    <svg viewBox="0 0 12 12">
+    <svg viewBox="0 0 12 12" width="18" height="18">
       <path
         d="M 9.71,6.6 V 11 H 8.662 V 7.4384096 H 8.611 L 7.4,8.1472618 V 7.3476369 L 8.662,6.6 h 1.046 z"
         fill={color}

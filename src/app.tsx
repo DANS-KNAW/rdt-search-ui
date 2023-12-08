@@ -11,8 +11,15 @@ import { FacetControllers } from "./context/controllers";
 
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import SwipeableDrawer from '@mui/material/SwipeableDrawer';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 
 /* This is the wrapper for the search interface */
+
+const drawerBleeding = 56;
 
 interface Props {
   children: React.ReactNode;
@@ -27,31 +34,101 @@ export default function FacetedSearch({
   searchProps,
   searchState,
 }: Props) {
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.up('sm'));
+  const [open, setOpen] = React.useState(false);
+  const toggleDrawer = (newOpen: boolean) => () => {
+    setOpen(newOpen);
+  };
 
   return (
     <Container>
       <Grid container spacing={2}>
-        <Grid xs={4} sx={{ display: "flex", alignItems: "flex-end" }}>
-          <FullTextSearch />
-        </Grid>
-        <Grid xs={8}>
+        {matches ?
+          <Grid sm={6} md={4}>
+            <FullTextSearch />
+            {(searchState.query || searchState.facetFilters.entries().next().value) && <ActiveFilters /> }
+            <Facets
+              controllers={controllers}
+              searchProps={searchProps}
+              searchState={searchState}
+            >
+              {children}
+            </Facets>
+          </Grid>
+          :
+          <SwipeableDrawer
+            anchor="bottom"
+            open={open}
+            onClose={toggleDrawer(false)}
+            onOpen={toggleDrawer(true)}
+            swipeAreaWidth={drawerBleeding}
+            disableSwipeToOpen={false}
+            ModalProps={{
+              keepMounted: true,
+            }}
+            sx={{
+              ".MuiDrawer-paper ": {
+                height: `calc(100% - ${drawerBleeding * 2}px)`,
+                top: drawerBleeding * 2,
+                visibility: 'visible',
+                overflow: 'visible',
+              }
+            }}
+          >
+            <Box
+              sx={{
+                position: 'absolute',
+                top: -drawerBleeding,
+                borderTopLeftRadius: 8,
+                borderTopRightRadius: 8,
+                visibility: 'visible',
+                right: 0,
+                left: 0,
+                backgroundColor: "neutral.light",
+                textAlign: "center"
+              }}
+            >
+              <Box sx={{
+                width: 30,
+                height: 6,
+                backgroundColor: "neutral.dark",
+                borderRadius: 3,
+                position: 'absolute',
+                top: 10,
+                left: 'calc(50% - 15px)',
+              }} />
+              <Typography sx={{ pt: 3, pb: 1, color: 'text.secondary' }}>
+                {open ? 'Swipe down to close' : 'Swipe up for filters'}
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                px: 2,
+                pb: 2,
+                height: '100%',
+                overflow: 'auto',
+                backgroundColor: "neutral.light",
+              }}
+            >
+              <Facets
+                controllers={controllers}
+                searchProps={searchProps}
+                searchState={searchState}
+              >
+                {children}
+              </Facets>
+            </Box>
+          </SwipeableDrawer>
+        }
+        <Grid xs={12} sm={6} md={8}>
+          {!matches && <FullTextSearch />}
+          {!matches && (searchState.query || searchState.facetFilters.entries().next().value) && <ActiveFilters /> }
           <ResultHeader
             currentPage={searchState.currentPage}
             searchResult={searchState.searchResult}
             sortOrder={searchState.sortOrder}
           />
-        </Grid>
-        <Grid xs={4}>
-          {(searchState.query || searchState.facetFilters.entries().next().value) && <ActiveFilters /> }
-          <Facets
-            controllers={controllers}
-            searchProps={searchProps}
-            searchState={searchState}
-          >
-            {children}
-          </Facets>
-        </Grid>
-        <Grid xs={8}>
           <SearchResult
             currentPage={searchState.currentPage}
             ResultBodyComponent={searchProps.ResultBodyComponent}
@@ -64,3 +141,4 @@ export default function FacetedSearch({
     </Container>
   );
 }
+

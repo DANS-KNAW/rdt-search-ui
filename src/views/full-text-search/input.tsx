@@ -35,6 +35,7 @@ export function InputWrapper(props: Props) {
       onChange={props.handleInputChange}
       onKeyDown={handleKeyDown}
       fullWidth 
+      sx={{mb: 2}}
       InputProps={{
         endAdornment: <InputAdornment position="end">
           {

@@ -17,6 +17,7 @@
     "@mui/material": "^5.14.3",
     "clsx": "^2.0.0",
     "echarts": "^5.4.2",
+    "html-react-parser": "^4.2.2",
     "lodash.debounce": "^4.0.8",
     "md5": "^2.3.0",
     "ngeohash": "^0.6.3",

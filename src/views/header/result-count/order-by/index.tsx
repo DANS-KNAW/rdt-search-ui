@@ -20,7 +20,7 @@ export const SortBy = React.memo(function SortBy(props: Props) {
       : uiTexts.sort_by;
 
   return (
-    <DropDown caret label={label} style={{ zIndex: 2 }}>
+    <DropDown label={label}>
       {Array.from(controllers.values()).map((facet) => (
         <OrderOption
           facet={facet}

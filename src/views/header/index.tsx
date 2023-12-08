@@ -28,7 +28,7 @@ export const ResultHeader = function Header(props: Props) {
         <SortBy sortOrder={props.sortOrder} />
         <LoadSearch url={url} />
       </Stack>
-      <Stack direction="row" justifyContent="space-between">
+      <Stack direction="row" justifyContent="space-between" flexWrap="wrap" mb={1}>
         <ResultCount
           currentPage={props.currentPage}
           searchResult={props.searchResult}

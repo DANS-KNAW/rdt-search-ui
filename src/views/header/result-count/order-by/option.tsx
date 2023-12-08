@@ -1,48 +1,12 @@
 import React from "react";
-import styled from "styled-components";
-
-// import { Button } from '../../../ui/button'
 import { SearchStateDispatchContext } from "../../../../context/state";
 import { FacetController } from "../../../../facets/controller";
-import clsx from "clsx";
-import buttonStyle from "../../../ui/button.module.css";
 import { SortDirection } from "../../../../enum";
 import { SortOrder } from "../../../../context/state/use-search/types";
-
-interface OOProps {
-  active: boolean;
-}
-const Wrapper = styled.div`
-  align-items: center;
-  border-bottom: 1px solid #eee;
-  color: ${(props: OOProps) => (props.active ? "#222 !important" : "inherit")};
-  display: grid;
-  grid-template-columns: 4fr 1fr;
-  grid-gap: 1em;
-  height: 2rem;
-  text-transform: capitalize;
-  white-space: nowrap;
-
-  &:last-of-type {
-    border: 0;
-  }
-
-  & > .title {
-    cursor: pointer;
-    font-weight: ${(props: OOProps) => (props.active ? "bold" : "normal")};
-  }
-
-  & > button.toggle-direction {
-    border: 1px solid #aaa;
-    justify-self: end;
-    display: grid;
-    align-content: center;
-
-    width: 1.2rem;
-    height: 1.2rem;
-    padding: 0.2rem;
-  }
-`;
+import MenuItem from '@mui/material/MenuItem';
+import ListItemText from '@mui/material/ListItemText';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import SortIcon from '@mui/icons-material/Sort';
 
 function updateSortOrder(
   sortOrder: SortOrder,
@@ -100,22 +64,17 @@ function OrderOption(props: Props) {
   const direction = props.sortOrder.get(props.facet.config.field);
 
   return (
-    <Wrapper
-      active={direction != null}
+    <MenuItem
       key={props.facet.ID}
       onClick={setFacetId}
     >
-      <div className="title">{props.facet.config.title}</div>
       {direction != null && (
-        <button
-          className={clsx(buttonStyle.button, "toggle-direction")}
-          onClick={setDirection}
-          title={direction === SortDirection.Desc ? "Descending" : "Ascending"}
-        >
-          {direction === SortDirection.Desc ? <Desc /> : <Asc />}
-        </button>
+        <ListItemIcon onClick={setDirection}>
+          <SortIcon sx={{transform: direction === "asc" ? "rotate(180deg)" : "rotate(0deg)"}} />
+        </ListItemIcon>
       )}
-    </Wrapper>
+      <ListItemText>{props.facet.config.title}</ListItemText>
+    </MenuItem>
   );
 }
 
