@@ -10,7 +10,7 @@ import { SortBy } from "./result-count/order-by";
 import { LoadSearch } from "../active-filters/save-search/load-search";
 import { SearchPropsContext } from "../../context/props";
 
-import Stack from '@mui/material/Stack';
+import Stack from "@mui/material/Stack";
 
 interface Props {
   currentPage: SearchState["currentPage"];
@@ -22,14 +22,19 @@ export const ResultHeader = function Header(props: Props) {
   const dispatch = React.useContext(SearchStateDispatchContext);
   if (props.searchResult == null) return null;
 
-  return (
-    props.searchResult.total > 0 ?
+  return props.searchResult.total > 0 ? (
     <>
       <Stack direction="row" justifyContent="flex-end" mb={2}>
         <SortBy sortOrder={props.sortOrder} />
         <LoadSearch url={url} />
       </Stack>
-      <Stack direction="row" justifyContent="space-between" flexWrap="wrap" alignItems="center" mb={2}>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        flexWrap="wrap"
+        alignItems="center"
+        mb={2}
+      >
         <ResultCount
           currentPage={props.currentPage}
           searchResult={props.searchResult}
@@ -41,6 +46,5 @@ export const ResultHeader = function Header(props: Props) {
         />
       </Stack>
     </>
-    : null
-  );
+  ) : null;
 };

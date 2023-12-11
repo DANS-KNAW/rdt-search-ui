@@ -57,7 +57,10 @@ export function ChartFacet<
       }, 1000),
     );
 
-    window.addEventListener("resize", debounce(() => chart.current?.resize(), 200));
+    window.addEventListener(
+      "resize",
+      debounce(() => chart.current?.resize(), 200),
+    );
 
     return () => chart.current?.dispose();
   }, []);

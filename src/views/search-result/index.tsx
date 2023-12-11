@@ -5,12 +5,12 @@ import React from "react";
 import { Pagination } from "../pagination";
 import { SearchState, SearchStateDispatchContext } from "../../context/state";
 
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Typography from '@mui/material/Typography';
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardActions from "@mui/material/CardActions";
+import Typography from "@mui/material/Typography";
 
 /* Layout for content is defined in the app and passed as props to this component */
 
@@ -27,10 +27,9 @@ export function SearchResult(props: Props) {
 
   return (
     <>
-      {
-        props.searchResult.results.length > 0 ? 
+      {props.searchResult.results.length > 0 ? (
         props.searchResult.results.map((hit, i) => (
-          <Card key={i} sx={{marginBottom: 2}}>
+          <Card key={i} sx={{ marginBottom: 2 }}>
             <CardContent>
               <props.ResultBodyComponent
                 {...props.resultBodyProps}
@@ -38,22 +37,24 @@ export function SearchResult(props: Props) {
               />
             </CardContent>
             <CardActions>
-              <Button 
-                size="small" 
-                onClick={(ev) => props.onClickResult(hit, ev)} 
+              <Button
+                size="small"
+                onClick={(ev) => props.onClickResult(hit, ev)}
               >
                 Detailed view
               </Button>
             </CardActions>
           </Card>
         ))
-        : 
+      ) : (
         <Stack alignItems="center">
           <NoResultsSvg />
-          <Typography variant="h5" mt={4} sx={{textAlign: "center"}}>Sorry, no results found</Typography>
+          <Typography variant="h5" mt={4} sx={{ textAlign: "center" }}>
+            Sorry, no results found
+          </Typography>
         </Stack>
-      }
-      {props.searchResult.results.length > 0 && 
+      )}
+      {props.searchResult.results.length > 0 && (
         <Stack alignItems="center">
           <Pagination
             currentPage={props.currentPage}
@@ -61,14 +62,12 @@ export function SearchResult(props: Props) {
             total={props.searchResult.total}
           />
         </Stack>
-      }
+      )}
     </>
   );
 }
 
-
-
-const NoResultsSvg = () => 
+const NoResultsSvg = () => (
   <svg
     style={{ flexShrink: 0 }}
     width="240"
@@ -109,3 +108,4 @@ const NoResultsSvg = () =>
       </g>
     </g>
   </svg>
+);

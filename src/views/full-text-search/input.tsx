@@ -1,11 +1,11 @@
 import { useContext, useCallback, KeyboardEvent } from "react";
 import { SearchPropsContext } from "../../context/props";
 
-import TextField from '@mui/material/TextField';
-import InputAdornment from '@mui/material/InputAdornment';
-import Tooltip from '@mui/material/Tooltip';
-import HelpIcon from '@mui/icons-material/Help';
-import CircularProgress from '@mui/material/CircularProgress';
+import TextField from "@mui/material/TextField";
+import InputAdornment from "@mui/material/InputAdornment";
+import Tooltip from "@mui/material/Tooltip";
+import HelpIcon from "@mui/icons-material/Help";
+import CircularProgress from "@mui/material/CircularProgress";
 
 interface Props {
   handleInputChange: any;
@@ -31,18 +31,20 @@ export function InputWrapper(props: Props) {
       onClick={() => props.setSuggestActive(false)}
       onChange={props.handleInputChange}
       onKeyDown={handleKeyDown}
-      fullWidth 
-      sx={{mb: 2}}
+      fullWidth
+      sx={{ mb: 2 }}
       InputProps={{
-        endAdornment: <InputAdornment position="end">
-          {
-            props.loader
-            ? <CircularProgress size={22} />
-            : <Tooltip title={uiTexts.fullTextSearchHelp}>
+        endAdornment: (
+          <InputAdornment position="end">
+            {props.loader ? (
+              <CircularProgress size={22} />
+            ) : (
+              <Tooltip title={uiTexts.fullTextSearchHelp}>
                 <HelpIcon />
               </Tooltip>
-          }  
-        </InputAdornment>,
+            )}
+          </InputAdornment>
+        ),
       }}
     />
   );

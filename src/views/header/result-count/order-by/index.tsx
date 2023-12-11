@@ -22,11 +22,7 @@ export const SortBy = React.memo(function SortBy(props: Props) {
   return (
     <DropDown label={label}>
       {Array.from(controllers.values()).map((facet) => (
-        <OrderOption
-          facet={facet}
-          key={facet.ID}
-          sortOrder={props.sortOrder}
-        />
+        <OrderOption facet={facet} key={facet.ID} sortOrder={props.sortOrder} />
       ))}
     </DropDown>
   );

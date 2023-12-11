@@ -4,9 +4,9 @@ import debounce from "lodash.debounce";
 import type { ListFacetProps } from ".";
 import { SearchPropsContext } from "../../../context/props";
 import { SortBy, SortDirection } from "../../../enum";
-import TextField from '@mui/material/TextField';
-import Stack from '@mui/material/Stack';
-import IconButton from '@mui/material/IconButton';
+import TextField from "@mui/material/TextField";
+import Stack from "@mui/material/Stack";
+import IconButton from "@mui/material/IconButton";
 
 function Options(props: ListFacetProps) {
   const { style } = React.useContext(SearchPropsContext);
@@ -79,9 +79,13 @@ function Options(props: ListFacetProps) {
           }}
         >
           {sortByCount && ascending ? (
-            <SortNumericAscIcon color={sortByCount ? style.spotColor : "#CCC"} />
+            <SortNumericAscIcon
+              color={sortByCount ? style.spotColor : "#CCC"}
+            />
           ) : (
-            <SortNumericDescIcon color={sortByCount ? style.spotColor : "#CCC"} />
+            <SortNumericDescIcon
+              color={sortByCount ? style.spotColor : "#CCC"}
+            />
           )}
         </IconButton>
       </Stack>

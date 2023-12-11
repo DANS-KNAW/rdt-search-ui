@@ -4,11 +4,11 @@ import { DropDown } from "../../ui/drop-down";
 import { SearchProps } from "../../../context/props";
 import { SearchState } from "../../../context/state";
 import { serializeObject, useSavedSearches } from "./use-saved-searches";
-import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
 
 export interface SearchFilters {
   filters: SearchState["facetFilters"];
@@ -68,24 +68,24 @@ const SavedSearches = (props: {
   return (
     <Box p={2}>
       <Typography variant="h6">Save search as</Typography>
-        <Stack direction="row" spacing={1} mt={2}>
-          <TextField
-            onChange={(ev) => setName(ev.currentTarget.value)}
-            onKeyDown={(ev) => {
-              if (ev.key === "Enter") save();
-            }}
-            label="Enter a name"
-            placeholder={props.hash}
-            type="text"
-            value={name || ""}
-            InputLabelProps={{ shrink: true }}
-            fullWidth
-            size="small"
-          />
-          <Button variant="contained" onClick={save}>
-            Save
-          </Button>
-        </Stack>
+      <Stack direction="row" spacing={1} mt={2}>
+        <TextField
+          onChange={(ev) => setName(ev.currentTarget.value)}
+          onKeyDown={(ev) => {
+            if (ev.key === "Enter") save();
+          }}
+          label="Enter a name"
+          placeholder={props.hash}
+          type="text"
+          value={name || ""}
+          InputLabelProps={{ shrink: true }}
+          fullWidth
+          size="small"
+        />
+        <Button variant="contained" onClick={save}>
+          Save
+        </Button>
+      </Stack>
     </Box>
   );
 };

@@ -4,8 +4,8 @@ import { SearchState } from "./context/state";
 import { ActiveFilters } from "./views/active-filters";
 import { Facets } from "./facets";
 import { FacetControllers } from "./context/controllers";
-import Container from '@mui/material/Container';
-import Grid from '@mui/material/Unstable_Grid2';
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Unstable_Grid2";
 
 interface Props {
   children: React.ReactNode;
@@ -14,21 +14,18 @@ interface Props {
   searchState: SearchState;
 }
 
-export function Dashboard({
-  children,
-  controllers,
-  searchState,
-}: Props) {
+export function Dashboard({ children, controllers, searchState }: Props) {
   if (searchState.facetStates.size === 0) return null;
 
   return (
     <Container>
       <Grid container>
-        {(searchState.query || searchState.facetFilters.entries().next().value) && 
+        {(searchState.query ||
+          searchState.facetFilters.entries().next().value) && (
           <Grid xs={12}>
             <ActiveFilters />
           </Grid>
-        }
+        )}
         <Facets
           controllers={controllers}
           searchState={searchState}

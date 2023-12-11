@@ -1,9 +1,9 @@
 import React from "react";
 
-import Button from '@mui/material/Button';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import Popover from '@mui/material/Popover';
+import Button from "@mui/material/Button";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import Popover from "@mui/material/Popover";
 
 interface Props {
   children: React.ReactNode;
@@ -29,7 +29,7 @@ export const DropDown = React.memo(function DropDown({
       <Button
         onClick={handleClick}
         variant="contained"
-        sx={{mr: 1}}
+        sx={{ mr: 1 }}
         endIcon={open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
         size={small ? "small" : "medium"}
       >
@@ -40,13 +40,12 @@ export const DropDown = React.memo(function DropDown({
         anchorEl={anchorEl}
         onClose={handleClose}
         anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
+          vertical: "bottom",
+          horizontal: "left",
         }}
       >
         {children}
       </Popover>
-
     </div>
   );
 });

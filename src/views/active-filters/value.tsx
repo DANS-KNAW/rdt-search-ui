@@ -1,6 +1,6 @@
 import type { MouseEvent } from "react";
-import Chip from '@mui/material/Chip';
-import CancelIcon from '@mui/icons-material/Cancel';
+import Chip from "@mui/material/Chip";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 export function ActiveFilterValue(props: {
   facetID?: string;
@@ -8,7 +8,7 @@ export function ActiveFilterValue(props: {
   title: string;
   value: string;
 }) {
-  console.log(props.removeFilter)
+  console.log(props.removeFilter);
   return (
     <Chip
       data-facet-id={props.facetID}
@@ -16,7 +16,7 @@ export function ActiveFilterValue(props: {
       onClick={props.removeFilter}
       label={props.value}
       size="small"
-      sx={{mb: 0.5, mr: 0.5}}
+      sx={{ mb: 0.5, mr: 0.5 }}
       icon={<CancelIcon />}
     />
   );

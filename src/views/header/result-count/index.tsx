@@ -4,7 +4,7 @@ import type { FSResponse } from "../../../context/state/use-search/types";
 import React from "react";
 
 import { SearchPropsContext } from "../../../context/props";
-import Typography from '@mui/material/Typography';
+import Typography from "@mui/material/Typography";
 
 interface Props {
   currentPage: SearchState["currentPage"];

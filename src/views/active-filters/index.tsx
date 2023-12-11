@@ -10,10 +10,10 @@ import {
 import { FacetControllersContext } from "../../context/controllers";
 import { SaveSearch } from "./save-search/save-search";
 
-import Typography from '@mui/material/Typography';
-import Stack from '@mui/material/Stack';
-import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button';
+import Typography from "@mui/material/Typography";
+import Stack from "@mui/material/Stack";
+import Paper from "@mui/material/Paper";
+import Button from "@mui/material/Button";
 
 export function ActiveFilters() {
   const controllers = React.useContext(FacetControllersContext);
@@ -61,7 +61,11 @@ export function ActiveFilters() {
           </ActiveFilterItem>
         ))}
         <Stack direction="row" flexWrap="wrap">
-          <Button variant="contained" onClick={reset} sx={{ marginBottom: 1, marginRight: 1 }}>
+          <Button
+            variant="contained"
+            onClick={reset}
+            sx={{ marginBottom: 1, marginRight: 1 }}
+          >
             {uiTexts.clearSearch}
           </Button>
           <SaveSearch

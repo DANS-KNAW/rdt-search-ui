@@ -6,9 +6,9 @@ import ListFacetValue from "./value";
 
 import { Pagination } from "../../../views/pagination";
 import { FacetsDataReducerAction } from "../../../context/state/actions";
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 
 export const LIST_FACET_SCROLL_CUT_OFF = 50;
 
@@ -49,7 +49,7 @@ export function ListView(props: ListFacetProps) {
 
   return (
     <>
-      <Box className="values" ref={ulRef} style={{ overflow: 'auto' }}>
+      <Box className="values" ref={ulRef} style={{ overflow: "auto" }}>
         {values.map((value) => (
           <ListFacetValue
             active={

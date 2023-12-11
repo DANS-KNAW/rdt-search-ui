@@ -3,10 +3,10 @@ import { SearchStateDispatchContext } from "../../../../context/state";
 import { FacetController } from "../../../../facets/controller";
 import { SortDirection } from "../../../../enum";
 import { SortOrder } from "../../../../context/state/use-search/types";
-import MenuItem from '@mui/material/MenuItem';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import SortIcon from '@mui/icons-material/Sort';
+import MenuItem from "@mui/material/MenuItem";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import SortIcon from "@mui/icons-material/Sort";
 
 function updateSortOrder(
   sortOrder: SortOrder,
@@ -64,13 +64,15 @@ function OrderOption(props: Props) {
   const direction = props.sortOrder.get(props.facet.config.field);
 
   return (
-    <MenuItem
-      key={props.facet.ID}
-      onClick={setFacetId}
-    >
+    <MenuItem key={props.facet.ID} onClick={setFacetId}>
       {direction != null && (
         <ListItemIcon onClick={setDirection}>
-          <SortIcon sx={{transform: direction === "asc" ? "rotate(180deg)" : "rotate(0deg)"}} />
+          <SortIcon
+            sx={{
+              transform:
+                direction === "asc" ? "rotate(180deg)" : "rotate(0deg)",
+            }}
+          />
         </ListItemIcon>
       )}
       <ListItemText>{props.facet.config.title}</ListItemText>

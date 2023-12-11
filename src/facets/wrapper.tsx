@@ -8,9 +8,9 @@ import { FacetController } from "./controller";
 import { FacetsDataReducerAction } from "../context/state/actions";
 import { HelpDropDown } from "../views/ui/drop-down/help";
 import { SearchPropsContext } from "../context/props";
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
 
 interface Props<
   FacetConfig extends BaseFacetConfig,
@@ -31,17 +31,15 @@ function FacetWrapper<
   Filter extends FacetFilter,
 >(props: Props<FacetConfig, FacetState, Filter>) {
   return (
-    <Card sx={{height: '100%'}}>
+    <Card sx={{ height: "100%" }}>
       <CardContent>
         <Typography variant="h5">
           {props.facet.config.title}
           {props.facetState.collapse && (
-              <ActiveIndicator<Filter> filter={props.filter} />
-            )}
+            <ActiveIndicator<Filter> filter={props.filter} />
+          )}
         </Typography>
-        <HelpDropDown>
-          {props.facet.config.description}
-        </HelpDropDown>
+        <HelpDropDown>{props.facet.config.description}</HelpDropDown>
         {props.children}
       </CardContent>
     </Card>
