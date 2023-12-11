@@ -23,12 +23,13 @@ export const ResultHeader = function Header(props: Props) {
   if (props.searchResult == null) return null;
 
   return (
+    props.searchResult.total > 0 ?
     <>
       <Stack direction="row" justifyContent="flex-end" mb={2}>
         <SortBy sortOrder={props.sortOrder} />
         <LoadSearch url={url} />
       </Stack>
-      <Stack direction="row" justifyContent="space-between" flexWrap="wrap" mb={1}>
+      <Stack direction="row" justifyContent="space-between" flexWrap="wrap" alignItems="center" mb={2}>
         <ResultCount
           currentPage={props.currentPage}
           searchResult={props.searchResult}
@@ -40,5 +41,6 @@ export const ResultHeader = function Header(props: Props) {
         />
       </Stack>
     </>
+    : null
   );
 };

@@ -23,7 +23,7 @@ function ListFacetValueView(props: Props) {
   }
   return (
     <div title={props.value.key} onClick={props.toggleFilter}>
-      <Stack direction="row" ml={2} mb={0.5} justifyContent="space-between" sx={style}>
+      <Stack direction="row" mb={0.5} justifyContent="space-between" sx={style}>
         <Typography variant="body2">{parse(props.keyFormatter(props.value.key, props.query))}</Typography>
         <Typography variant="body2">{props.value.count}</Typography>
       </Stack>

@@ -60,8 +60,8 @@ export function ActiveFilters() {
             ))}
           </ActiveFilterItem>
         ))}
-        <Stack direction="row" spacing={1} flexWrap="wrap">
-          <Button variant="contained" onClick={reset}>
+        <Stack direction="row" flexWrap="wrap">
+          <Button variant="contained" onClick={reset} sx={{ marginBottom: 1, marginRight: 1 }}>
             {uiTexts.clearSearch}
           </Button>
           <SaveSearch

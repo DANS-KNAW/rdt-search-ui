@@ -15,9 +15,6 @@ interface Props {
 }
 export function InputWrapper(props: Props) {
   const { uiTexts } = useContext(SearchPropsContext);
-
-  console.log(props)
-
   const handleKeyDown = useCallback((ev: KeyboardEvent) => {
     if (
       ev.code === "Enter" || // Enter

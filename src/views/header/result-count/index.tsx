@@ -4,8 +4,7 @@ import type { FSResponse } from "../../../context/state/use-search/types";
 import React from "react";
 
 import { SearchPropsContext } from "../../../context/props";
-
-import styles from "../index.module.css";
+import Typography from '@mui/material/Typography';
 
 interface Props {
   currentPage: SearchState["currentPage"];
@@ -40,5 +39,5 @@ export function ResultCount(props: Props) {
 		${props.searchResult.total === 1 ? uiTexts.result : uiTexts.results}
 	`;
 
-  return <div className={styles.resultCount}>{content}</div>;
+  return <Typography>{content}</Typography>;
 }

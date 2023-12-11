@@ -22,25 +22,26 @@ export function LoadSearch(props: { url: SearchProps["url"] }) {
 const LoadSearches = (props: { savedSearches: SavedSearch[] }) => {
   const dispatch = React.useContext(SearchStateDispatchContext);
 
-  return (
-        props.savedSearches.map((savedSearch, i) => (
-          <MenuItem
-            key={i}
-            onClick={() => {
-              dispatch({
-                type: "LOAD_SEARCH",
-                filters: savedSearch.filters,
-                query: savedSearch.query,
-              });
-            }}
-          >
-            <Stack direction="row" justifyContent="center" sx={{flex: 1, width: "100%"}} spacing={2}>
-              <ListItemText sx={{flex: 2}}>{savedSearch.name || savedSearch.hash}</ListItemText>
-              <ListItemText sx={{flex: 1, textAlign: "right", color: "neutral.dark"}}>{dateString(savedSearch.date)}</ListItemText>
-            </Stack>
-          </MenuItem>
-        ))
+  const loadSearch = (savedSearch: SavedSearch) => {
+    dispatch({
+      type: "LOAD_SEARCH",
+      filters: savedSearch.filters,
+      query: savedSearch.query,
+    });
+  }
 
+  return (
+    props.savedSearches.map((savedSearch, i) => (
+      <MenuItem
+        key={i}
+        onClick={() => loadSearch(savedSearch)}
+      >
+        <Stack direction="row" justifyContent="center" sx={{flex: 1, width: "100%"}} spacing={2}>
+          <ListItemText sx={{flex: 2}}>{savedSearch.name || savedSearch.hash}</ListItemText>
+          <ListItemText sx={{flex: 1, textAlign: "right", color: "neutral.dark"}}>{dateString(savedSearch.date)}</ListItemText>
+        </Stack>
+      </MenuItem>
+    ))
   );
 };
 

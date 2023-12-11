@@ -1,28 +1,19 @@
 import type { ListFacetProps } from ".";
 
 import React from "react";
-import styled from "styled-components";
 
 import ListFacetValue from "./value";
 
 import { Pagination } from "../../../views/pagination";
 import { FacetsDataReducerAction } from "../../../context/state/actions";
-import buttonStyle from "../../../views/ui/button.module.css";
 import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
 
 export const LIST_FACET_SCROLL_CUT_OFF = 50;
 
-export const Wrapper = styled("div")`
-  ul.values {
-    list-style: none;
-    margin: 0 0 0 -1rem;
-    padding: 0;
-    overflow-y: auto;
-  }
-`;
-
 export function ListView(props: ListFacetProps) {
-  const ulRef = React.useRef<HTMLUListElement>(null);
+  const ulRef = React.useRef<HTMLDivElement>(null);
   const [page, setPage] = usePage(props, props.dispatch);
   const values = useValues(props, page);
 
@@ -57,8 +48,8 @@ export function ListView(props: ListFacetProps) {
   if (!values.length) return null;
 
   return (
-    <Wrapper>
-      <ul className="values" ref={ulRef}>
+    <>
+      <Box className="values" ref={ulRef} style={{ overflow: 'auto' }}>
         {values.map((value) => (
           <ListFacetValue
             active={
@@ -70,9 +61,9 @@ export function ListView(props: ListFacetProps) {
             value={value}
           />
         ))}
-      </ul>
+      </Box>
       {props.viewState.pagination ? (
-        <Stack alignItems="center">
+        <Stack alignItems="center" mt={2}>
           <Pagination
             currentPage={page}
             dispatch={props.dispatch}
@@ -84,16 +75,16 @@ export function ListView(props: ListFacetProps) {
         </Stack>
       ) : (
         props.viewState.scrollButton && (
-          <button className={buttonStyle.button} onClick={showAll}>
+          <Button onClick={showAll}>
             {props.viewState.query ? (
               <>Show more</>
             ) : (
               <>Show all ({props.values.total})</>
             )}
-          </button>
+          </Button>
         )
       )}
-    </Wrapper>
+    </>
   );
 }
 

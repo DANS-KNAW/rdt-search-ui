@@ -86,7 +86,8 @@ export default function FacetedSearch({
                 right: 0,
                 left: 0,
                 backgroundColor: "neutral.light",
-                textAlign: "center"
+                textAlign: "center",
+                boxShadow: 10,
               }}
             >
               <Box sx={{
