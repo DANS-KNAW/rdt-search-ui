@@ -69,7 +69,8 @@ export const Facets = ({
         xs={12}
         sm={dashboard ? 7 : 12}
         md={dashboard ? 8 : 12}
-        lg={dashboard ? 9 : 12}
+        // strange bug: incorrect width calcs in MS Edge when setting this to 9
+        lg={dashboard ? 8.999 : 12}
         container
       >
         {mainFacets.map((f) => (

@@ -9,7 +9,6 @@ import { SearchState } from "./context/state";
 import { Facets } from "./facets";
 import { FacetControllers } from "./context/controllers";
 
-import Container from "@mui/material/Container";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
@@ -42,15 +41,80 @@ export default function FacetedSearch({
   };
 
   return (
-    <Container>
-      <Grid container spacing={2}>
-        {matches ? (
-          <Grid sm={6} md={4}>
-            <FullTextSearch />
-            {(searchState.query ||
-              searchState.facetFilters.entries().next().value) && (
-              <ActiveFilters />
-            )}
+    <Grid container spacing={2}>
+      {matches ? (
+        <Grid sm={6} md={4}>
+          <FullTextSearch />
+          {(searchState.query ||
+            searchState.facetFilters.entries().next().value) && (
+            <ActiveFilters />
+          )}
+          <Facets
+            controllers={controllers}
+            searchProps={searchProps}
+            searchState={searchState}
+          >
+            {children}
+          </Facets>
+        </Grid>
+      ) : (
+        <SwipeableDrawer
+          anchor="bottom"
+          open={open}
+          onClose={toggleDrawer(false)}
+          onOpen={toggleDrawer(true)}
+          swipeAreaWidth={drawerBleeding}
+          disableSwipeToOpen={false}
+          ModalProps={{
+            keepMounted: true,
+          }}
+          sx={{
+            ".MuiDrawer-paper ": {
+              height: `calc(100% - ${drawerBleeding * 2}px)`,
+              top: drawerBleeding * 2,
+              visibility: "visible",
+              overflow: "visible",
+            },
+          }}
+        >
+          <Box
+            sx={{
+              position: "absolute",
+              top: -drawerBleeding,
+              borderTopLeftRadius: 8,
+              borderTopRightRadius: 8,
+              visibility: "visible",
+              right: 0,
+              left: 0,
+              backgroundColor: "neutral.light",
+              textAlign: "center",
+              boxShadow: 10,
+            }}
+          >
+            <Box
+              sx={{
+                width: 30,
+                height: 6,
+                backgroundColor: "neutral.dark",
+                borderRadius: 3,
+                position: "absolute",
+                top: 10,
+                left: "calc(50% - 15px)",
+              }}
+            />
+            <Typography sx={{ pt: 3, pb: 1, color: "text.secondary" }}>
+              {open ? "Swipe down to close" : "Swipe up for filters"}
+            </Typography>
+          </Box>
+          <Box
+            sx={{
+              px: 2,
+              pb: 2,
+              height: "100%",
+              overflow: "auto",
+              backgroundColor: "neutral.light",
+            }}
+          >
             <Facets
               controllers={controllers}
               searchProps={searchProps}
@@ -58,96 +122,29 @@ export default function FacetedSearch({
             >
               {children}
             </Facets>
-          </Grid>
-        ) : (
-          <SwipeableDrawer
-            anchor="bottom"
-            open={open}
-            onClose={toggleDrawer(false)}
-            onOpen={toggleDrawer(true)}
-            swipeAreaWidth={drawerBleeding}
-            disableSwipeToOpen={false}
-            ModalProps={{
-              keepMounted: true,
-            }}
-            sx={{
-              ".MuiDrawer-paper ": {
-                height: `calc(100% - ${drawerBleeding * 2}px)`,
-                top: drawerBleeding * 2,
-                visibility: "visible",
-                overflow: "visible",
-              },
-            }}
-          >
-            <Box
-              sx={{
-                position: "absolute",
-                top: -drawerBleeding,
-                borderTopLeftRadius: 8,
-                borderTopRightRadius: 8,
-                visibility: "visible",
-                right: 0,
-                left: 0,
-                backgroundColor: "neutral.light",
-                textAlign: "center",
-                boxShadow: 10,
-              }}
-            >
-              <Box
-                sx={{
-                  width: 30,
-                  height: 6,
-                  backgroundColor: "neutral.dark",
-                  borderRadius: 3,
-                  position: "absolute",
-                  top: 10,
-                  left: "calc(50% - 15px)",
-                }}
-              />
-              <Typography sx={{ pt: 3, pb: 1, color: "text.secondary" }}>
-                {open ? "Swipe down to close" : "Swipe up for filters"}
-              </Typography>
-            </Box>
-            <Box
-              sx={{
-                px: 2,
-                pb: 2,
-                height: "100%",
-                overflow: "auto",
-                backgroundColor: "neutral.light",
-              }}
-            >
-              <Facets
-                controllers={controllers}
-                searchProps={searchProps}
-                searchState={searchState}
-              >
-                {children}
-              </Facets>
-            </Box>
-          </SwipeableDrawer>
-        )}
-        <Grid xs={12} sm={6} md={8}>
-          {!matches && <FullTextSearch />}
-          {!matches &&
-            (searchState.query ||
-              searchState.facetFilters.entries().next().value) && (
-              <ActiveFilters />
-            )}
-          <ResultHeader
-            currentPage={searchState.currentPage}
-            searchResult={searchState.searchResult}
-            sortOrder={searchState.sortOrder}
-          />
-          <SearchResult
-            currentPage={searchState.currentPage}
-            ResultBodyComponent={searchProps.ResultBodyComponent}
-            onClickResult={searchProps.onClickResult}
-            resultBodyProps={searchProps.resultBodyProps}
-            searchResult={searchState.searchResult}
-          />
-        </Grid>
+          </Box>
+        </SwipeableDrawer>
+      )}
+      <Grid xs={12} sm={6} md={8}>
+        {!matches && <FullTextSearch />}
+        {!matches &&
+          (searchState.query ||
+            searchState.facetFilters.entries().next().value) && (
+            <ActiveFilters />
+          )}
+        <ResultHeader
+          currentPage={searchState.currentPage}
+          searchResult={searchState.searchResult}
+          sortOrder={searchState.sortOrder}
+        />
+        <SearchResult
+          currentPage={searchState.currentPage}
+          ResultBodyComponent={searchProps.ResultBodyComponent}
+          onClickResult={searchProps.onClickResult}
+          resultBodyProps={searchProps.resultBodyProps}
+          searchResult={searchState.searchResult}
+        />
       </Grid>
-    </Container>
+    </Grid>
   );
 }
