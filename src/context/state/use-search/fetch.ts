@@ -1,4 +1,5 @@
 import type { Payload } from "./request-creator";
+import { enqueueSnackbar } from "notistack";
 
 const cache = new Map();
 
@@ -29,7 +30,8 @@ export async function fetchSearchResult(url: string, payload: Payload) {
     response = await fetchResponse.json();
     cache.set(body, response);
   } catch (err) {
-    throw "Failed to fetched Faceted Search state";
+    enqueueSnackbar("Dashboard and Search error: failed to fetch data.", { variant: "error", persist: true });
+    throw "Failed to fetch Faceted Search state";
   }
 
   return fetchResponse.status === 200 ? response : null;
