@@ -9,8 +9,6 @@ export function searchStateReducer(controllers: FacetControllers) {
     state: SearchState,
     action: FacetsDataReducerAction,
   ): SearchState {
-    console.log("[SearchState reducer]", action);
-
     if (action.type === "SET_FACET_STATES") {
       return {
         ...state,

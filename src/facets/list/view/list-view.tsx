@@ -1,12 +1,10 @@
 import type { ListFacetProps } from ".";
-
 import React from "react";
-
 import ListFacetValue from "./value";
-
 import { Pagination } from "../../../views/pagination";
 import { FacetsDataReducerAction } from "../../../context/state/actions";
 import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 
@@ -45,7 +43,11 @@ export function ListView(props: ListFacetProps) {
     });
   }, [props.values?.total]);
 
-  if (!values.length) return null;
+  if (!values.length) return (
+    <Typography variant="body2" sx={{ color: "neutral.dark" }}>
+      No data found
+    </Typography>
+  );
 
   return (
     <>

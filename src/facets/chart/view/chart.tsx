@@ -10,6 +10,7 @@ import * as echarts from "echarts";
 import FacetWrapper from "../../wrapper";
 import debounce from "lodash.debounce";
 import { FacetFilter } from "../../../context/state/facets";
+import Typography from "@mui/material/Typography";
 
 import styles from "./index.module.css";
 
@@ -63,7 +64,7 @@ export function ChartFacet<
     );
 
     return () => chart.current?.dispose();
-  }, []);
+  }, [props.values]);
 
   // Update the chart when the values change
   React.useEffect(() => {
@@ -79,7 +80,18 @@ export function ChartFacet<
 
   return (
     <FacetWrapper {...props}>
+    { // some logic to check if there's actually data available
+      // if it's an array, check if it has any values
+      (props.values && Array.isArray(props.values) && props.values.length === 0) ||
+      // if it's a map, check if there are values other than 0
+      (props.values && props.values instanceof Map && [...props.values.values()].every(value => value === 0))
+      ?
+      <Typography variant="body2" sx={{ color: "neutral.dark" }}>
+        No data found
+      </Typography>
+      :
       <div className={styles.innerContainer} ref={containerRef}></div>
+    }
     </FacetWrapper>
   );
 }

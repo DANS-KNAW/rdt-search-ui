@@ -8,7 +8,6 @@ export function ActiveFilterValue(props: {
   title: string;
   value: string;
 }) {
-  console.log(props.removeFilter);
   return (
     <Chip
       data-facet-id={props.facetID}

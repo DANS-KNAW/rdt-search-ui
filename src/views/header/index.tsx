@@ -22,29 +22,31 @@ export const ResultHeader = function Header(props: Props) {
   const dispatch = React.useContext(SearchStateDispatchContext);
   if (props.searchResult == null) return null;
 
-  return props.searchResult.total > 0 ? (
+  return (
     <>
-      <Stack direction="row" justifyContent="flex-end" mb={2}>
+      <Stack direction="row" justifyContent="flex-end" mb={props.searchResult.total > 0 ? 2 : 8}>
         <SortBy sortOrder={props.sortOrder} />
         <LoadSearch url={url} />
       </Stack>
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        flexWrap="wrap"
-        alignItems="center"
-        mb={2}
-      >
-        <ResultCount
-          currentPage={props.currentPage}
-          searchResult={props.searchResult}
-        />
-        <Pagination
-          currentPage={props.currentPage}
-          dispatch={dispatch}
-          total={props.searchResult.total}
-        />
-      </Stack>
+      { props.searchResult.total > 0 &&
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          flexWrap="wrap"
+          alignItems="center"
+          mb={2}
+        >
+          <ResultCount
+            currentPage={props.currentPage}
+            searchResult={props.searchResult}
+          />
+          <Pagination
+            currentPage={props.currentPage}
+            dispatch={dispatch}
+            total={props.searchResult.total}
+          />
+        </Stack>
+      }
     </>
-  ) : null;
+  )
 };

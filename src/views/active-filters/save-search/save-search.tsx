@@ -26,9 +26,9 @@ export function SaveSearch(props: {
 
   if (savedSearch) {
     return (
-      <em style={{ marginTop: "1rem" }}>
+      <Typography variant="body2" mt={1} sx={{ color: "neutral.dark" }}>
         Saved as "{savedSearch.name || savedSearch.hash}"
-      </em>
+      </Typography>
     );
   }
 
