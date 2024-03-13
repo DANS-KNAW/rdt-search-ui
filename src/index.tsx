@@ -142,7 +142,7 @@ function AppLoader({ children, controllers, searchProps, setSearchProps }: AppLo
         <SearchStateContext.Provider value={state}>
           
           { // selector for when there are multiple search endpoints
-            searchProps.endpoints!.length > 0 &&
+            searchProps.endpoints!.length > 1 &&
             <Stack direction="row" justifyContent="flex-end" alignItems="center" mb={2}>
               <Typography variant="h6" sx={{mr: 2, mb: 0}}>Select your dataset</Typography>
               <FormControl sx={{width: "20rem"}}>
