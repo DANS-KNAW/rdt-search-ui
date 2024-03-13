@@ -1,18 +1,17 @@
 import type { Payload } from "./request-creator";
 import { enqueueSnackbar } from "notistack";
+import type { Endpoints } from "../../props";
 
 const cache = new Map();
 
-export async function fetchSearchResult(url: string, payload: Payload, dispatch: any) {
+export async function fetchSearchResult(url: string, payload: Payload, dispatch: any, endpoints?: Endpoints[]) {
   let fetchResponse: Response;
   let response: any;
 
+  const currentEndpoint = endpoints && endpoints.find( ep => ep.url === url );
+
   const body = JSON.stringify(payload);
-  const encodedCredentials = btoa(
-    `${import.meta.env.VITE_ELASTICSEARCH_API_USER}:${
-      import.meta.env.VITE_ELASTICSEARCH_API_PASS
-    }`,
-  );
+  const encodedCredentials = currentEndpoint?.user ? btoa(`${currentEndpoint?.user}:${currentEndpoint?.pass}`) : null;
 
   if (cache.has(body)) {
     return cache.get(body);

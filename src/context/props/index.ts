@@ -84,7 +84,7 @@ interface OptionalSearchProps {
 }
 
 // Endpoints for search/endpoint urls and names
-interface Endpoints {
+export interface Endpoints {
   name: string;
   url: string;
   user?: string;
