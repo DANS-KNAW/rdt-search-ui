@@ -28,10 +28,10 @@ export function ResultCount(props: Props) {
   if (fromTo == null) return null;
 
   const fromToOf =
-    props.searchResult.total >= resultsPerPage
-      ? `${fromTo[0]} - ${fromTo[1]} 
+    props.searchResult.total >= resultsPerPage ?
+      `${fromTo[0]} - ${fromTo[1]} 
 		   ${uiTexts.of}`
-      : "";
+    : "";
 
   const content = `
 		${fromToOf}

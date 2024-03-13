@@ -80,12 +80,21 @@ interface OptionalSearchProps {
   fullTextHighlight?: SearchHighlight;
 
   SearchHomeComponent?: React.FC<any>;
+  endpoints?: Endpoints[];
+}
+
+// Endpoints for search/endpoint urls and names
+interface Endpoints {
+  name: string;
+  url: string;
+  user?: string;
+  pass?: string;
 }
 
 /**
  * External props, added to component declaration
  */
-export type ExternalSearchProps = RequiredSearchProps &
+export type ExternalSearchProps = Omit<RequiredSearchProps, "url"> &
   OptionalWithDefaultsSearchProps &
   OptionalSearchProps;
 

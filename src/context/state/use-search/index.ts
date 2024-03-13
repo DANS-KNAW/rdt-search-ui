@@ -36,25 +36,25 @@ export function useSearch({
       return; // || searchState.isInitialSearch) return
 
     const changedProps =
-      prev == null
-        ? Object.keys(state)
-        : Object.keys(state).filter(
-            (key) =>
-              state[key as keyof SearchState] !==
-              prev[key as keyof SearchState],
-          );
+      prev == null ?
+        Object.keys(state)
+      : Object.keys(state).filter(
+          (key) =>
+            state[key as keyof SearchState] !== prev[key as keyof SearchState],
+        );
 
     // Only the sort order or page has changed, only update the search result
     if (
       changedProps.length === 1 &&
       (changedProps[0] === "sortOrder" || changedProps[0] === "currentPage")
     ) {
-      fetchSearchResultOnly(state, props, controllers).then((searchResult) => {
-        dispatch({
-          type: "SET_SEARCH_RESULT",
-          searchResult,
+      fetchSearchResultOnly(state, props, controllers, dispatch)
+        .then((searchResult) => {
+          dispatch({
+            type: "SET_SEARCH_RESULT",
+            searchResult,
+          });
         });
-      });
       return;
 
       // Only facet states have changed, only update the facet values of one facet
@@ -68,7 +68,7 @@ export function useSearch({
       const facetController = controllers.get(facetID);
       if (facetController == null) return;
 
-      fetchFacetValuesOnly(state, props, controllers, facetController).then(
+      fetchFacetValuesOnly(state, props, controllers, facetController, dispatch).then(
         (values) => {
           dispatch({
             type: "UPDATE_FACET_VALUES",
@@ -83,7 +83,7 @@ export function useSearch({
       // Make sure we only do this when there's something in the facetStates, as this function gets called a few times.
       // Otherwise this could overwrite the previously fetched data with incomplete data, as it's not synchronous
       state.facetStates.size !== 0 &&
-        fetchSearchResultWithFacets(state, props, controllers).then(
+        fetchSearchResultWithFacets(state, props, controllers, dispatch).then(
           ([searchResult, facetValues]) => {
             dispatch({
               type: "SET_SEARCH_RESULT",
@@ -111,9 +111,10 @@ async function fetchSearchResultOnly(
   searchState: SearchState,
   searchProps: SearchProps,
   controllers: FacetControllers,
+  dispatch: any,
 ) {
   const { payload } = new ESRequest(searchState, searchProps, controllers);
-  const response = await fetchSearchResult(searchProps.url, payload);
+  const response = await fetchSearchResult(searchProps.url, payload, dispatch);
   const result = ESResponseParser(response);
   return result;
 }
@@ -122,13 +123,14 @@ async function fetchSearchResultWithFacets(
   searchState: SearchState,
   searchProps: SearchProps,
   controllers: FacetControllers,
+  dispatch: any,
 ) {
   const { payload } = new ESRequestWithFacets(
     searchState,
     searchProps,
     controllers,
   );
-  const response = await fetchSearchResult(searchProps.url, payload);
+  const response = await fetchSearchResult(searchProps.url, payload, dispatch);
   const result = ESResponseWithFacetsParser(response, controllers);
   return result;
 }
@@ -138,6 +140,7 @@ async function fetchFacetValuesOnly(
   searchProps: SearchProps,
   controllers: FacetControllers,
   controller: FacetController<BaseFacetConfig, BaseFacetState, FacetFilter>,
+  dispatch: any,
 ) {
   // Create a regular payload of a search with facets
   const { payload } = new ESRequestWithFacets(
@@ -161,7 +164,7 @@ async function fetchFacetValuesOnly(
   payload.track_total_hits = false;
 
   // Fetch the response
-  const response = await fetchSearchResult(searchProps.url, payload);
+  const response = await fetchSearchResult(searchProps.url, payload, dispatch);
 
   // Parse only the facet values of the requested facet
   let buckets = getBuckets(response, controller.ID);

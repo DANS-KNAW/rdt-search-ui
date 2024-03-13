@@ -36,13 +36,12 @@ export function InputWrapper(props: Props) {
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">
-            {props.loader ? (
+            {props.loader ?
               <CircularProgress size={22} />
-            ) : (
-              <Tooltip title={uiTexts.fullTextSearchHelp}>
+            : <Tooltip title={uiTexts.fullTextSearchHelp}>
                 <HelpIcon />
               </Tooltip>
-            )}
+            }
           </InputAdornment>
         ),
       }}

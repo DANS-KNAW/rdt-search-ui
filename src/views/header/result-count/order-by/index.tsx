@@ -15,9 +15,9 @@ export const SortBy = React.memo(function SortBy(props: Props) {
   const { uiTexts } = React.useContext(SearchPropsContext);
 
   const label =
-    props.sortOrder.size > 0
-      ? `${uiTexts.sort_by} (${props.sortOrder.size})`
-      : uiTexts.sort_by;
+    props.sortOrder.size > 0 ?
+      `${uiTexts.sort_by} (${props.sortOrder.size})`
+    : uiTexts.sort_by;
 
   return (
     <DropDown label={label}>

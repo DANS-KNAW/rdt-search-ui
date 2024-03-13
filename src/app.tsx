@@ -42,7 +42,7 @@ export default function FacetedSearch({
 
   return (
     <Grid container spacing={2}>
-      {matches ? (
+      {matches ?
         <Grid sm={6} md={4}>
           <FullTextSearch />
           {(searchState.query ||
@@ -57,8 +57,7 @@ export default function FacetedSearch({
             {children}
           </Facets>
         </Grid>
-      ) : (
-        <SwipeableDrawer
+      : <SwipeableDrawer
           anchor="bottom"
           open={open}
           onClose={toggleDrawer(false)}
@@ -124,7 +123,7 @@ export default function FacetedSearch({
             </Facets>
           </Box>
         </SwipeableDrawer>
-      )}
+      }
       <Grid xs={12} sm={6} md={8}>
         {!matches && <FullTextSearch />}
         {!matches &&

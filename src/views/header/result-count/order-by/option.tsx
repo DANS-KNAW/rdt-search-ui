@@ -32,9 +32,9 @@ function OrderOption(props: Props) {
       ev.stopPropagation();
 
       const nextDirection =
-        props.sortOrder.get(props.facet.config.field) === SortDirection.Desc
-          ? SortDirection.Asc
-          : SortDirection.Desc;
+        props.sortOrder.get(props.facet.config.field) === SortDirection.Desc ?
+          SortDirection.Asc
+        : SortDirection.Desc;
 
       const sortOrder = updateSortOrder(
         props.sortOrder,

@@ -3,7 +3,7 @@ import { enqueueSnackbar } from "notistack";
 
 const cache = new Map();
 
-export async function fetchSearchResult(url: string, payload: Payload) {
+export async function fetchSearchResult(url: string, payload: Payload, dispatch: any) {
   let fetchResponse: Response;
   let response: any;
 
@@ -19,6 +19,15 @@ export async function fetchSearchResult(url: string, payload: Payload) {
   }
 
   try {
+    // set loading state and remove error
+    dispatch({
+      type: "SET_LOADING",
+      loading: true,
+    });
+    dispatch({
+      type: "SET_ERROR",
+      error: undefined,
+    });
     fetchResponse = await fetch(url, {
       method: "post",
       headers: {
@@ -30,9 +39,25 @@ export async function fetchSearchResult(url: string, payload: Payload) {
     response = await fetchResponse.json();
     cache.set(body, response);
   } catch (err) {
-    enqueueSnackbar("Dashboard and Search error: failed to fetch data.", { variant: "error", persist: true });
+    console.log(err)
+    enqueueSnackbar("Dashboard and Search error: failed to fetch data.", {
+      variant: "error",
+    });
+    dispatch({
+      type: "SET_ERROR",
+      error: err,
+    });
+    dispatch({
+      type: "SET_LOADING",
+      loading: false,
+    });
     throw "Failed to fetch Faceted Search state";
   }
+
+  dispatch({
+    type: "SET_LOADING",
+    loading: false,
+  });
 
   return fetchResponse.status === 200 ? response : null;
 }

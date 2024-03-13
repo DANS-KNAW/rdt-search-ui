@@ -80,18 +80,24 @@ export function ChartFacet<
 
   return (
     <FacetWrapper {...props}>
-    { // some logic to check if there's actually data available
-      // if it's an array, check if it has any values
-      (props.values && Array.isArray(props.values) && props.values.length === 0) ||
-      // if it's a map, check if there are values other than 0
-      (props.values && props.values instanceof Map && [...props.values.values()].every(value => value === 0))
-      ?
-      <Typography variant="body2" sx={{ color: "neutral.dark" }}>
-        No data found
-      </Typography>
-      :
-      <div className={styles.innerContainer} ref={containerRef}></div>
-    }
+      {
+        // some logic to check if there's actually data available
+        // if it's an array, check if it has any values
+        (
+          (props.values &&
+            Array.isArray(props.values) &&
+            props.values.length === 0) ||
+          // if it's a map, check if there are values other than 0
+          (props.values &&
+            props.values instanceof Map &&
+            [...props.values.values()].every((value) => value === 0)) ||
+          props.values === undefined
+        ) ?
+          <Typography variant="body2" sx={{ color: "neutral.dark" }}>
+            No data found
+          </Typography>
+        : <div className={styles.innerContainer} ref={containerRef} />
+      }
     </FacetWrapper>
   );
 }

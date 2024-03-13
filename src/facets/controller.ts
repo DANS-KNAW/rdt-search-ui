@@ -19,8 +19,9 @@ export abstract class FacetController<
   constructor(initialConfig: FacetConfig) {
     super();
 
-    this.ID = initialConfig.id
-      ? initialConfig.id
+    this.ID =
+      initialConfig.id ?
+        initialConfig.id
       : `${initialConfig.field}-${Math.random().toString().slice(2, 8)}`;
     // TODO move config to state or props?
     this.config = this.initConfig(initialConfig);

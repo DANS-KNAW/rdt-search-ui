@@ -31,8 +31,8 @@ const LoadSearches = (props: { savedSearches: SavedSearch[] }) => {
 
   return props.savedSearches.map((savedSearch, i) => (
     <MenuItem key={i} onClick={() => loadSearch(savedSearch)}>
-      <ListItemText 
-        primary={savedSearch.name || savedSearch.hash} 
+      <ListItemText
+        primary={savedSearch.name || savedSearch.hash}
         secondary={dateString(savedSearch.date)}
       />
     </MenuItem>
