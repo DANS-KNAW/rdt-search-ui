@@ -18,8 +18,9 @@ export function ListView(props: ListFacetProps) {
   React.useEffect(() => {
     if (ulRef.current == null) return;
 
-    ulRef.current.style.height = props.facetState.scroll
-      ? `${ulRef.current.getBoundingClientRect().height}px`
+    ulRef.current.style.height =
+      props.facetState.scroll ?
+        `${ulRef.current.getBoundingClientRect().height}px`
       : "auto";
   }, [props.facetState.scroll]);
 
@@ -43,11 +44,12 @@ export function ListView(props: ListFacetProps) {
     });
   }, [props.values?.total]);
 
-  if (!values.length) return (
-    <Typography variant="body2" sx={{ color: "neutral.dark" }}>
-      No data found
-    </Typography>
-  );
+  if (!values.length)
+    return (
+      <Typography variant="body2" sx={{ color: "neutral.dark" }}>
+        No data found
+      </Typography>
+    );
 
   return (
     <>
@@ -64,7 +66,7 @@ export function ListView(props: ListFacetProps) {
           />
         ))}
       </Box>
-      {props.viewState.pagination ? (
+      {props.viewState.pagination ?
         <Stack alignItems="center" mt={2}>
           <Pagination
             currentPage={page}
@@ -75,17 +77,14 @@ export function ListView(props: ListFacetProps) {
             siblingCount={0}
           />
         </Stack>
-      ) : (
-        props.viewState.scrollButton && (
+      : props.viewState.scrollButton && (
           <Button onClick={showAll}>
-            {props.viewState.query ? (
+            {props.viewState.query ?
               <>Show more</>
-            ) : (
-              <>Show all ({props.values.total})</>
-            )}
+            : <>Show all ({props.values.total})</>}
           </Button>
         )
-      )}
+      }
     </>
   );
 }

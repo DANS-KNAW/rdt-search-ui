@@ -24,11 +24,15 @@ export const ResultHeader = function Header(props: Props) {
 
   return (
     <>
-      <Stack direction="row" justifyContent="flex-end" mb={props.searchResult.total > 0 ? 2 : 8}>
+      <Stack
+        direction="row"
+        justifyContent="flex-end"
+        mb={props.searchResult.total > 0 ? 2 : 8}
+      >
         <SortBy sortOrder={props.sortOrder} />
         <LoadSearch url={url} />
       </Stack>
-      { props.searchResult.total > 0 &&
+      {props.searchResult.total > 0 && (
         <Stack
           direction="row"
           justifyContent="space-between"
@@ -46,7 +50,7 @@ export const ResultHeader = function Header(props: Props) {
             total={props.searchResult.total}
           />
         </Stack>
-      }
+      )}
     </>
-  )
+  );
 };

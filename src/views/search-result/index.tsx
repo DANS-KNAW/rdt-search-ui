@@ -27,7 +27,7 @@ export function SearchResult(props: Props) {
 
   return (
     <>
-      {props.searchResult.results.length > 0 ? (
+      {props.searchResult.results.length > 0 ?
         props.searchResult.results.map((hit, i) => (
           <Card key={i} sx={{ marginBottom: 2 }}>
             <CardContent>
@@ -46,14 +46,13 @@ export function SearchResult(props: Props) {
             </CardActions>
           </Card>
         ))
-      ) : (
-        <Stack alignItems="center">
+      : <Stack alignItems="center">
           <NoResultsSvg />
           <Typography variant="h5" mt={4} sx={{ textAlign: "center" }}>
             Sorry, no results found
           </Typography>
         </Stack>
-      )}
+      }
       {props.searchResult.results.length > 0 && (
         <Stack alignItems="center">
           <Pagination

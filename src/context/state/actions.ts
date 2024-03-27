@@ -41,11 +41,23 @@ interface SetSearchFilter {
   facetId: string;
   value: string | string[] | MapFacetFilter; // | HistogramFacetValue
 }
+
 interface SetSearchResult {
   type: "SET_SEARCH_RESULT";
   searchResult?: SearchState["searchResult"];
   facetValues?: SearchState["facetValues"];
 }
+
+interface SetLoading {
+  type: "SET_LOADING",
+  loading: boolean;
+}
+
+interface SetError {
+  type: "SET_ERROR";
+  error: any;
+}
+
 interface SetQuery {
   type: "SET_QUERY";
   value: string;
@@ -85,4 +97,6 @@ export type FacetsDataReducerAction =
   | SetSearchResult
   | SetSortOrder
   | ToggleCollapse
-  | UpdateFacetValues;
+  | UpdateFacetValues
+  | SetError
+  | SetLoading;

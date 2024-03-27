@@ -56,11 +56,9 @@ function Options(props: ListFacetProps) {
             });
           }}
         >
-          {sortByKey && ascending ? (
+          {sortByKey && ascending ?
             <SortAlphaAscIcon color={sortByKey ? style.spotColor : "#CCC"} />
-          ) : (
-            <SortAlphaDescIcon color={sortByKey ? style.spotColor : "#CCC"} />
-          )}
+          : <SortAlphaDescIcon color={sortByKey ? style.spotColor : "#CCC"} />}
         </IconButton>
         <IconButton
           onClick={() => {
@@ -71,22 +69,21 @@ function Options(props: ListFacetProps) {
               sort: {
                 by: SortBy.Count,
                 direction:
-                  props.facetState.sort.direction === SortDirection.Asc
-                    ? SortDirection.Desc
-                    : SortDirection.Asc,
+                  props.facetState.sort.direction === SortDirection.Asc ?
+                    SortDirection.Desc
+                  : SortDirection.Asc,
               },
             });
           }}
         >
-          {sortByCount && ascending ? (
+          {sortByCount && ascending ?
             <SortNumericAscIcon
               color={sortByCount ? style.spotColor : "#CCC"}
             />
-          ) : (
-            <SortNumericDescIcon
+          : <SortNumericDescIcon
               color={sortByCount ? style.spotColor : "#CCC"}
             />
-          )}
+          }
         </IconButton>
       </Stack>
     </Stack>

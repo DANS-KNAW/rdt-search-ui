@@ -28,6 +28,9 @@ export interface SearchState {
   initialSearchResult?: FSResponse;
   initialFacetStates?: FacetStates;
   initialFacetValues?: Record<string, any>;
+
+  loading: boolean;
+  error?: any;
 }
 
 export const intialSearchState = {
@@ -38,6 +41,7 @@ export const intialSearchState = {
   query: "",
   searchResult: undefined,
   sortOrder: new Map(),
+  loading: true,
 };
 
 export const SearchStateContext =

@@ -60,8 +60,8 @@ export function getViewState(
   if (total < config.size!) {
     return listFacetViewStates[0];
   } else if (total <= LIST_FACET_SCROLL_CUT_OFF) {
-    return state.size === total
-      ? listFacetViewStates[2]
+    return state.size === total ?
+        listFacetViewStates[2]
       : listFacetViewStates[1];
   } else if (total > LIST_FACET_SCROLL_CUT_OFF) {
     return listFacetViewStates[3];

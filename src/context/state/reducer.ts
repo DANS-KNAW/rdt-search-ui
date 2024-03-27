@@ -57,25 +57,39 @@ export function searchStateReducer(controllers: FacetControllers) {
 
     if (action.type === "SET_SEARCH_RESULT") {
       const initialSearchResult =
-        action.searchResult != null && state.initialSearchResult == null
-          ? action.searchResult
-          : state.initialSearchResult;
+        action.searchResult != null && state.initialSearchResult == null ?
+          action.searchResult
+        : state.initialSearchResult;
 
       const initialFacetValues =
-        action.facetValues != null && state.initialFacetValues == null
-          ? action.facetValues
-          : state.initialFacetValues;
+        action.facetValues != null && state.initialFacetValues == null ?
+          action.facetValues
+        : state.initialFacetValues;
 
       return {
         ...state,
         initialSearchResult,
         initialFacetValues,
         searchResult:
-          action.searchResult != null
-            ? action.searchResult
-            : state.searchResult,
+          action.searchResult != null ?
+            action.searchResult
+          : state.searchResult,
         facetValues:
           action.facetValues != null ? action.facetValues : state.facetValues,
+      };
+    }
+
+    if (action.type === "SET_ERROR") {
+      return {
+        ...state,
+        error: action.error,
+      };
+    }
+
+    if (action.type === "SET_LOADING") {
+      return {
+        ...state,
+        loading: action.loading,
       };
     }
 

@@ -20,6 +20,14 @@ import {
 import { useSearch } from "./context/state/use-search";
 import type { FacetController } from "./facets/controller";
 
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import CircularProgress from '@mui/material/CircularProgress';
+
 export function FacetedSearch(props: ExternalSearchProps) {
   const [children, setChildren] = React.useState<React.ReactNode>(undefined);
   const [searchProps, setSearchProps] = React.useState<SearchProps | undefined>(
@@ -32,11 +40,14 @@ export function FacetedSearch(props: ExternalSearchProps) {
 
     const _children =
       // Make sure it is an element and not a string, number, ...
-      isValidElement(props.children) &&
-      // If children is a fragment, get the children of the fragment
-      props.children.type.toString() === Symbol.for("react.fragment").toString()
-        ? props.children.props.children
-        : props.children;
+      (
+        isValidElement(props.children) &&
+        // If children is a fragment, get the children of the fragment
+        props.children.type.toString() ===
+          Symbol.for("react.fragment").toString()
+      ) ?
+        props.children.props.children
+      : props.children;
 
     setChildren(_children);
   }, [props.children]);
@@ -50,6 +61,7 @@ export function FacetedSearch(props: ExternalSearchProps) {
     const sp: SearchProps = {
       ...defaultSearchProps,
       ...props,
+      url: searchProps?.url || props.endpoints![0].url || "",
       style: {
         ...defaultSearchProps.style,
         ...props.style,
@@ -73,7 +85,7 @@ export function FacetedSearch(props: ExternalSearchProps) {
 
   return (
     <SearchPropsContext.Provider value={searchProps}>
-      <AppLoader searchProps={searchProps} controllers={controllers}>
+      <AppLoader searchProps={searchProps} controllers={controllers} setSearchProps={setSearchProps}>
         {children}
       </AppLoader>
     </SearchPropsContext.Provider>
@@ -84,13 +96,23 @@ interface AppLoaderProps {
   children: React.ReactNode;
   controllers: FacetControllers;
   searchProps: SearchProps;
+  setSearchProps: (sp: SearchProps) => void;
 }
 
-function AppLoader({ children, controllers, searchProps }: AppLoaderProps) {
+function AppLoader({ children, controllers, searchProps, setSearchProps }: AppLoaderProps) {
   const [state, dispatch] = React.useReducer(
     searchStateReducer(controllers),
     intialSearchState,
   );
+
+  console.log(state)
+
+  const handleChange = (event: SelectChangeEvent) => {
+    setSearchProps({
+      ...searchProps,
+      url: event.target.value,
+    })
+  };
 
   useSearch({
     props: searchProps,
@@ -118,13 +140,49 @@ function AppLoader({ children, controllers, searchProps }: AppLoaderProps) {
     <FacetControllersContext.Provider value={controllers}>
       <SearchStateDispatchContext.Provider value={dispatch}>
         <SearchStateContext.Provider value={state}>
-          <Component
-            controllers={controllers}
-            searchProps={searchProps}
-            searchState={state}
-          >
-            {children}
-          </Component>
+          
+          { // selector for when there are multiple search endpoints
+            searchProps.endpoints!.length > 1 &&
+            <Stack direction="row" justifyContent="flex-end" alignItems="center" mb={2}>
+              <Typography variant="h6" sx={{mr: 2, mb: 0}}>Select your dataset</Typography>
+              <FormControl sx={{width: "20rem"}}>
+                <InputLabel id="dataset-select-label">Dataset</InputLabel>
+                <Select
+                  labelId="dataset-select-label"
+                  id="dataset-select"
+                  value={searchProps.endpoints!.find(ep => ep.url === searchProps.url)!.url}
+                  label="Dataset"
+                  onChange={handleChange}
+                >
+                  {searchProps.endpoints!.map( endpoint =>
+                    <MenuItem key={endpoint.url} value={endpoint.url}>{endpoint.name}</MenuItem>
+                  )}
+                </Select>
+              </FormControl>
+            </Stack>
+          }
+
+          {
+            state.loading ?
+            <Stack justifyContent="center" alignItems="center" sx={{height: "20rem"}}>
+              <CircularProgress />
+            </Stack> :
+            state.error ?
+            <Stack justifyContent="center" alignItems="center" sx={{height: "20rem"}}>
+              <Stack>
+                <Typography variant="h3">Uh oh!</Typography>
+                <Typography paragraph>We got an unexpected error: <b>{state.error.message}</b></Typography>
+                <Typography paragraph>Please refresh your browser to try again. If the problem persists, contact DANS.</Typography>
+              </Stack>
+            </Stack> :
+            <Component
+              controllers={controllers}
+              searchProps={searchProps}
+              searchState={state}
+            >
+              {children}
+            </Component>
+          }
         </SearchStateContext.Provider>
       </SearchStateDispatchContext.Provider>
     </FacetControllersContext.Provider>
