@@ -51,9 +51,8 @@ export class ListFacetController extends FacetController<
         nextState.scroll = true;
 
         nextState.page = 1;
-        nextState.size = state.query?.length
-          ? LIST_FACET_SCROLL_CUT_OFF
-          : action.total;
+        nextState.size =
+          state.query?.length ? LIST_FACET_SCROLL_CUT_OFF : action.total;
       }
 
       if (action.subType === "LIST_FACET_SET_PAGE") {
@@ -83,9 +82,9 @@ export class ListFacetController extends FacetController<
       | FacetFilterObject<ListFacetFilter>
       | undefined;
     const facetFilter =
-      facetFilterObject == null
-        ? new Set<string>()
-        : new Set(facetFilterObject.value);
+      facetFilterObject == null ?
+        new Set<string>()
+      : new Set(facetFilterObject.value);
 
     // <FILTER>
     if (action.type === "REMOVE_FILTER") {

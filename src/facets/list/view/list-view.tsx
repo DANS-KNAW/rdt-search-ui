@@ -1,36 +1,26 @@
 import type { ListFacetProps } from ".";
-
 import React from "react";
-import styled from "styled-components";
-
 import ListFacetValue from "./value";
-
 import { Pagination } from "../../../views/pagination";
-// import { Button } from '../../../views/ui/button'
 import { FacetsDataReducerAction } from "../../../context/state/actions";
-import buttonStyle from "../../../views/ui/button.module.css";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 
 export const LIST_FACET_SCROLL_CUT_OFF = 50;
 
-export const Wrapper = styled("div")`
-  ul.values {
-    list-style: none;
-    margin: 0 0 0 -1rem;
-    padding: 0;
-    overflow-y: auto;
-  }
-`;
-
 export function ListView(props: ListFacetProps) {
-  const ulRef = React.useRef<HTMLUListElement>(null);
+  const ulRef = React.useRef<HTMLDivElement>(null);
   const [page, setPage] = usePage(props, props.dispatch);
   const values = useValues(props, page);
 
   React.useEffect(() => {
     if (ulRef.current == null) return;
 
-    ulRef.current.style.height = props.facetState.scroll
-      ? `${ulRef.current.getBoundingClientRect().height}px`
+    ulRef.current.style.height =
+      props.facetState.scroll ?
+        `${ulRef.current.getBoundingClientRect().height}px`
       : "auto";
   }, [props.facetState.scroll]);
 
@@ -54,11 +44,16 @@ export function ListView(props: ListFacetProps) {
     });
   }, [props.values?.total]);
 
-  if (!values.length) return null;
+  if (!values.length)
+    return (
+      <Typography variant="body2" sx={{ color: "neutral.dark" }}>
+        No data found
+      </Typography>
+    );
 
   return (
-    <Wrapper>
-      <ul className="values" ref={ulRef}>
+    <>
+      <Box className="values" ref={ulRef} style={{ overflow: "auto" }}>
         {values.map((value) => (
           <ListFacetValue
             active={
@@ -70,27 +65,27 @@ export function ListView(props: ListFacetProps) {
             value={value}
           />
         ))}
-      </ul>
-      {props.viewState.pagination ? (
-        <Pagination
-          currentPage={page}
-          dispatch={props.dispatch}
-          total={props.values.total}
-          resultsPerPage={props.facet.config.size}
-          setCurrentPage={setPage}
-        />
-      ) : (
-        props.viewState.scrollButton && (
-          <button className={buttonStyle.button} onClick={showAll}>
-            {props.viewState.query ? (
+      </Box>
+      {props.viewState.pagination ?
+        <Stack alignItems="center" mt={2}>
+          <Pagination
+            currentPage={page}
+            dispatch={props.dispatch}
+            total={props.values.total}
+            resultsPerPage={props.facet.config.size}
+            setCurrentPage={setPage}
+            siblingCount={0}
+          />
+        </Stack>
+      : props.viewState.scrollButton && (
+          <Button onClick={showAll}>
+            {props.viewState.query ?
               <>Show more</>
-            ) : (
-              <>Show all ({props.values.total})</>
-            )}
-          </button>
+            : <>Show all ({props.values.total})</>}
+          </Button>
         )
-      )}
-    </Wrapper>
+      }
+    </>
   );
 }
 

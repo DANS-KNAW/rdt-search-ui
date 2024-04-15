@@ -1,49 +1,8 @@
 import React from "react";
-import styled from "styled-components";
 import { KeyCount, ListFacetState } from "../state";
-
-interface WProps {
-  active: boolean;
-}
-const Wrapper = styled("li")`
-  cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: ${(p: WProps) => (p.active ? "bold" : "normal")};
-  margin-bottom: 0.4rem;
-  padding-left: 1rem;
-  position: relative;
-  overflow: hidden;
-  display: grid;
-  grid-template-columns: 1fr fit-content(0);
-
-  ${(p) =>
-    p.active
-      ? `&:before {
-				content: '•';
-				font-size: 1.2rem;
-				margin-top: -.175rem;
-				position: absolute;
-			}`
-      : `&:hover:before {
-				content: '◦';
-				font-size: 1.2rem;
-				margin-top: -.175rem;
-				position: absolute;
-			}`}
-
-  & > .value {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  & > .count {
-    color: #888;
-    font-size: 0.8rem;
-    padding-left: 0.4rem;
-  }
-`;
-
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import parse from "html-react-parser";
 interface Props {
   active: boolean;
   keyFormatter: (key: string | number, query?: string) => string;
@@ -53,20 +12,24 @@ interface Props {
 }
 
 function ListFacetValueView(props: Props) {
+  const style = {
+    cursor: "pointer",
+    "&:hover > p": {
+      fontWeight: "bold",
+    },
+    "& > p": {
+      fontWeight: props.active ? "bold" : "normal",
+    },
+  };
   return (
-    <Wrapper
-      active={props.active}
-      onClick={props.toggleFilter}
-      title={props.value.key}
-    >
-      <span
-        className="value"
-        dangerouslySetInnerHTML={{
-          __html: props.keyFormatter(props.value.key, props.query),
-        }}
-      />
-      <span className="count">{props.value.count}</span>
-    </Wrapper>
+    <div title={props.value.key} onClick={props.toggleFilter}>
+      <Stack direction="row" mb={0.5} justifyContent="space-between" sx={style}>
+        <Typography variant="body2">
+          {parse(props.keyFormatter(props.value.key, props.query))}
+        </Typography>
+        <Typography variant="body2">{props.value.count}</Typography>
+      </Stack>
+    </div>
   );
 }
 

@@ -1,7 +1,6 @@
 .wrapper {
 	color: #444;
 	display: grid;
-	grid-template-rows: fit-content(0) 1fr;
 	height: 100%;
 }
 

@@ -8,6 +8,7 @@
 		"esModuleInterop": false,
 		"experimentalDecorators": true,
 		"jsx": "react-jsx",
+	    "module": "ESNext",
 		"moduleResolution": "node",
 		"allowSyntheticDefaultImports": true,
 		"isolatedModules": true,
@@ -15,9 +16,11 @@
 		"skipLibCheck": true,
 		"downlevelIteration": true,
 		"useDefineForClassFields": false,
-		"outDir": "build"
+		"outDir": "build",
+    	"types": ["vite/client"]
 	},
 	"include": [
+		"vite-env.d.ts",
 		"src/global.d.ts",
 		"src/index.tsx",
 		"src/facets/chart/view/index.tsx",

@@ -1,75 +1,24 @@
 import React from "react";
-import styled from "styled-components";
-
 import { ResultHeader } from "./views/header";
 import { SearchResult } from "./views/search-result";
 import { FullTextSearch } from "./views/full-text-search";
-import { ToggleView } from "./views/toggle-view";
 import { ActiveFilters } from "./views/active-filters";
 
 import { SearchProps } from "./context/props";
 import { SearchState } from "./context/state";
-import { FACETS_WIDTH } from "./constants";
 import { Facets } from "./facets";
 import { FacetControllers } from "./context/controllers";
 
-const Wrapper = styled.div`
-  background: ${(props: WProps) => props.style.background};
-  display: grid;
-  grid-template-columns: ${FACETS_WIDTH}px 1fr;
-  grid-template-rows: fit-content(0) fit-content(0) 1fr;
-  grid-row-gap: 32px;
-  grid-column-gap: 64px;
-  max-width: 100vw;
-  min-width: 100%;
+import Grid from "@mui/material/Unstable_Grid2";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import SwipeableDrawer from "@mui/material/SwipeableDrawer";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material/styles";
 
-  & > * {
-    padding: 0 16px;
-  }
+/* This is the wrapper for the search interface */
 
-  #facets {
-    grid-column: 1;
-    min-width: ${FACETS_WIDTH}px;
-    grid-row: 2 / -1;
-  }
-
-  #facets .facet-container {
-    margin-bottom: 2rem;
-  }
-
-  #active-filters,
-  #rdt-search__search-result {
-    grid-column: 2;
-    /* grid-row: 2 / -1; */
-    min-width: 400px;
-  }
-
-  #rdt-search__toggle-view {
-    display: none;
-  }
-
-  @media (max-width: 892px) {
-    grid-template-columns: 1fr;
-    #rdt-search__toggle-view {
-      display: grid;
-    }
-
-    #rdt-search__search-result,
-    #rdt-search__result-header {
-      display: ${(props: WProps) => (props.showResults ? "grid" : "none")};
-    }
-
-    #facets,
-    #active-filters,
-    #rdt-search__full-text {
-      display: ${(props: WProps) => (props.showResults ? "none" : "grid")};
-    }
-  }
-`;
-
-interface WProps extends Pick<SearchProps, "style"> {
-  showResults: boolean;
-}
+const drawerBleeding = 56;
 
 interface Props {
   children: React.ReactNode;
@@ -77,42 +26,124 @@ interface Props {
   searchProps: SearchProps;
   searchState: SearchState;
 }
+
 export default function FacetedSearch({
   children,
   controllers,
   searchProps,
   searchState,
 }: Props) {
-  const [showResults, setShowResults] = React.useState(true);
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.up("sm"));
+  const [open, setOpen] = React.useState(false);
+  const toggleDrawer = (newOpen: boolean) => () => {
+    setOpen(newOpen);
+  };
 
   return (
-    <Wrapper
-      className={searchProps.className}
-      showResults={showResults}
-      style={searchProps.style}
-    >
-      <FullTextSearch />
-      <ResultHeader
-        currentPage={searchState.currentPage}
-        searchResult={searchState.searchResult}
-        sortOrder={searchState.sortOrder}
-      />
-      <ActiveFilters />
-      <Facets
-        controllers={controllers}
-        searchProps={searchProps}
-        searchState={searchState}
-      >
-        {children}
-      </Facets>
-      <SearchResult
-        currentPage={searchState.currentPage}
-        ResultBodyComponent={searchProps.ResultBodyComponent}
-        onClickResult={searchProps.onClickResult}
-        resultBodyProps={searchProps.resultBodyProps}
-        searchResult={searchState.searchResult}
-      />
-      <ToggleView showResults={showResults} setShowResults={setShowResults} />
-    </Wrapper>
+    <Grid container spacing={2}>
+      {matches ?
+        <Grid sm={6} md={4}>
+          <FullTextSearch />
+          {(searchState.query ||
+            searchState.facetFilters.entries().next().value) && (
+            <ActiveFilters />
+          )}
+          <Facets
+            controllers={controllers}
+            searchProps={searchProps}
+            searchState={searchState}
+          >
+            {children}
+          </Facets>
+        </Grid>
+      : <SwipeableDrawer
+          anchor="bottom"
+          open={open}
+          onClose={toggleDrawer(false)}
+          onOpen={toggleDrawer(true)}
+          swipeAreaWidth={drawerBleeding}
+          disableSwipeToOpen={false}
+          ModalProps={{
+            keepMounted: true,
+          }}
+          sx={{
+            ".MuiDrawer-paper ": {
+              height: `calc(100% - ${drawerBleeding * 2}px)`,
+              top: drawerBleeding * 2,
+              visibility: "visible",
+              overflow: "visible",
+            },
+          }}
+        >
+          <Box
+            sx={{
+              position: "absolute",
+              top: -drawerBleeding,
+              borderTopLeftRadius: 8,
+              borderTopRightRadius: 8,
+              visibility: "visible",
+              right: 0,
+              left: 0,
+              backgroundColor: "neutral.light",
+              textAlign: "center",
+              boxShadow: 10,
+            }}
+          >
+            <Box
+              sx={{
+                width: 30,
+                height: 6,
+                backgroundColor: "neutral.dark",
+                borderRadius: 3,
+                position: "absolute",
+                top: 10,
+                left: "calc(50% - 15px)",
+              }}
+            />
+            <Typography sx={{ pt: 3, pb: 1, color: "text.secondary" }}>
+              {open ? "Swipe down to close" : "Swipe up for filters"}
+            </Typography>
+          </Box>
+          <Box
+            sx={{
+              px: 2,
+              pb: 2,
+              height: "100%",
+              overflow: "auto",
+              backgroundColor: "neutral.light",
+            }}
+          >
+            <Facets
+              controllers={controllers}
+              searchProps={searchProps}
+              searchState={searchState}
+            >
+              {children}
+            </Facets>
+          </Box>
+        </SwipeableDrawer>
+      }
+      <Grid xs={12} sm={6} md={8}>
+        {!matches && <FullTextSearch />}
+        {!matches &&
+          (searchState.query ||
+            searchState.facetFilters.entries().next().value) && (
+            <ActiveFilters />
+          )}
+        <ResultHeader
+          currentPage={searchState.currentPage}
+          searchResult={searchState.searchResult}
+          sortOrder={searchState.sortOrder}
+        />
+        <SearchResult
+          currentPage={searchState.currentPage}
+          ResultBodyComponent={searchProps.ResultBodyComponent}
+          onClickResult={searchProps.onClickResult}
+          resultBodyProps={searchProps.resultBodyProps}
+          searchResult={searchState.searchResult}
+        />
+      </Grid>
+    </Grid>
   );
 }

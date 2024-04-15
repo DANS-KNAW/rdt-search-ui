@@ -184,19 +184,19 @@ export class DateChartController extends FacetController<
   ): KeyCountMap {
     // If no buckets are returned, return an empty map
     if (buckets == null || buckets.length === 0) {
-      return this.values
-        ? // If this is not the first load, reset the values to 0
+      return this.values ?
+          // If this is not the first load, reset the values to 0
           new Map(Array.from(this.values.keys()).map((x) => [x, 0]))
-        : // If this is the first load, return an empty map
-          new Map();
+          // If this is the first load, return an empty map
+        : new Map();
     }
 
     this.updateRange(buckets, this.config);
 
     const emptyMap =
-      this.values == null
-        ? new Map()
-        : new Map(Array.from(this.values.keys()).map((x) => [x, 0]));
+      this.values == null ?
+        new Map()
+      : new Map(Array.from(this.values.keys()).map((x) => [x, 0]));
 
     this.values = buckets.reduce(
       (prev, curr) =>

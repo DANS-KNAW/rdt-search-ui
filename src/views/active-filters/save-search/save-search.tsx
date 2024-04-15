@@ -4,10 +4,11 @@ import { DropDown } from "../../ui/drop-down";
 import { SearchProps } from "../../../context/props";
 import { SearchState } from "../../../context/state";
 import { serializeObject, useSavedSearches } from "./use-saved-searches";
-
-import styles from "./save-search.module.css";
-import buttonStyle from "../../ui/button.module.css";
-import inputStyle from "../../ui/input.module.css";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
 
 export interface SearchFilters {
   filters: SearchState["facetFilters"];
@@ -25,16 +26,14 @@ export function SaveSearch(props: {
 
   if (savedSearch) {
     return (
-      <div style={{ lineHeight: "36px" }}>
-        <em style={{ marginTop: "1rem" }}>
-          Saved as "{savedSearch.name || savedSearch.hash}"
-        </em>
-      </div>
+      <Typography variant="body2" mt={1} sx={{ color: "neutral.dark" }}>
+        Saved as "{savedSearch.name || savedSearch.hash}"
+      </Typography>
     );
   }
 
   return (
-    <DropDown caret label="Save search" right>
+    <DropDown label="Save search">
       <SavedSearches
         activeFilters={props.activeFilters}
         hash={hash}
@@ -67,24 +66,27 @@ const SavedSearches = (props: {
   if (props.hash == null) return null;
 
   return (
-    <div className={styles.wrapper}>
-      <h3>Search name</h3>
-      <div className={styles.inputWrapper}>
-        <input
-          className={inputStyle.input}
+    <Box p={2}>
+      <Typography variant="h6">Save search as</Typography>
+      <Stack direction="row" spacing={1} mt={2}>
+        <TextField
           onChange={(ev) => setName(ev.currentTarget.value)}
           onKeyDown={(ev) => {
             if (ev.key === "Enter") save();
           }}
+          label="Enter a name"
           placeholder={props.hash}
           type="text"
           value={name || ""}
+          InputLabelProps={{ shrink: true }}
+          fullWidth
+          size="small"
         />
-        <button className={buttonStyle.button} onClick={save}>
+        <Button variant="contained" onClick={save}>
           Save
-        </button>
-      </div>
-    </div>
+        </Button>
+      </Stack>
+    </Box>
   );
 };
 

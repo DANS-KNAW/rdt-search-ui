@@ -20,6 +20,7 @@ export function PieChartFacet(
       >,
 ) {
   if (isConfig(props)) return null;
+
   return (
     <ChartFacet<ChartFacetConfig, PieChartFacetState, PieChartFacetFilter>
       {...props}

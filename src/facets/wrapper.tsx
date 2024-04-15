@@ -3,17 +3,14 @@ import type {
   BaseFacetState,
   FacetFilter,
 } from "../context/state/facets";
-
 import React from "react";
-import clsx from "clsx";
-
 import { FacetController } from "./controller";
 import { FacetsDataReducerAction } from "../context/state/actions";
-
 import { HelpDropDown } from "../views/ui/drop-down/help";
 import { SearchPropsContext } from "../context/props";
-
-import styles from "./wrapper.module.css";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
 
 interface Props<
   FacetConfig extends BaseFacetConfig,
@@ -34,36 +31,18 @@ function FacetWrapper<
   Filter extends FacetFilter,
 >(props: Props<FacetConfig, FacetState, Filter>) {
   return (
-    <div
-      className={clsx(
-        styles.wrapper,
-        {
-          [styles.stateCollapsed]: props.facetState.collapse,
-        },
-        props.className,
-      )}
-    >
-      <header className={styles.header}>
-        <h3
-          className={styles.h3}
-          onClick={() => {
-            props.dispatch({
-              type: "TOGGLE_COLLAPSE",
-              facetID: props.facet.ID,
-            });
-          }}
-        >
+    <Card sx={{ height: "100%" }}>
+      <CardContent>
+        <Typography variant="h5">
           {props.facet.config.title}
           {props.facetState.collapse && (
             <ActiveIndicator<Filter> filter={props.filter} />
           )}
-        </h3>
-        <HelpDropDown className={styles.helpDropDown}>
-          {props.facet.config.description}
-        </HelpDropDown>
-      </header>
-      <div className={styles.body}>{props.children}</div>
-    </div>
+        </Typography>
+        <HelpDropDown>{props.facet.config.description}</HelpDropDown>
+        {props.children}
+      </CardContent>
+    </Card>
   );
 }
 
