@@ -58,37 +58,39 @@ export const Facets = ({
             />
           </Grid>
         ) :
-        <ImageList 
-          cols={8} 
-          variant="quilted"
-          gap={16}
-          sx={{
-            overflow: 'visible',
-            width: '100%',
-          }}
-        >
-          {facets.map( f =>
-            <ImageListItem 
-              key={f.facet.ID}
-              cols={
-                isTiny ?
-                8 :
-                isSmall ?
-                4 :
-                (f.facet.config.cols || 4)}
-              rows={f.facet.config.rows || 1}
-            >
-              <f.type
+        <Grid xs={12}>
+          <ImageList 
+            cols={8} 
+            variant="quilted"
+            gap={16}
+            sx={{
+              overflow: 'visible',
+              // width: '100%',
+            }}
+          >
+            {facets.map( f =>
+              <ImageListItem 
                 key={f.facet.ID}
-                dispatch={dispatch}
-                facet={f.facet}
-                facetState={searchState.facetStates.get(f.facet.ID)!}
-                filter={searchState.facetFilters.get(f.facet.ID)?.value}
-                values={searchState.facetValues[f.facet.ID]}
-              />
-            </ImageListItem>
-          )}
-        </ImageList>
+                cols={
+                  isTiny ?
+                  8 :
+                  isSmall ?
+                  4 :
+                  (f.facet.config.cols || 4)}
+                rows={f.facet.config.rows || 1}
+              >
+                <f.type
+                  key={f.facet.ID}
+                  dispatch={dispatch}
+                  facet={f.facet}
+                  facetState={searchState.facetStates.get(f.facet.ID)!}
+                  filter={searchState.facetFilters.get(f.facet.ID)?.value}
+                  values={searchState.facetValues[f.facet.ID]}
+                />
+              </ImageListItem>
+            )}
+          </ImageList>
+        </Grid>
       }
     </Grid>
   );
