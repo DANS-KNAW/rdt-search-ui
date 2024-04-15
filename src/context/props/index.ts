@@ -4,23 +4,6 @@ import React from "react";
 import { ResultBodyProps, SortOrder } from "../state/use-search/types";
 import { UITexts, uiTexts } from "./ui-texts";
 
-export interface DashboardProps {
-  rows?: number;
-  columns?: number;
-
-  /*
-   * Define grid areas in the config to use the grid area layout.
-   * The areas depend on user defined facet IDs. If dashboard.areas
-   * is defined, the facet container will have grid-area: facet.ID in the
-   * style tag.
-   *
-   * TODO all the facets should be defined in the area, otherwise it messes
-   * up the layout. Maybe we should add a default area for facets that are
-   * not defined in the areas array.
-   */
-  areas?: string[];
-}
-
 export interface StyleProps {
   // Set the background color of the active page number in the Pagination component
   buttonBackground?: string;
@@ -68,7 +51,7 @@ interface OptionalWithDefaultsSearchProps {
  */
 interface OptionalSearchProps {
   className?: string /* className prop is used by StyledComponents */;
-  dashboard?: DashboardProps;
+  dashboard?: boolean;
 
   // Fields to search full text. The field names are passed to
   // ElasticSearch so boosters can be applied to the fields.

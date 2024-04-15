@@ -105,8 +105,6 @@ function AppLoader({ children, controllers, searchProps, setSearchProps }: AppLo
     intialSearchState,
   );
 
-  console.log(state)
-
   const handleChange = (event: SelectChangeEvent) => {
     setSearchProps({
       ...searchProps,

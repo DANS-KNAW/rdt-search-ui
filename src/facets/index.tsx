@@ -5,23 +5,32 @@ import type { FacetControllers } from "../context/controllers";
 import React, { Children, isValidElement } from "react";
 import Grid from "@mui/material/Unstable_Grid2";
 
+import ImageList from '@mui/material/ImageList';
+import ImageListItem from '@mui/material/ImageListItem';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from "@mui/material/styles";
+
 interface Props {
   facetClassname?: string;
   children: React.ReactNode;
   controllers: FacetControllers;
   searchProps?: SearchProps;
   searchState: SearchState;
-  layout?: string;
+  dashboard?: boolean;
 }
 
 export const Facets = ({
   children,
   controllers,
   searchState,
-  layout,
+  dashboard,
 }: Props) => {
   const dispatch = React.useContext(SearchStateDispatchContext);
   if (searchState.facetStates.size === 0) return null;
+
+  const theme = useTheme();
+  const isSmall = useMediaQuery(theme.breakpoints.down("md"));
+  const isTiny = useMediaQuery(theme.breakpoints.down("sm"));
 
   const facets =
     Children.map(children, (child, index) => {
@@ -32,53 +41,13 @@ export const Facets = ({
       }))[index];
     }) || [];
 
-  const sidebarFacet = facets.find((f) => f.facet.ID === "indi");
-  const mainFacets = facets.filter(
-    (f) =>
-      f.facet.ID === "date" || f.facet.ID === "rights" || f.facet.ID === "lang",
-  );
-  const minorFacets = facets.filter(
-    (f) =>
-      f.facet.ID === "pw" ||
-      f.facet.ID === "wf" ||
-      f.facet.ID === "reltype" ||
-      f.facet.ID === "restype",
-  );
-
-  const dashboard = layout === "dashboard";
-
   return (
     <Grid container spacing={2}>
-      <Grid
-        xs={12}
-        sm={dashboard ? 5 : 12}
-        md={dashboard ? 4 : 12}
-        lg={dashboard ? 3 : 12}
-      >
-        {sidebarFacet && (
-          <sidebarFacet.type
-            dispatch={dispatch}
-            facet={sidebarFacet.facet}
-            facetState={searchState.facetStates.get(sidebarFacet.facet.ID)!}
-            filter={searchState.facetFilters.get(sidebarFacet.facet.ID)?.value}
-            values={searchState.facetValues[sidebarFacet.facet.ID]}
-          />
-        )}
-      </Grid>
-      <Grid
-        xs={12}
-        sm={dashboard ? 7 : 12}
-        md={dashboard ? 8 : 12}
-        // strange bug: incorrect width calcs in MS Edge when setting this to 9
-        lg={dashboard ? 8.999 : 12}
-        container
-      >
-        {mainFacets.map((f) => (
-          <Grid
-            key={f.facet.ID}
-            xs={12}
-            sm={f.facet.ID !== "date" && dashboard ? 6 : 12}
-          >
+      {
+        !dashboard ?
+        // search layout: sidebar only
+        facets.map( f =>
+          <Grid xs={12} key={f.facet.ID}>
             <f.type
               key={f.facet.ID}
               dispatch={dispatch}
@@ -88,25 +57,39 @@ export const Facets = ({
               values={searchState.facetValues[f.facet.ID]}
             />
           </Grid>
-        ))}
-      </Grid>
-      {minorFacets.map((f) => (
-        <Grid
-          key={f.facet.ID}
-          xs={12}
-          sm={dashboard ? 6 : 12}
-          lg={dashboard ? 3 : 12}
+        ) :
+        <ImageList 
+          cols={8} 
+          variant="quilted"
+          gap={16}
+          sx={{
+            overflow: 'visible',
+            width: '100%',
+          }}
         >
-          <f.type
-            key={f.facet.ID}
-            dispatch={dispatch}
-            facet={f.facet}
-            facetState={searchState.facetStates.get(f.facet.ID)!}
-            filter={searchState.facetFilters.get(f.facet.ID)?.value}
-            values={searchState.facetValues[f.facet.ID]}
-          />
-        </Grid>
-      ))}
+          {facets.map( f =>
+            <ImageListItem 
+              key={f.facet.ID}
+              cols={
+                isTiny ?
+                8 :
+                isSmall ?
+                4 :
+                (f.facet.config.cols || 4)}
+              rows={f.facet.config.rows || 1}
+            >
+              <f.type
+                key={f.facet.ID}
+                dispatch={dispatch}
+                facet={f.facet}
+                facetState={searchState.facetStates.get(f.facet.ID)!}
+                filter={searchState.facetFilters.get(f.facet.ID)?.value}
+                values={searchState.facetValues[f.facet.ID]}
+              />
+            </ImageListItem>
+          )}
+        </ImageList>
+      }
     </Grid>
   );
 };

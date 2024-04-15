@@ -23,7 +23,7 @@ export function Dashboard({ children, controllers, searchState }: Props) {
       <Facets
         controllers={controllers}
         searchState={searchState}
-        layout="dashboard"
+        dashboard
       >
         {children}
       </Facets>
