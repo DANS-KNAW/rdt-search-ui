@@ -26,7 +26,7 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import CircularProgress from '@mui/material/CircularProgress';
+import LinearProgress from '@mui/material/LinearProgress';
 
 export function FacetedSearch(props: ExternalSearchProps) {
   const [children, setChildren] = React.useState<React.ReactNode>(undefined);
@@ -138,7 +138,15 @@ function AppLoader({ children, controllers, searchProps, setSearchProps }: AppLo
     <FacetControllersContext.Provider value={controllers}>
       <SearchStateDispatchContext.Provider value={dispatch}>
         <SearchStateContext.Provider value={state}>
-          
+          {state.loading && 
+            <LinearProgress sx={{
+              position: "fixed",
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 100,
+            }} />
+          }
           { // selector for when there are multiple search endpoints
             searchProps.endpoints!.length > 1 &&
             <Stack direction="row" justifyContent="flex-end" alignItems="center" mb={2}>
@@ -159,12 +167,7 @@ function AppLoader({ children, controllers, searchProps, setSearchProps }: AppLo
               </FormControl>
             </Stack>
           }
-
           {
-            state.loading ?
-            <Stack justifyContent="center" alignItems="center" sx={{height: "20rem"}}>
-              <CircularProgress />
-            </Stack> :
             state.error ?
             <Stack justifyContent="center" alignItems="center" sx={{height: "20rem"}}>
               <Stack>
@@ -173,6 +176,7 @@ function AppLoader({ children, controllers, searchProps, setSearchProps }: AppLo
                 <Typography paragraph>Please refresh your browser to try again. If the problem persists, contact DANS.</Typography>
               </Stack>
             </Stack> :
+            // no error, show components
             <Component
               controllers={controllers}
               searchProps={searchProps}
