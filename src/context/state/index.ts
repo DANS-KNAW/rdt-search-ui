@@ -41,7 +41,7 @@ export const intialSearchState = {
   query: "",
   searchResult: undefined,
   sortOrder: new Map(),
-  loading: true,
+  loading: false,
 };
 
 export const SearchStateContext =
