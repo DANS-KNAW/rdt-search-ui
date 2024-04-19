@@ -5,14 +5,16 @@ import React from "react";
 
 import { SearchPropsContext } from "../../../context/props";
 import Typography from "@mui/material/Typography";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   currentPage: SearchState["currentPage"];
   searchResult: FSResponse;
 }
 export function ResultCount(props: Props) {
-  const { resultsPerPage, uiTexts } = React.useContext(SearchPropsContext);
+  const { resultsPerPage } = React.useContext(SearchPropsContext);
   const [fromTo, setFromTo] = React.useState<[number, number]>();
+  const { t } = useTranslation("views");
 
   React.useEffect(() => {
     let nextFrom = (props.currentPage - 1) * resultsPerPage + 1;
@@ -27,17 +29,9 @@ export function ResultCount(props: Props) {
 
   if (fromTo == null) return null;
 
-  const fromToOf =
-    props.searchResult.total >= resultsPerPage ?
-      `${fromTo[0]} - ${fromTo[1]} 
-		   ${uiTexts.of}`
-    : "";
-
-  const content = `
-		${fromToOf}
-		${props.searchResult.total} 
-		${props.searchResult.total === 1 ? uiTexts.result : uiTexts.results}
-	`;
-
-  return <Typography>{content}</Typography>;
+  return (
+    <Typography>
+      {t("resultCount", {from: fromTo[0], to: fromTo[1], count: props.searchResult.total})}
+    </Typography>
+  );
 }

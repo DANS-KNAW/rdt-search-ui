@@ -7,10 +7,12 @@ import { SortBy, SortDirection } from "../../../enum";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import IconButton from "@mui/material/IconButton";
+import { useTranslation } from "react-i18next";
 
 function Options(props: ListFacetProps) {
   const { style } = React.useContext(SearchPropsContext);
   const [filterInputValue, setFilterInputValue] = React.useState("");
+  const { t } = useTranslation("facets");
 
   const setQuery = debounce((value: string) => {
     // props.facet.actions.setQuery(value)
@@ -39,7 +41,7 @@ function Options(props: ListFacetProps) {
       <TextField
         onChange={handleFilterInputChange}
         value={filterInputValue}
-        label="Filter"
+        label={t("filter")}
         size="small"
       />
       <Stack direction="row">

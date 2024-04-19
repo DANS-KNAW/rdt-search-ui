@@ -7,10 +7,11 @@ import React from "react";
 import { FacetController } from "./controller";
 import { FacetsDataReducerAction } from "../context/state/actions";
 import { HelpDropDown } from "../views/ui/drop-down/help";
-import { SearchPropsContext } from "../context/props";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
+import { useTranslation } from "react-i18next";
+import { lookupLanguageString } from "@dans-framework/utils";
 
 interface Props<
   FacetConfig extends BaseFacetConfig,
@@ -30,11 +31,13 @@ function FacetWrapper<
   FacetState extends BaseFacetState,
   Filter extends FacetFilter,
 >(props: Props<FacetConfig, FacetState, Filter>) {
+  const { i18n } = useTranslation();
+
   return (
     <Card sx={{ height: "100%" }}>
       <CardContent>
         <Typography variant="h5">
-          {props.facet.config.title}
+          {lookupLanguageString(props.facet.config.title, i18n.language)}
           {props.facetState.collapse && (
             <ActiveIndicator<Filter> filter={props.filter} />
           )}
@@ -52,7 +55,7 @@ export default React.memo(FacetWrapper);
 function ActiveIndicator<FacetFilter>(props: {
   filter: FacetFilter | undefined;
 }) {
-  const { uiTexts } = React.useContext(SearchPropsContext);
+  const { t } = useTranslation("facets");
 
   if (props.filter == null) return null;
   const size = props.filter != null ? 1 : 0;
@@ -61,7 +64,7 @@ function ActiveIndicator<FacetFilter>(props: {
 
   return (
     <small>
-      {size} {uiTexts.active}
+      {t("active", {value: size})}
     </small>
   );
 }

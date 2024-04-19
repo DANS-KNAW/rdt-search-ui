@@ -15,9 +15,11 @@ import Stack from "@mui/material/Stack";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 
+import { useTranslation } from "react-i18next";
+
 export function ActiveFilters() {
   const controllers = React.useContext(FacetControllersContext);
-  const { url, uiTexts } = React.useContext(SearchPropsContext);
+  const { url } = React.useContext(SearchPropsContext);
   const state = React.useContext(SearchStateContext);
   const dispatch = React.useContext(SearchStateDispatchContext);
 
@@ -33,16 +35,18 @@ export function ActiveFilters() {
     });
   }, []);
 
+  const { t } = useTranslation("views");
+
   return (
     <Paper sx={{ p: 2, mb: 2 }}>
-      <Typography variant="h6">Active filters</Typography>
+      <Typography variant="h6">{t("activeFilters")}</Typography>
       <Stack direction="column" spacing={1}>
         {state.query?.length > 0 && (
-          <ActiveFilterItem title="Full text query">
+          <ActiveFilterItem title={t("fullTextQuery")}>
             <ActiveFilterValue
               key="full-text-query"
               removeFilter={() => dispatch({ type: "SET_QUERY", value: "" })}
-              title="Full text query"
+              title={t("fullTextQuery")}
               value={state.query}
             />
           </ActiveFilterItem>
@@ -54,7 +58,7 @@ export function ActiveFilters() {
                 facetID={facetID}
                 key={facetID + value}
                 removeFilter={removeFilter}
-                title={`Facet filter value: ${value}`}
+                title={t("facetFilterValue", {value: value})}
                 value={value}
               />
             ))}
@@ -66,7 +70,7 @@ export function ActiveFilters() {
             onClick={reset}
             sx={{ marginBottom: 1, marginRight: 1 }}
           >
-            {uiTexts.clearSearch}
+            {t("clearSearch")}
           </Button>
           <SaveSearch
             url={url}

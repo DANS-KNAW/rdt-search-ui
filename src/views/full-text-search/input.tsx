@@ -1,11 +1,10 @@
-import { useContext, useCallback, KeyboardEvent } from "react";
-import { SearchPropsContext } from "../../context/props";
-
+import { useCallback, KeyboardEvent } from "react";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import Tooltip from "@mui/material/Tooltip";
 import HelpIcon from "@mui/icons-material/Help";
 import CircularProgress from "@mui/material/CircularProgress";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   handleInputChange: any;
@@ -14,7 +13,6 @@ interface Props {
   loader?: boolean;
 }
 export function InputWrapper(props: Props) {
-  const { uiTexts } = useContext(SearchPropsContext);
   const handleKeyDown = useCallback((ev: KeyboardEvent) => {
     if (
       ev.code === "Enter" || // Enter
@@ -24,9 +22,11 @@ export function InputWrapper(props: Props) {
     }
   }, []);
 
+  const { t } = useTranslation("views");
+
   return (
     <TextField
-      label={uiTexts.search_documents}
+      label={t("searchDocuments")}
       value={props.inputValue}
       onClick={() => props.setSuggestActive(false)}
       onChange={props.handleInputChange}
@@ -38,7 +38,7 @@ export function InputWrapper(props: Props) {
           <InputAdornment position="end">
             {props.loader ?
               <CircularProgress size={22} />
-            : <Tooltip title={uiTexts.fullTextSearchHelp}>
+            : <Tooltip title={t("fullTextSearchHelp")}>
                 <HelpIcon />
               </Tooltip>
             }

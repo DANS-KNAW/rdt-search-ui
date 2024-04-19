@@ -9,6 +9,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
+import { useTranslation } from "react-i18next";
 
 export interface SearchFilters {
   filters: SearchState["facetFilters"];
@@ -23,17 +24,18 @@ export function SaveSearch(props: {
   const hash = useHash(props.activeFilters);
 
   const savedSearch = savedSearches.find((ss) => ss.hash === hash);
+  const { t } = useTranslation("views");
 
   if (savedSearch) {
     return (
       <Typography variant="body2" mt={1} sx={{ color: "neutral.dark" }}>
-        Saved as "{savedSearch.name || savedSearch.hash}"
+        {t('savedAs', {value: savedSearch.name || savedSearch.hash})}
       </Typography>
     );
   }
 
   return (
-    <DropDown label="Save search">
+    <DropDown label={t("saveSearch")}>
       <SavedSearches
         activeFilters={props.activeFilters}
         hash={hash}
@@ -51,6 +53,7 @@ const SavedSearches = (props: {
   saveSearch: ReturnType<typeof useSavedSearches>[1];
 }) => {
   const [name, setName] = React.useState<string>();
+  const { t } = useTranslation("views");
 
   const save = React.useCallback(async () => {
     if (props.hash == null) return;
@@ -67,14 +70,14 @@ const SavedSearches = (props: {
 
   return (
     <Box p={2}>
-      <Typography variant="h6">Save search as</Typography>
+      <Typography variant="h6">{t("saveSearchAs")}</Typography>
       <Stack direction="row" spacing={1} mt={2}>
         <TextField
           onChange={(ev) => setName(ev.currentTarget.value)}
           onKeyDown={(ev) => {
             if (ev.key === "Enter") save();
           }}
-          label="Enter a name"
+          label={t("enterName")}
           placeholder={props.hash}
           type="text"
           value={name || ""}

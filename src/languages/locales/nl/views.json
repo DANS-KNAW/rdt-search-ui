@@ -1,0 +1,21 @@
+{
+  "fullTextQuery": "Zoek in alle tekst",
+  "facetFilterValue": "Facet filter waarde: {{value}}",
+  "savedAs": "Opgeslagen als {{value}}",
+  "saveSearch": "Sla zoekactie op",
+  "enterName": "Voer een naam in",
+  "saveSearchAs": "Sla zoekactie op als",
+  "loadSearch": "Laad zoekactie",
+  "fullTextSearchHelp": "Zoek naar woorden in alle tekst van het document",
+  "clearSearch": "Zoekactie leegmaken",
+  "resultCount_zero": "{{count}} resultaten",
+  "resultCount_one": "{{count}} resultaat",
+  "resultCount_other": "{{from}} - {{to}} van {{count}} resultaten",
+  "searchDocuments": "Zoek documenten",
+  "sortBy_zero": "Sorteer",
+  "sortBy_one": "Sorteer ({{count}})",
+  "sortBy_other": "Sorteer ({{count}})",
+  "detailedView": "Meer details",
+  "noResults": "Sorry, niets gevonden",
+  "activeFilters": "Actieve filters"
+}

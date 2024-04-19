@@ -26,11 +26,11 @@ export const Facets = ({
   dashboard,
 }: Props) => {
   const dispatch = React.useContext(SearchStateDispatchContext);
-  if (searchState.facetStates.size === 0) return null;
-
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down("md"));
   const isTiny = useMediaQuery(theme.breakpoints.down("sm"));
+
+  if (searchState.facetStates.size === 0) return null;
 
   const facets =
     Children.map(children, (child, index) => {

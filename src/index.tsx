@@ -27,6 +27,9 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import LinearProgress from '@mui/material/LinearProgress';
+import { I18nextProvider } from "react-i18next";
+import i18nProvider from "./languages/i18n";
+import { useTranslation } from "react-i18next";
 
 export function FacetedSearch(props: ExternalSearchProps) {
   const [children, setChildren] = React.useState<React.ReactNode>(undefined);
@@ -85,9 +88,11 @@ export function FacetedSearch(props: ExternalSearchProps) {
 
   return (
     <SearchPropsContext.Provider value={searchProps}>
-      <AppLoader searchProps={searchProps} controllers={controllers} setSearchProps={setSearchProps}>
-        {children}
-      </AppLoader>
+      <I18nextProvider i18n={i18nProvider}>
+        <AppLoader searchProps={searchProps} controllers={controllers} setSearchProps={setSearchProps}>
+          {children}
+        </AppLoader>
+      </I18nextProvider>
     </SearchPropsContext.Provider>
   );
 }
@@ -120,6 +125,7 @@ function AppLoader({ children, controllers, searchProps, setSearchProps }: AppLo
   });
 
   const Component = searchProps.dashboard ? Dashboard : App;
+  const { t } = useTranslation("facetedSearch");
 
   React.useEffect(() => {
     if (!controllers.size) return;
@@ -150,14 +156,14 @@ function AppLoader({ children, controllers, searchProps, setSearchProps }: AppLo
           { // selector for when there are multiple search endpoints
             searchProps.endpoints!.length > 1 &&
             <Stack direction="row" justifyContent="flex-end" alignItems="center" mb={2}>
-              <Typography variant="h6" sx={{mr: 2, mb: 0}}>Select your dataset</Typography>
+              <Typography variant="h6" sx={{mr: 2, mb: 0}}>{t("selectDataset")}</Typography>
               <FormControl sx={{width: "20rem"}}>
-                <InputLabel id="dataset-select-label">Dataset</InputLabel>
+                <InputLabel id="dataset-select-label">{t("dataset")}</InputLabel>
                 <Select
                   labelId="dataset-select-label"
                   id="dataset-select"
                   value={searchProps.endpoints!.find(ep => ep.url === searchProps.url)!.url}
-                  label="Dataset"
+                  label={t("dataset")}
                   onChange={handleChange}
                 >
                   {searchProps.endpoints!.map( endpoint =>
@@ -171,9 +177,9 @@ function AppLoader({ children, controllers, searchProps, setSearchProps }: AppLo
             state.error ?
             <Stack justifyContent="center" alignItems="center" sx={{height: "20rem"}}>
               <Stack>
-                <Typography variant="h3">Uh oh!</Typography>
-                <Typography paragraph>We got an unexpected error: <b>{state.error.message}</b></Typography>
-                <Typography paragraph>Please refresh your browser to try again. If the problem persists, contact DANS.</Typography>
+                <Typography variant="h3">{t("error.header")}</Typography>
+                <Typography paragraph>{t("error.p1", {message: state.error.message})}</Typography>
+                <Typography paragraph>{t("error.p2")}</Typography>
               </Stack>
             </Stack> :
             // no error, show components

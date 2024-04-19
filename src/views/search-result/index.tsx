@@ -11,6 +11,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
 import Typography from "@mui/material/Typography";
+import { useTranslation } from "react-i18next";
 
 /* Layout for content is defined in the app and passed as props to this component */
 
@@ -23,6 +24,7 @@ interface Props {
 }
 export function SearchResult(props: Props) {
   const dispatch = React.useContext(SearchStateDispatchContext);
+  const { t } = useTranslation("views");
   if (props.searchResult == null) return null;
 
   return (
@@ -41,7 +43,7 @@ export function SearchResult(props: Props) {
                 size="small"
                 onClick={(ev) => props.onClickResult(hit, ev)}
               >
-                Detailed view
+                {t("detailedView")}
               </Button>
             </CardActions>
           </Card>
@@ -49,7 +51,7 @@ export function SearchResult(props: Props) {
       : <Stack alignItems="center">
           <NoResultsSvg />
           <Typography variant="h5" mt={4} sx={{ textAlign: "center" }}>
-            Sorry, no results found
+            {t("noResults")}
           </Typography>
         </Stack>
       }

@@ -7,6 +7,8 @@ import type {
 import type { Bucket } from "../context/state/use-search/response-with-facets-parser";
 import { SearchState } from "../context/state";
 import { FacetsDataReducerAction } from "../context/state/actions";
+import { lookupLanguageString } from "@dans-framework/utils";
+import i18n from "../languages/i18n";
 
 export abstract class FacetController<
   FacetConfig extends BaseFacetConfig,
@@ -68,7 +70,7 @@ export abstract class FacetController<
       facetFilters.delete(this.ID);
     } else {
       facetFilters.set(this.ID, {
-        title: this.config.title || "",
+        title: lookupLanguageString(this.config.title, i18n.language) || "",
         value: filter,
         formatted: this.formatFilter(filter),
       });

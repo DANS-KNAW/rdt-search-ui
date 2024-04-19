@@ -5,14 +5,16 @@ import { SearchStateDispatchContext } from "../../../context/state";
 import { SavedSearch, useSavedSearches } from "./use-saved-searches";
 import ListItemText from "@mui/material/ListItemText";
 import MenuItem from "@mui/material/MenuItem";
+import { useTranslation } from "react-i18next";
 
 export function LoadSearch(props: { url: SearchProps["url"] }) {
   const [savedSearches] = useSavedSearches(props.url);
+  const { t } = useTranslation("views");
 
   if (savedSearches.length === 0) return null;
 
   return (
-    <DropDown label="Load search">
+    <DropDown label={t('loadSearch')}>
       <LoadSearches savedSearches={savedSearches} />
     </DropDown>
   );

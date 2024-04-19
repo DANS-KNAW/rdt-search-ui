@@ -4,11 +4,12 @@ import {
 } from "../../facets/chart/state";
 import { ListFacetFilter } from "../../facets/list/state";
 import type { MapFacetFilter } from "../../facets/map/state";
+import type { LanguageStrings } from "@dans-framework/utils";
 
 export interface BaseFacetConfig {
   readonly field: string;
   readonly id?: string;
-  readonly title?: string;
+  readonly title?: string | LanguageStrings;
   readonly description?: string;
   readonly collapse?: boolean;
   cols?: number;

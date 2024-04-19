@@ -1,0 +1,21 @@
+{
+  "fullTextQuery": "Full text query",
+  "facetFilterValue": "Facet filter value: {{value}}",
+  "savedAs": "Saved as {{value}}",
+  "saveSearch": "Save search",
+  "enterName": "Enter a name",
+  "saveSearchAs": "Save search as",
+  "loadSearch": "Load search",
+  "fullTextSearchHelp": "Search for words in the full text of the documents",
+  "clearSearch": "Clear search",
+  "resultCount_zero": "{{count}} results",
+  "resultCount_one": "{{count}} result",
+  "resultCount_other": "{{from}} - {{to}} of {{count}} results",
+  "searchDocuments": "Search documents",
+  "sortBy_zero": "Sort by",
+  "sortBy_one": "Sort by ({{count}})",
+  "sortBy_other": "Sort by ({{count}})",
+  "detailedView": "Detailed view",
+  "noResults": "Sorry, no results found",
+  "activeFilters": "Active filters"
+}

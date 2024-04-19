@@ -1,0 +1,6 @@
+{
+  "active": "{{value}} actief",
+  "viewMore": "Meer ({{value}})",
+  "viewLess": "Minder",
+  "filter": "Filter"
+}

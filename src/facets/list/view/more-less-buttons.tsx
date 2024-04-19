@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { MoreLessButton } from "../../../views/ui/button";
 
 import { SearchPropsContext } from "../../../context/props";
+import { useTranslation } from "react-i18next";
 
 // Add margin to the right of the "View More" button,
 // so that it doesn't touch the "View Less" button.
@@ -14,8 +15,9 @@ const MoreButton = styled(MoreLessButton)`
 `;
 
 export default function (props: ListFacetProps) {
-  const { style, uiTexts } = React.useContext(SearchPropsContext);
+  const { style } = React.useContext(SearchPropsContext);
   const facetConfig = props.facet.config;
+  const { t } = useTranslation("facets");
 
   return (
     <>
@@ -24,9 +26,7 @@ export default function (props: ListFacetProps) {
           // onClick={() => props.facet.actions.viewMore()}
           spotColor={style.spotColor}
         >
-          {`${uiTexts.view_more} (${
-            props.values.total - props.facetState.size
-          })`}
+          {t('viewMore', {value: props.values.total - props.facetState.size})}
         </MoreButton>
       )}
       {facetConfig.size! < props.facetState.size && (
@@ -34,7 +34,7 @@ export default function (props: ListFacetProps) {
           // onClick={() => props.facet.actions.viewLess()}
           spotColor={style.spotColor}
         >
-          {uiTexts.view_less}
+          {t('viewLess')}
         </MoreLessButton>
       )}
     </>

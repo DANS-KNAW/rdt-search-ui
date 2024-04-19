@@ -7,3 +7,4 @@ export type {
   Result,
   ResultBodyProps,
 } from "../src/context/state/use-search/types";
+export { default as i18n } from "../src/languages/i18n";

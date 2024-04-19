@@ -2,7 +2,6 @@ import type { SearchHighlight } from "@elastic/elasticsearch/lib/api/types";
 
 import React from "react";
 import { ResultBodyProps, SortOrder } from "../state/use-search/types";
-import { UITexts, uiTexts } from "./ui-texts";
 
 export interface StyleProps {
   // Set the background color of the active page number in the Pagination component
@@ -43,7 +42,6 @@ interface OptionalWithDefaultsSearchProps {
   // TODO rename to theme? style is a React attribute
   //		or not necessary, because replacing with CSS?
   style?: StyleProps;
-  uiTexts?: UITexts;
 }
 
 /**
@@ -118,7 +116,6 @@ export const defaultSearchProps: SearchProps = {
     buttonBackground: "#F6F6F6",
   },
   track_total_hits: true,
-  uiTexts: uiTexts,
 };
 
 export const SearchPropsContext =
