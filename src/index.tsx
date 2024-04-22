@@ -65,7 +65,7 @@ export function FacetedSearch(props: ExternalSearchProps) {
     const sp: SearchProps = {
       ...defaultSearchProps,
       ...props,
-      url: searchProps?.url || props.endpoints![0].url || "",
+      url: (sessionStorage.getItem(`rdt-search-props-url-${window.location.origin}`) as string) || searchProps?.url || props.endpoints![0].url || "",
       style: {
         ...defaultSearchProps.style,
         ...props.style,
@@ -107,24 +107,36 @@ interface AppLoaderProps {
 
 function AppLoader({ children, controllers, searchProps, setSearchProps }: AppLoaderProps) {
   // Get the state from session storage
-  const storageState = deserializeObject(sessionStorage.getItem("rdt-search-state") as string);
+  const storageState = deserializeObject(sessionStorage.getItem(`rdt-search-state-${window.location.origin}-${searchProps.url}`) as string);
   const [state, dispatch] = React.useReducer(
     searchStateReducer(controllers),
-    // set storageState if available, otherwise set empty new state
-    storageState || intialSearchState
+    // set storageState if available
+    {...intialSearchState, ...storageState}
   );
 
-  const reset = React.useCallback(() => {
-    dispatch({ type: "RESET" });
-  }, [controllers]);
-
+  // changing of selected dataset
   const handleChange = (event: SelectChangeEvent) => {
-    reset();
+    // set searchProps to new URL
     setSearchProps({
       ...searchProps,
       url: event.target.value,
-    })
+    });
+    sessionStorage.setItem(
+      `rdt-search-props-url-${window.location.origin}`, 
+      event.target.value
+    );
+    dispatch({type: "RESET"});
   };
+
+  // on initial load, check for previously changed dataset, and set it as current
+  React.useEffect(() => {
+    if ( sessionStorage.getItem(`rdt-search-props-url-${window.location.origin}`) ) {
+      setSearchProps({
+        ...searchProps,
+        url: sessionStorage.getItem(`rdt-search-props-url-${window.location.origin}`) as string,
+      });
+    }
+  }, [])
 
   useSearch({
     props: searchProps,
@@ -151,12 +163,14 @@ function AppLoader({ children, controllers, searchProps, setSearchProps }: AppLo
 
   React.useEffect(() => {
     // Save to session storage on state change, to retrieve when component is remounted
-    // Need to convert some data from Maps and Sets, to be able to save as string
     sessionStorage.setItem(
-      "rdt-search-state", 
-      serializeObject(state)
+      `rdt-search-state-${window.location.origin}-${searchProps.url}`, 
+      serializeObject({
+        facetFilters: state.facetFilters,
+        query: state.query
+      })
     )
-  }, [state])
+  }, [state.facetFilters, state.query]);
 
   return (
     <FacetControllersContext.Provider value={controllers}>
