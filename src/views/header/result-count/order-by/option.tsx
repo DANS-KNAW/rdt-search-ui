@@ -7,6 +7,8 @@ import MenuItem from "@mui/material/MenuItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import SortIcon from "@mui/icons-material/Sort";
+import { lookupLanguageString } from "@dans-framework/utils";
+import { useTranslation } from "react-i18next";
 
 function updateSortOrder(
   sortOrder: SortOrder,
@@ -26,6 +28,7 @@ interface Props {
 }
 function OrderOption(props: Props) {
   const dispatch = React.useContext(SearchStateDispatchContext);
+  const { i18n } = useTranslation();
 
   const setDirection = React.useCallback(
     (ev: React.MouseEvent) => {
@@ -75,7 +78,7 @@ function OrderOption(props: Props) {
           />
         </ListItemIcon>
       )}
-      <ListItemText>{props.facet.config.title}</ListItemText>
+      <ListItemText>{lookupLanguageString(props.facet.config.title, i18n.language)}</ListItemText>
     </MenuItem>
   );
 }

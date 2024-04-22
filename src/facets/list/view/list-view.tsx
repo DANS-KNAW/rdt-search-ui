@@ -7,6 +7,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
+import { useTranslation } from "react-i18next";
 
 export const LIST_FACET_SCROLL_CUT_OFF = 50;
 
@@ -14,6 +15,7 @@ export function ListView(props: ListFacetProps) {
   const ulRef = React.useRef<HTMLDivElement>(null);
   const [page, setPage] = usePage(props, props.dispatch);
   const values = useValues(props, page);
+  const { t } = useTranslation("facets");
 
   React.useEffect(() => {
     if (ulRef.current == null) return;
@@ -47,7 +49,7 @@ export function ListView(props: ListFacetProps) {
   if (!values.length)
     return (
       <Typography variant="body2" sx={{ color: "neutral.dark" }}>
-        No data found
+        {t("noData")}
       </Typography>
     );
 

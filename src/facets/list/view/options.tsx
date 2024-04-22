@@ -95,9 +95,10 @@ function Options(props: ListFacetProps) {
 export default React.memo(Options);
 
 function SortAlphaAscIcon({ color = "#444" }: { color: string }) {
+  const { t } = useTranslation("facets");
   return (
     <svg viewBox="0 0 18 18" width="18" height="18">
-      <title>Sort alphabetically from A - Z</title>
+      <title>{t("sortAz")}</title>
       <path
         d="m 7.0175,12.841934 -1.22,1.180645 V 2.2258063 C 5.7975,1.8290322 5.4575,1.5 5.0475,1.5 c -0.41,0 -0.75,0.3290322 -0.75,0.7258063 V 14.022579 l -1.22,-1.180645 c -0.29,-0.280645 -0.77,-0.280645 -1.06,0 -0.29,0.280645 -0.29,0.745162 0,1.025807 l 2.5,2.419353 c 0.07,0.06775 0.15,0.11613 0.24,0.15484 0.09,0.03871 0.19,0.05807 0.29,0.05807 0.1,0 0.2,-0.01936 0.29,-0.05807 0.09,-0.03871 0.17,-0.08709 0.24,-0.15484 l 2.5,-2.419353 c 0.29,-0.280645 0.29,-0.745162 0,-1.025807 -0.29,-0.280645 -0.77,-0.280645 -1.06,0 z"
         fill={color}
@@ -115,9 +116,10 @@ function SortAlphaAscIcon({ color = "#444" }: { color: string }) {
 }
 
 function SortAlphaDescIcon({ color = "#444" }: { color: string }) {
+  const { t } = useTranslation("facets");
   return (
     <svg viewBox="0 0 18 18" width="18" height="18">
-      <title>Sort by count</title>
+      <title>{t("sortAz")}</title>
       <path
         d="m 7.0175,12.841934 -1.22,1.180645 V 2.2258063 C 5.7975,1.8290322 5.4575,1.5 5.0475,1.5 c -0.41,0 -0.75,0.3290322 -0.75,0.7258063 V 14.022579 l -1.22,-1.180645 c -0.29,-0.280645 -0.77,-0.280645 -1.06,0 -0.29,0.280645 -0.29,0.745162 0,1.025807 l 2.5,2.419353 c 0.07,0.06775 0.15,0.11613 0.24,0.15484 0.09,0.03871 0.19,0.05807 0.29,0.05807 0.1,0 0.2,-0.01936 0.29,-0.05807 0.09,-0.03871 0.17,-0.08709 0.24,-0.15484 l 2.5,-2.419353 c 0.29,-0.280645 0.29,-0.745162 0,-1.025807 -0.29,-0.280645 -0.77,-0.280645 -1.06,0 z"
         fill={color}
@@ -135,8 +137,10 @@ function SortAlphaDescIcon({ color = "#444" }: { color: string }) {
 }
 
 function SortNumericAscIcon({ color = "#444" }: { color: string }) {
+  const { t } = useTranslation("facets");
   return (
     <svg viewBox="0 0 12 12" width="18" height="18">
+      <title>{t("sortCount")}</title>
       <path
         d="M 9.71,1 V 5.4 H 8.662 V 1.8384096 H 8.611 L 7.4,2.5472618 V 1.7476369 L 8.662,1 h 1.046 z"
         fill={color}
@@ -154,8 +158,10 @@ function SortNumericAscIcon({ color = "#444" }: { color: string }) {
 }
 
 function SortNumericDescIcon({ color = "#444" }: { color: string }) {
+  const { t } = useTranslation("facets");
   return (
     <svg viewBox="0 0 12 12" width="18" height="18">
+      <title>{t("sortCount")}</title>
       <path
         d="M 9.71,6.6 V 11 H 8.662 V 7.4384096 H 8.611 L 7.4,8.1472618 V 7.3476369 L 8.662,6.6 h 1.046 z"
         fill={color}
