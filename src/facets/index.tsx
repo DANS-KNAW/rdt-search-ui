@@ -54,7 +54,7 @@ export const Facets = ({
               facet={f.facet}
               facetState={searchState.facetStates.get(f.facet.ID)!}
               filter={searchState.facetFilters.get(f.facet.ID)?.value}
-              values={searchState.facetValues[f.facet.ID]}
+              values={searchState.facetValues && searchState.facetValues[f.facet.ID]}
             />
           </Grid>
         ) :
@@ -85,7 +85,7 @@ export const Facets = ({
                   facet={f.facet}
                   facetState={searchState.facetStates.get(f.facet.ID)!}
                   filter={searchState.facetFilters.get(f.facet.ID)?.value}
-                  values={searchState.facetValues[f.facet.ID]}
+                  values={searchState.facetValues && searchState.facetValues[f.facet.ID]}
                 />
               </ImageListItem>
             )}

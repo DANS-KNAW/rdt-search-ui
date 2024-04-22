@@ -74,6 +74,6 @@ export function serializeObject(object: any) {
   return JSON.stringify(object, replacer);
 }
 
-function deserializeObject(filters: string) {
+export function deserializeObject(filters: string) {
   return JSON.parse(filters, reviver);
 }

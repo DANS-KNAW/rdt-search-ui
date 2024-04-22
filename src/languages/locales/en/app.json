@@ -5,5 +5,7 @@
     "p2": "Please refresh your browser to try again. If the problem persists, contact DANS."
   },
   "dataset": "Dataset",
-  "selectDataset": "Select your dataset"
+  "selectDataset": "Select your dataset",
+  "swipeUp": "Swipe up for filters",
+  "swipeDown": "Swipe down to close"
 }

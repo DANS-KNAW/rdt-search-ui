@@ -30,6 +30,7 @@ import LinearProgress from '@mui/material/LinearProgress';
 import { I18nextProvider } from "react-i18next";
 import i18nProvider from "./languages/i18n";
 import { useTranslation } from "react-i18next";
+import { serializeObject, deserializeObject } from "./views/active-filters/save-search/use-saved-searches"
 
 export function FacetedSearch(props: ExternalSearchProps) {
   const [children, setChildren] = React.useState<React.ReactNode>(undefined);
@@ -88,9 +89,11 @@ export function FacetedSearch(props: ExternalSearchProps) {
 
   return (
     <SearchPropsContext.Provider value={searchProps}>
-      <AppLoader searchProps={searchProps} controllers={controllers} setSearchProps={setSearchProps}>
-        {children}
-      </AppLoader>
+      <I18nextProvider i18n={i18nProvider}>
+        <AppLoader searchProps={searchProps} controllers={controllers} setSearchProps={setSearchProps}>
+          {children}
+        </AppLoader>
+      </I18nextProvider>
     </SearchPropsContext.Provider>
   );
 }
@@ -104,31 +107,19 @@ interface AppLoaderProps {
 
 function AppLoader({ children, controllers, searchProps, setSearchProps }: AppLoaderProps) {
   // Get the state from session storage
-  const storageState = JSON.parse(sessionStorage.getItem("rdt-search-state") as string);
-  // And convert it to a valid state object, reset the appropriate Maps and Sets
-  // If there's no sessionStorage, use the initial default state
-  const stateMapped = storageState ? {
-    ...storageState, 
-    facetFilters: new Map(storageState.facetFilters.map((f: any) => ([
-      f[0],
-      {
-        ...f[1],
-        value: Array.isArray(f[1].value) ? new Set(f[1].value) : f[1].value,
-      }
-    ]))),
-    facetStates: new Map(storageState.facetStates),
-    initialFacetStates: new Map(storageState.initialFacetStates),
-    facetValues: {...storageState.facetValues, date: new Map(storageState.facetValues?.date)},
-    initialFacetValues: {...storageState.initialFacetValues, date: new Map(storageState.initialFacetValues?.date)},
-    sortOrder: new Map(storageState.sortOrder),
-  } : intialSearchState;
-
+  const storageState = deserializeObject(sessionStorage.getItem("rdt-search-state") as string);
   const [state, dispatch] = React.useReducer(
     searchStateReducer(controllers),
-    stateMapped
+    // set storageState if available, otherwise set empty new state
+    storageState || intialSearchState
   );
 
+  const reset = React.useCallback(() => {
+    dispatch({ type: "RESET" });
+  }, [controllers]);
+
   const handleChange = (event: SelectChangeEvent) => {
+    reset();
     setSearchProps({
       ...searchProps,
       url: event.target.value,
@@ -143,7 +134,7 @@ function AppLoader({ children, controllers, searchProps, setSearchProps }: AppLo
   });
 
   const Component = searchProps.dashboard ? Dashboard : App;
-  const { t } = useTranslation("facetedSearch");
+  const { t } = useTranslation("app");
 
   React.useEffect(() => {
     if (!controllers.size) return;
@@ -163,65 +154,64 @@ function AppLoader({ children, controllers, searchProps, setSearchProps }: AppLo
     // Need to convert some data from Maps and Sets, to be able to save as string
     sessionStorage.setItem(
       "rdt-search-state", 
-      JSON.stringify(state, (_key, value) => (value instanceof Map || value instanceof Set ? [...value] : value)));
+      serializeObject(state)
+    )
   }, [state])
 
   return (
-    <I18nextProvider i18n={i18nProvider}>
-      <FacetControllersContext.Provider value={controllers}>
-        <SearchStateDispatchContext.Provider value={dispatch}>
-          <SearchStateContext.Provider value={state}>
-            {state.loading && 
-              <LinearProgress sx={{
-                position: "fixed",
-                left: 0,
-                right: 0,
-                bottom: 0,
-                zIndex: 100,
-              }} />
-            }
-            { // selector for when there are multiple search endpoints
-              searchProps.endpoints!.length > 1 &&
-              <Stack direction="row" justifyContent="flex-end" alignItems="center" mb={2}>
-                <Typography variant="h6" sx={{mr: 2, mb: 0}}>{t("selectDataset")}</Typography>
-                <FormControl sx={{width: "20rem"}}>
-                  <InputLabel id="dataset-select-label">{t("dataset")}</InputLabel>
-                  <Select
-                    labelId="dataset-select-label"
-                    id="dataset-select"
-                    value={searchProps.endpoints!.find(ep => ep.url === searchProps.url)!.url}
-                    label={t("dataset")}
-                    onChange={handleChange}
-                  >
-                    {searchProps.endpoints!.map( endpoint =>
-                      <MenuItem key={endpoint.url} value={endpoint.url}>{endpoint.name}</MenuItem>
-                    )}
-                  </Select>
-                </FormControl>
+    <FacetControllersContext.Provider value={controllers}>
+      <SearchStateDispatchContext.Provider value={dispatch}>
+        <SearchStateContext.Provider value={state}>
+          {state.loading && 
+            <LinearProgress sx={{
+              position: "fixed",
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 100,
+            }} />
+          }
+          { // selector for when there are multiple search endpoints
+            searchProps.endpoints!.length > 1 &&
+            <Stack direction="row" justifyContent="flex-end" alignItems="center" mb={2}>
+              <Typography variant="h6" sx={{mr: 2, mb: 0}}>{t("selectDataset")}</Typography>
+              <FormControl sx={{width: "20rem"}}>
+                <InputLabel id="dataset-select-label">{t("dataset")}</InputLabel>
+                <Select
+                  labelId="dataset-select-label"
+                  id="dataset-select"
+                  value={searchProps.endpoints!.find(ep => ep.url === searchProps.url)!.url}
+                  label={t("dataset")}
+                  onChange={handleChange}
+                >
+                  {searchProps.endpoints!.map( endpoint =>
+                    <MenuItem key={endpoint.url} value={endpoint.url}>{endpoint.name}</MenuItem>
+                  )}
+                </Select>
+              </FormControl>
+            </Stack>
+          }
+          {
+            state.error ?
+            <Stack justifyContent="center" alignItems="center" sx={{height: "20rem"}}>
+              <Stack>
+                <Typography variant="h3">{t("error.header")}</Typography>
+                <Typography paragraph>{t("error.p1", {message: state.error.message})}</Typography>
+                <Typography paragraph>{t("error.p2")}</Typography>
               </Stack>
-            }
-            {
-              state.error ?
-              <Stack justifyContent="center" alignItems="center" sx={{height: "20rem"}}>
-                <Stack>
-                  <Typography variant="h3">{t("error.header")}</Typography>
-                  <Typography paragraph>{t("error.p1", {message: state.error.message})}</Typography>
-                  <Typography paragraph>{t("error.p2")}</Typography>
-                </Stack>
-              </Stack> :
-              // no error, show components
-              <Component
-                controllers={controllers}
-                searchProps={searchProps}
-                searchState={state}
-              >
-                {children}
-              </Component>
-            }
-          </SearchStateContext.Provider>
-        </SearchStateDispatchContext.Provider>
-      </FacetControllersContext.Provider>
-    </I18nextProvider>
+            </Stack> :
+            // no error, show components
+            <Component
+              controllers={controllers}
+              searchProps={searchProps}
+              searchState={state}
+            >
+              {children}
+            </Component>
+          }
+        </SearchStateContext.Provider>
+      </SearchStateDispatchContext.Provider>
+    </FacetControllersContext.Provider>
   );
 }
 

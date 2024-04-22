@@ -15,6 +15,7 @@ import Box from "@mui/material/Box";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
+import { useTranslation} from "react-i18next";
 
 /* This is the wrapper for the search interface */
 
@@ -39,6 +40,7 @@ export default function FacetedSearch({
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
   };
+  const { t } = useTranslation("app");
 
   return (
     <Grid container spacing={2}>
@@ -102,7 +104,7 @@ export default function FacetedSearch({
               }}
             />
             <Typography sx={{ pt: 3, pb: 1, color: "text.secondary" }}>
-              {open ? "Swipe down to close" : "Swipe up for filters"}
+              {t(open ? "swipeDown" : "swipeUp")}
             </Typography>
           </Box>
           <Box
