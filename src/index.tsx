@@ -88,11 +88,9 @@ export function FacetedSearch(props: ExternalSearchProps) {
 
   return (
     <SearchPropsContext.Provider value={searchProps}>
-      <I18nextProvider i18n={i18nProvider}>
-        <AppLoader searchProps={searchProps} controllers={controllers} setSearchProps={setSearchProps}>
-          {children}
-        </AppLoader>
-      </I18nextProvider>
+      <AppLoader searchProps={searchProps} controllers={controllers} setSearchProps={setSearchProps}>
+        {children}
+      </AppLoader>
     </SearchPropsContext.Provider>
   );
 }
@@ -105,9 +103,29 @@ interface AppLoaderProps {
 }
 
 function AppLoader({ children, controllers, searchProps, setSearchProps }: AppLoaderProps) {
+  // Get the state from session storage
+  const storageState = JSON.parse(sessionStorage.getItem("rdt-search-state") as string);
+  // And convert it to a valid state object, reset the appropriate Maps and Sets
+  // If there's no sessionStorage, use the initial default state
+  const stateMapped = storageState ? {
+    ...storageState, 
+    facetFilters: new Map(storageState.facetFilters.map((f: any) => ([
+      f[0],
+      {
+        ...f[1],
+        value: Array.isArray(f[1].value) ? new Set(f[1].value) : f[1].value,
+      }
+    ]))),
+    facetStates: new Map(storageState.facetStates),
+    initialFacetStates: new Map(storageState.initialFacetStates),
+    facetValues: {...storageState.facetValues, date: new Map(storageState.facetValues?.date)},
+    initialFacetValues: {...storageState.initialFacetValues, date: new Map(storageState.initialFacetValues?.date)},
+    sortOrder: new Map(storageState.sortOrder),
+  } : intialSearchState;
+
   const [state, dispatch] = React.useReducer(
     searchStateReducer(controllers),
-    intialSearchState,
+    stateMapped
   );
 
   const handleChange = (event: SelectChangeEvent) => {
@@ -140,60 +158,70 @@ function AppLoader({ children, controllers, searchProps, setSearchProps }: AppLo
     });
   }, [controllers]);
 
+  React.useEffect(() => {
+    // Save to session storage on state change, to retrieve when component is remounted
+    // Need to convert some data from Maps and Sets, to be able to save as string
+    sessionStorage.setItem(
+      "rdt-search-state", 
+      JSON.stringify(state, (_key, value) => (value instanceof Map || value instanceof Set ? [...value] : value)));
+  }, [state])
+
   return (
-    <FacetControllersContext.Provider value={controllers}>
-      <SearchStateDispatchContext.Provider value={dispatch}>
-        <SearchStateContext.Provider value={state}>
-          {state.loading && 
-            <LinearProgress sx={{
-              position: "fixed",
-              left: 0,
-              right: 0,
-              bottom: 0,
-              zIndex: 100,
-            }} />
-          }
-          { // selector for when there are multiple search endpoints
-            searchProps.endpoints!.length > 1 &&
-            <Stack direction="row" justifyContent="flex-end" alignItems="center" mb={2}>
-              <Typography variant="h6" sx={{mr: 2, mb: 0}}>{t("selectDataset")}</Typography>
-              <FormControl sx={{width: "20rem"}}>
-                <InputLabel id="dataset-select-label">{t("dataset")}</InputLabel>
-                <Select
-                  labelId="dataset-select-label"
-                  id="dataset-select"
-                  value={searchProps.endpoints!.find(ep => ep.url === searchProps.url)!.url}
-                  label={t("dataset")}
-                  onChange={handleChange}
-                >
-                  {searchProps.endpoints!.map( endpoint =>
-                    <MenuItem key={endpoint.url} value={endpoint.url}>{endpoint.name}</MenuItem>
-                  )}
-                </Select>
-              </FormControl>
-            </Stack>
-          }
-          {
-            state.error ?
-            <Stack justifyContent="center" alignItems="center" sx={{height: "20rem"}}>
-              <Stack>
-                <Typography variant="h3">{t("error.header")}</Typography>
-                <Typography paragraph>{t("error.p1", {message: state.error.message})}</Typography>
-                <Typography paragraph>{t("error.p2")}</Typography>
+    <I18nextProvider i18n={i18nProvider}>
+      <FacetControllersContext.Provider value={controllers}>
+        <SearchStateDispatchContext.Provider value={dispatch}>
+          <SearchStateContext.Provider value={state}>
+            {state.loading && 
+              <LinearProgress sx={{
+                position: "fixed",
+                left: 0,
+                right: 0,
+                bottom: 0,
+                zIndex: 100,
+              }} />
+            }
+            { // selector for when there are multiple search endpoints
+              searchProps.endpoints!.length > 1 &&
+              <Stack direction="row" justifyContent="flex-end" alignItems="center" mb={2}>
+                <Typography variant="h6" sx={{mr: 2, mb: 0}}>{t("selectDataset")}</Typography>
+                <FormControl sx={{width: "20rem"}}>
+                  <InputLabel id="dataset-select-label">{t("dataset")}</InputLabel>
+                  <Select
+                    labelId="dataset-select-label"
+                    id="dataset-select"
+                    value={searchProps.endpoints!.find(ep => ep.url === searchProps.url)!.url}
+                    label={t("dataset")}
+                    onChange={handleChange}
+                  >
+                    {searchProps.endpoints!.map( endpoint =>
+                      <MenuItem key={endpoint.url} value={endpoint.url}>{endpoint.name}</MenuItem>
+                    )}
+                  </Select>
+                </FormControl>
               </Stack>
-            </Stack> :
-            // no error, show components
-            <Component
-              controllers={controllers}
-              searchProps={searchProps}
-              searchState={state}
-            >
-              {children}
-            </Component>
-          }
-        </SearchStateContext.Provider>
-      </SearchStateDispatchContext.Provider>
-    </FacetControllersContext.Provider>
+            }
+            {
+              state.error ?
+              <Stack justifyContent="center" alignItems="center" sx={{height: "20rem"}}>
+                <Stack>
+                  <Typography variant="h3">{t("error.header")}</Typography>
+                  <Typography paragraph>{t("error.p1", {message: state.error.message})}</Typography>
+                  <Typography paragraph>{t("error.p2")}</Typography>
+                </Stack>
+              </Stack> :
+              // no error, show components
+              <Component
+                controllers={controllers}
+                searchProps={searchProps}
+                searchState={state}
+              >
+                {children}
+              </Component>
+            }
+          </SearchStateContext.Provider>
+        </SearchStateDispatchContext.Provider>
+      </FacetControllersContext.Provider>
+    </I18nextProvider>
   );
 }
 
