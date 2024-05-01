@@ -15,7 +15,7 @@ import Box from "@mui/material/Box";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
-import { useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 /* This is the wrapper for the search interface */
 

@@ -58,7 +58,7 @@ export function ActiveFilters() {
                 facetID={facetID}
                 key={facetID + value}
                 removeFilter={removeFilter}
-                title={t("facetFilterValue", {value: value})}
+                title={t("facetFilterValue", { value: value })}
                 value={value}
               />
             ))}

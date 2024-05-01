@@ -13,7 +13,7 @@ export const SortBy = React.memo(function SortBy(props: Props) {
   const { t } = useTranslation("views");
 
   return (
-    <DropDown label={t("sortBy", {count: props.sortOrder.size})}>
+    <DropDown label={t("sortBy", { count: props.sortOrder.size })}>
       {Array.from(controllers.values()).map((facet) => (
         <OrderOption facet={facet} key={facet.ID} sortOrder={props.sortOrder} />
       ))}

@@ -9,9 +9,7 @@ export interface Bucket {
   [key: string]: any;
 }
 export function getBuckets(response: any, facetID: string): Bucket[] {
-  if (
-    !response.aggregations?.hasOwnProperty(facetID)
-  ) return [];
+  if (!response.aggregations?.hasOwnProperty(facetID)) return [];
 
   const buckets = response.aggregations[facetID][facetID]["buckets"];
   return buckets == null ? [] : buckets;

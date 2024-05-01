@@ -38,7 +38,7 @@ function FacetWrapper<
       <CardContent>
         <Typography variant="h5">
           {lookupLanguageString(props.facet.config.title, i18n.language)}
-          {props.facetState.collapse && (
+          {props.facetState?.collapse && (
             <ActiveIndicator<Filter> filter={props.filter} />
           )}
         </Typography>
@@ -62,9 +62,5 @@ function ActiveIndicator<FacetFilter>(props: {
 
   if (size === 0) return null;
 
-  return (
-    <small>
-      {t("active", {value: size})}
-    </small>
-  );
+  return <small>{t("active", { value: size })}</small>;
 }

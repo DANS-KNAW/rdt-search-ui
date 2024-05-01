@@ -29,7 +29,7 @@ export function SaveSearch(props: {
   if (savedSearch) {
     return (
       <Typography variant="body2" mt={1} sx={{ color: "neutral.dark" }}>
-        {t('savedAs', {value: savedSearch.name || savedSearch.hash})}
+        {t("savedAs", { value: savedSearch.name || savedSearch.hash })}
       </Typography>
     );
   }

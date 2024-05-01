@@ -49,7 +49,7 @@ interface SetSearchResult {
 }
 
 interface SetLoading {
-  type: "SET_LOADING",
+  type: "SET_LOADING";
   loading: boolean;
 }
 

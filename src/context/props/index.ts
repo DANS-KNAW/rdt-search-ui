@@ -61,21 +61,26 @@ interface OptionalSearchProps {
   fullTextHighlight?: SearchHighlight;
 
   SearchHomeComponent?: React.FC<any>;
-  endpoints?: Endpoints[];
 }
 
-// Endpoints for search/endpoint urls and names
-export interface Endpoints {
+// Endpoints for search/endpoint urls
+export interface EndpointBaseProps {
   name: string;
   url: string;
-  user?: string;
-  pass?: string;
+}
+
+export interface EndpointProps extends EndpointBaseProps {
+  fullTextFields?: string[];
+  fullTextHighlight?: SearchHighlight;
+  onClickResultPath?: string;
+  dashboard: React.ReactElement[];
+  resultBodyComponent: React.FC<ResultBodyProps>;
 }
 
 /**
  * External props, added to component declaration
  */
-export type ExternalSearchProps = Omit<RequiredSearchProps, "url"> &
+export type ExternalSearchProps = RequiredSearchProps &
   OptionalWithDefaultsSearchProps &
   OptionalSearchProps;
 

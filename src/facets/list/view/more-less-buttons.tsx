@@ -26,7 +26,7 @@ export default function (props: ListFacetProps) {
           // onClick={() => props.facet.actions.viewMore()}
           spotColor={style.spotColor}
         >
-          {t('viewMore', {value: props.values.total - props.facetState.size})}
+          {t("viewMore", { value: props.values.total - props.facetState.size })}
         </MoreButton>
       )}
       {facetConfig.size! < props.facetState.size && (
@@ -34,7 +34,7 @@ export default function (props: ListFacetProps) {
           // onClick={() => props.facet.actions.viewLess()}
           spotColor={style.spotColor}
         >
-          {t('viewLess')}
+          {t("viewLess")}
         </MoreLessButton>
       )}
     </>

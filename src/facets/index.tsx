@@ -5,9 +5,9 @@ import type { FacetControllers } from "../context/controllers";
 import React, { Children, isValidElement } from "react";
 import Grid from "@mui/material/Unstable_Grid2";
 
-import ImageList from '@mui/material/ImageList';
-import ImageListItem from '@mui/material/ImageListItem';
-import useMediaQuery from '@mui/material/useMediaQuery';
+import ImageList from "@mui/material/ImageList";
+import ImageListItem from "@mui/material/ImageListItem";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 
 interface Props {
@@ -43,10 +43,9 @@ export const Facets = ({
 
   return (
     <Grid container spacing={2}>
-      {
-        !dashboard ?
+      {!dashboard ?
         // search layout: sidebar only
-        facets.map( f =>
+        facets.map((f) => (
           <Grid xs={12} key={f.facet.ID}>
             <f.type
               key={f.facet.ID}
@@ -54,29 +53,31 @@ export const Facets = ({
               facet={f.facet}
               facetState={searchState.facetStates.get(f.facet.ID)!}
               filter={searchState.facetFilters.get(f.facet.ID)?.value}
-              values={searchState.facetValues && searchState.facetValues[f.facet.ID]}
+              values={
+                searchState.facetValues && searchState.facetValues[f.facet.ID]
+              }
             />
           </Grid>
-        ) :
-        <Grid xs={12}>
-          <ImageList 
-            cols={8} 
+        ))
+      : <Grid xs={12}>
+          <ImageList
+            cols={8}
             variant="quilted"
             gap={16}
             sx={{
-              overflow: 'visible',
+              overflow: "visible",
               // width: '100%',
             }}
           >
-            {facets.map( f =>
-              <ImageListItem 
+            {facets.map((f) => (
+              <ImageListItem
                 key={f.facet.ID}
                 cols={
-                  isTiny ?
-                  8 :
-                  isSmall ?
-                  4 :
-                  (f.facet.config.cols || 4)}
+                  isTiny ? 8
+                  : isSmall ?
+                    4
+                  : f.facet.config.cols || 4
+                }
                 rows={f.facet.config.rows || 1}
               >
                 <f.type
@@ -85,10 +86,13 @@ export const Facets = ({
                   facet={f.facet}
                   facetState={searchState.facetStates.get(f.facet.ID)!}
                   filter={searchState.facetFilters.get(f.facet.ID)?.value}
-                  values={searchState.facetValues && searchState.facetValues[f.facet.ID]}
+                  values={
+                    searchState.facetValues &&
+                    searchState.facetValues[f.facet.ID]
+                  }
                 />
               </ImageListItem>
-            )}
+            ))}
           </ImageList>
         </Grid>
       }

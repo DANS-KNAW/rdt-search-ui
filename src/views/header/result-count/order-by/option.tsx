@@ -78,7 +78,9 @@ function OrderOption(props: Props) {
           />
         </ListItemIcon>
       )}
-      <ListItemText>{lookupLanguageString(props.facet.config.title, i18n.language)}</ListItemText>
+      <ListItemText>
+        {lookupLanguageString(props.facet.config.title, i18n.language)}
+      </ListItemText>
     </MenuItem>
   );
 }

@@ -20,11 +20,7 @@ export function Dashboard({ children, controllers, searchState }: Props) {
     <>
       {(searchState.query ||
         searchState.facetFilters.entries().next().value) && <ActiveFilters />}
-      <Facets
-        controllers={controllers}
-        searchState={searchState}
-        dashboard
-      >
+      <Facets controllers={controllers} searchState={searchState} dashboard>
         {children}
       </Facets>
     </>

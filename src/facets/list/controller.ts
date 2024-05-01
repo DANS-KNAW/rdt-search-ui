@@ -41,7 +41,7 @@ export class ListFacetController extends FacetController<
   ListFacetFilter
 > {
   reducer(state: SearchState, action: FacetsDataReducerAction): SearchState {
-    const facetState = state.facetStates.get(this.ID) as ListFacetState;
+    const facetState = state.facetStates?.get(this.ID) as ListFacetState;
     const nextState = { ...facetState };
 
     // <STATE>

@@ -1,17 +1,17 @@
 import type { Payload } from "./request-creator";
 import { enqueueSnackbar } from "notistack";
-import type { Endpoints } from "../../props";
 
 const cache = new Map();
 
-export async function fetchSearchResult(url: string, payload: Payload, dispatch: any, endpoints?: Endpoints[]) {
+export async function fetchSearchResult(
+  url: string,
+  payload: Payload,
+  dispatch: any,
+) {
   let fetchResponse: Response;
   let response: any;
 
-  const currentEndpoint = endpoints && endpoints.find( ep => ep.url === url );
-
   const body = JSON.stringify(payload);
-  const encodedCredentials = currentEndpoint?.user ? btoa(`${currentEndpoint?.user}:${currentEndpoint?.pass}`) : null;
 
   if (cache.has(body)) {
     return cache.get(body);
@@ -31,14 +31,13 @@ export async function fetchSearchResult(url: string, payload: Payload, dispatch:
       method: "post",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Basic ${encodedCredentials}`,
       },
       body: JSON.stringify(payload),
     });
     response = await fetchResponse.json();
     cache.set(body, response);
   } catch (err) {
-    console.log(err)
+    console.log(err);
     enqueueSnackbar("Dashboard and Search error: failed to fetch data.", {
       variant: "error",
     });

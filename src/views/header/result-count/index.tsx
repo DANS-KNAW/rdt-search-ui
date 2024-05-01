@@ -31,7 +31,11 @@ export function ResultCount(props: Props) {
 
   return (
     <Typography>
-      {t("resultCount", {from: fromTo[0], to: fromTo[1], count: props.searchResult.total})}
+      {t("resultCount", {
+        from: fromTo[0],
+        to: fromTo[1],
+        count: props.searchResult.total,
+      })}
     </Typography>
   );
 }

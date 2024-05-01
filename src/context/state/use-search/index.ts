@@ -48,13 +48,14 @@ export function useSearch({
       changedProps.length === 1 &&
       (changedProps[0] === "sortOrder" || changedProps[0] === "currentPage")
     ) {
-      fetchSearchResultOnly(state, props, controllers, dispatch)
-        .then((searchResult) => {
+      fetchSearchResultOnly(state, props, controllers, dispatch).then(
+        (searchResult) => {
           dispatch({
             type: "SET_SEARCH_RESULT",
             searchResult,
           });
-        });
+        },
+      );
       return;
 
       // Only facet states have changed, only update the facet values of one facet
@@ -68,15 +69,19 @@ export function useSearch({
       const facetController = controllers.get(facetID);
       if (facetController == null) return;
 
-      fetchFacetValuesOnly(state, props, controllers, facetController, dispatch).then(
-        (values) => {
-          dispatch({
-            type: "UPDATE_FACET_VALUES",
-            values,
-            ID: facetController.ID,
-          });
-        },
-      );
+      fetchFacetValuesOnly(
+        state,
+        props,
+        controllers,
+        facetController,
+        dispatch,
+      ).then((values) => {
+        dispatch({
+          type: "UPDATE_FACET_VALUES",
+          values,
+          ID: facetController.ID,
+        });
+      });
 
       // The URL, query or facet filters have changed, update the search result and facets
     } else {
@@ -114,7 +119,11 @@ async function fetchSearchResultOnly(
   dispatch: any,
 ) {
   const { payload } = new ESRequest(searchState, searchProps, controllers);
-  const response = await fetchSearchResult(searchProps.url, payload, dispatch, searchProps.endpoints);
+  const response = await fetchSearchResult(
+    searchProps.url,
+    payload,
+    dispatch,
+  );
   const result = ESResponseParser(response);
   return result;
 }
@@ -130,7 +139,11 @@ async function fetchSearchResultWithFacets(
     searchProps,
     controllers,
   );
-  const response = await fetchSearchResult(searchProps.url, payload, dispatch, searchProps.endpoints);
+  const response = await fetchSearchResult(
+    searchProps.url,
+    payload,
+    dispatch,
+  );
   const result = ESResponseWithFacetsParser(response, controllers);
   return result;
 }
@@ -164,7 +177,11 @@ async function fetchFacetValuesOnly(
   payload.track_total_hits = false;
 
   // Fetch the response
-  const response = await fetchSearchResult(searchProps.url, payload, dispatch, searchProps.endpoints);
+  const response = await fetchSearchResult(
+    searchProps.url,
+    payload,
+    dispatch,
+  );
 
   // Parse only the facet values of the requested facet
   let buckets = getBuckets(response, controller.ID);

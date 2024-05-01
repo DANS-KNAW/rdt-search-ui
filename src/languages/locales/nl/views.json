@@ -17,5 +17,7 @@
   "sortBy_other": "Sorteer ({{count}})",
   "detailedView": "Meer details",
   "noResults": "Sorry, niets gevonden",
-  "activeFilters": "Actieve filters"
+  "activeFilters": "Actieve filters",
+  "dataset": "Dataset",
+  "selectDataset": "Selecteer je dataset"
 }

@@ -17,5 +17,7 @@
   "sortBy_other": "Sort by ({{count}})",
   "detailedView": "Detailed view",
   "noResults": "Sorry, no results found",
-  "activeFilters": "Active filters"
+  "activeFilters": "Active filters",
+  "dataset": "Dataset",
+  "selectDataset": "Select your dataset"
 }
