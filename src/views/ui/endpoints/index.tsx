@@ -1,36 +1,19 @@
+import { useContext } from "react";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { type SelectChangeEvent } from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import type { EndpointBaseProps } from "../../../context/props";
 import { useTranslation } from "react-i18next";
+import { FacetedSearchContext } from "../../../context/Provider";
 
-export const EndpointSelector = ({endpoint, setEndpoint, endpoints, toggleSearch}:
-  {
-    endpoint: string;
-    setEndpoint: (ep: string) => void;
-    endpoints: EndpointBaseProps[];
-    toggleSearch: (bool: boolean) => void;
-  }) => {
+export const EndpointSelector = () => {
   const { t } = useTranslation("views"); 
+  const { config, endpoint, setEndpoint } = useContext(FacetedSearchContext);
 
-  // This is a hack. 
-  // Don't want to mess with rdt-search-ui and its render methods,
-  // as it does not refresh all search stuff on comp rerender.
-  // So let's just unmount the component for a fraction, and then remount.
-  // Super ugly, but it works.
-  const delay = async () => {
-    return new Promise((resolve) => 
-      setTimeout(resolve, 1));
-  };
-
-  const handleSelect = async (e: SelectChangeEvent) => {
-    toggleSearch(false);
-    await delay();
+  const handleSelect = (e: SelectChangeEvent) => {
     setEndpoint(e.target.value);
-    toggleSearch(true);
   }
 
   return (
@@ -54,7 +37,7 @@ export const EndpointSelector = ({endpoint, setEndpoint, endpoints, toggleSearch
           label={t("dataset")}
           onChange={handleSelect}
         >
-          {endpoints.map((endpoint) => (
+          {config.map((endpoint) => (
             <MenuItem key={endpoint.url} value={endpoint.url}>
               {endpoint.name}
             </MenuItem>

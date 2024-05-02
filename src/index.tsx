@@ -10,8 +10,9 @@ import { Dashboard } from "./dashboard";
 import {
   SearchProps,
   SearchPropsContext,
-  ExternalSearchProps,
+  type ExternalSearchProps,
   defaultSearchProps,
+  type EndpointProps,
 } from "./context/props";
 import {
   FacetControllersContext,
@@ -21,6 +22,7 @@ import { useSearch } from "./context/state/use-search";
 import type { FacetController } from "./facets/controller";
 
 import Stack from "@mui/material/Stack";
+import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import LinearProgress from "@mui/material/LinearProgress";
 import { I18nextProvider } from "react-i18next";
@@ -30,6 +32,11 @@ import {
   serializeObject,
   deserializeObject,
 } from "./views/active-filters/save-search/use-saved-searches";
+import { EndpointSelector } from "./views/ui/endpoints";
+import { useNavigate } from "react-router-dom";
+import type { Result } from "./context/state/use-search/types";
+import { motion, AnimatePresence } from "framer-motion";
+import { FacetedSearchContext } from './context/Provider';
 
 export function FacetedSearch(props: ExternalSearchProps) {
   const [children, setChildren] = React.useState<React.ReactNode>(undefined);
@@ -88,14 +95,12 @@ export function FacetedSearch(props: ExternalSearchProps) {
 
   return (
     <SearchPropsContext.Provider value={searchProps}>
-      <I18nextProvider i18n={i18nProvider}>
-        <AppLoader
-          searchProps={searchProps}
-          controllers={controllers}
-        >
-          {children}
-        </AppLoader>
-      </I18nextProvider>
+      <AppLoader
+        searchProps={searchProps}
+        controllers={controllers}
+      >
+        {children}
+      </AppLoader>
     </SearchPropsContext.Provider>
   );
 }
@@ -234,4 +239,43 @@ function useControllers(children: React.ReactNode): FacetControllers {
  */
 function camelCaseToKebabCase(str: string) {
   return str.replace(/([A-Z])/g, "-$1").toLowerCase();
+}
+
+/* Wrapper for the faceted search that makes multiple endpoint selection possible */
+export const FacetedWrapper = ({ dashboard }: { dashboard?: boolean; }) => {
+  const { config, endpoint } = React.useContext(FacetedSearchContext);
+  const navigate = useNavigate();
+  const currentConfig = config.find( e => e.url === endpoint ) as EndpointProps;
+
+  return (
+    <I18nextProvider i18n={i18nProvider}>
+      <Container sx={{ pt: 4 }}>
+        {config.length > 1 && 
+          // show selector if there's more than 1 endpoint
+          <EndpointSelector />
+        }
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div 
+            key={currentConfig.url}
+            initial={{opacity: 0}}
+            animate={{opacity: 1}}
+            exit={{opacity: 0}}
+          >
+            <FacetedSearch
+              dashboard={dashboard}
+              fullTextFields={currentConfig.fullTextFields}
+              fullTextHighlight={currentConfig.fullTextHighlight}
+              onClickResult={(result: Result) => navigate(`/${currentConfig.onClickResultPath}/${result.id}`)}
+              ResultBodyComponent={currentConfig.resultBodyComponent}
+              url={currentConfig.url}
+            >
+              {currentConfig?.dashboard.map( (node, i) => 
+                React.cloneElement(node, { key: i })
+              )}
+            </FacetedSearch>
+          </motion.div>
+        </AnimatePresence>
+      </Container>
+    </I18nextProvider>
+  );
 }
