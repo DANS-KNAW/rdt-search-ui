@@ -1,8 +1,12 @@
 {
   "fullTextQuery": "Zoek in alle tekst",
   "facetFilterValue": "Facet filter waarde: {{value}}",
-  "savedAs": "Opgeslagen als {{value}}",
+  "savedAs": "Zoekactie opgeslagen als:",
   "saveSearch": "Sla zoekactie op",
+  "shareSearch": "Deel deze zoekactie",
+  "facetView": "Gedetailleerd zoekoverzicht",
+  "dashboardView": "Dashboard",
+  "copiedShareUrl": "{{value}} URL gekopieerd",
   "enterName": "Voer een naam in",
   "saveSearchAs": "Sla zoekactie op als",
   "loadSearch": "Laad zoekactie",

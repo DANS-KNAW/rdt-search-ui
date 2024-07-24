@@ -37,6 +37,7 @@ import { useNavigate } from "react-router-dom";
 import type { Result } from "./context/state/use-search/types";
 import { motion, AnimatePresence } from "framer-motion";
 import { FacetedSearchContext } from './context/Provider';
+import LZString from "lz-string";
 
 export function FacetedSearch(props: ExternalSearchProps) {
   const [children, setChildren] = React.useState<React.ReactNode>(undefined);
@@ -116,8 +117,13 @@ function AppLoader({
   controllers,
   searchProps,
 }: AppLoaderProps) {
-  // Get the state from session storage
+  // Check to see if there's a search query present in the url
+  const queryParams = Object.fromEntries(new URLSearchParams(window.location.search).entries());
+  const searchParams = queryParams.search && LZString.decompressFromEncodedURIComponent(queryParams.search);
+  console.log(searchParams)
+  // Get the state from session storage or search params if available. Search params has priority
   const storageState = deserializeObject(
+    searchParams ||
     sessionStorage.getItem(
       `rdt-search-state-${window.location.origin}-${searchProps.url}`,
     ) as string,
@@ -149,6 +155,11 @@ function AppLoader({
       type: "SET_FACET_STATES",
       facetStates,
     });
+
+    // clear uri search string
+    const url = new URL(window.location.href);
+    url.search = '';
+    history.replaceState(null, '', url);
   }, [controllers]);
 
   React.useEffect(() => {

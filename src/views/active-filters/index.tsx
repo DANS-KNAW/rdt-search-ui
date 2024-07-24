@@ -64,22 +64,20 @@ export function ActiveFilters() {
             ))}
           </ActiveFilterItem>
         ))}
-        <Stack direction="row" flexWrap="wrap">
-          <Button
-            variant="contained"
-            onClick={reset}
-            sx={{ marginBottom: 1, marginRight: 1 }}
-          >
-            {t("clearSearch")}
-          </Button>
-          <SaveSearch
-            url={url}
-            activeFilters={{
-              query: state.query,
-              filters: state.facetFilters,
-            }}
-          />
-        </Stack>
+        <Button
+          variant="contained"
+          onClick={reset}
+          sx={{ marginBottom: 1, marginRight: 1, width: 150 }}
+        >
+          {t("clearSearch")}
+        </Button>
+        <SaveSearch
+          url={url}
+          activeFilters={{
+            query: state.query,
+            filters: state.facetFilters,
+          }}
+        />
       </Stack>
     </Paper>
   );

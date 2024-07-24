@@ -1,8 +1,12 @@
 {
   "fullTextQuery": "Full text query",
   "facetFilterValue": "Facet filter value: {{value}}",
-  "savedAs": "Saved as {{value}}",
+  "savedAs": "Search saved as:",
   "saveSearch": "Save search",
+  "shareSearch": "Share this search",
+  "facetView": "Detailed search view",
+  "dashboardView": "Dashboard view",
+  "copiedShareUrl": "{{value}} URL copied to clipboard",
   "enterName": "Enter a name",
   "saveSearchAs": "Save search as",
   "loadSearch": "Load search",
