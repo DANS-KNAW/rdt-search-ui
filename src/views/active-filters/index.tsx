@@ -14,6 +14,7 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 
 import { useTranslation } from "react-i18next";
 
@@ -64,20 +65,24 @@ export function ActiveFilters() {
             ))}
           </ActiveFilterItem>
         ))}
-        <Button
-          variant="contained"
-          onClick={reset}
-          sx={{ marginBottom: 1, marginRight: 1, width: 150 }}
-        >
-          {t("clearSearch")}
-        </Button>
-        <SaveSearch
-          url={url}
-          activeFilters={{
-            query: state.query,
-            filters: state.facetFilters,
-          }}
-        />
+        <Stack direction="row" flexWrap="wrap" sx={{pt: 1}} spacing={1} useFlexGap >
+          <Box sx={{flex: 5, textAlign: "right"}}>
+            <Button
+              variant="contained"
+              onClick={reset}
+              size="small"
+            >
+              {t("clearSearch")}
+            </Button>
+          </Box>
+          <SaveSearch
+            url={url}
+            activeFilters={{
+              query: state.query,
+              filters: state.facetFilters,
+            }}
+          />
+        </Stack>
       </Stack>
     </Paper>
   );

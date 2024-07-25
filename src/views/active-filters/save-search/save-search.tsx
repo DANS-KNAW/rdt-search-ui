@@ -10,7 +10,6 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { useTranslation } from "react-i18next";
-import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import ShareIcon from '@mui/icons-material/Share';
 import CloseIcon from '@mui/icons-material/Close';
@@ -42,10 +41,8 @@ export function SaveSearch(props: {
   if (savedSearch) {
     return (
       <Box sx={{ flex: 1, width: "100%"}}>
-        <Divider sx={{mt: 1, mb: 1}}/>
         <Stack 
           direction="row"
-          spacing={1} 
           display="flex" 
           alignItems="center" 
           justifyContent="space-between"
@@ -54,7 +51,7 @@ export function SaveSearch(props: {
             <Typography variant="body2" sx={{ color: "neutral.dark" }}>
               {t("savedAs")}
             </Typography>
-            <Typography variant="body2" sx={{ color: "neutral.dark" }}>
+            <Typography variant="body2" sx={{ color: "neutral.dark", overflow: "hidden", textOverflow: "ellipsis" }}>
               {savedSearch.name || savedSearch.hash}
             </Typography>
           </Box>
@@ -74,7 +71,7 @@ export function SaveSearch(props: {
   }
 
   return (
-    <DropDown label={t("saveSearch")}>
+    <DropDown label={t("saveSearch")} small>
       <SavedSearches
         activeFilters={props.activeFilters}
         hash={hash}
@@ -124,7 +121,7 @@ const SavedSearches = (props: {
           fullWidth
           size="small"
         />
-        <Button variant="contained" onClick={save}>
+        <Button variant="contained" onClick={save} size="small">
           {t('save')}
         </Button>
       </Stack>
@@ -148,10 +145,15 @@ function useHash(activeFilters: SearchFilters | undefined) {
 const ShareDialog = ({open, setOpen, activeFilters}: {
   open: boolean; 
   setOpen: (arg: boolean) => void;
-  activeFilters?: SearchFilters;
+  activeFilters: SearchFilters;
 }) => {
   const { shareRoutes } = useContext(SearchPropsContext);
-  const searchString = `?search=${LZString.compressToEncodedURIComponent(serializeObject(activeFilters))}`
+  const { filters, ...rest } = activeFilters;
+  const formattedFilters = {
+    ...rest,
+    facetFilters: filters,
+  }
+  const searchString = `?search=${LZString.compressToEncodedURIComponent(serializeObject(formattedFilters))}`
   const [facetValue] = useState(`${window.location.origin}${shareRoutes?.results}${searchString}`);
   const [dashboardValue] = useState(`${window.location.origin}${shareRoutes?.dashboard}${searchString}`);
   const [copy, setCopy] = useState("");
