@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useContext, useCallback, useEffect } from "react";
 import md5 from "md5";
 import { DropDown } from "../../ui/drop-down";
 import { SearchProps } from "../../../context/props";
@@ -21,6 +21,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Alert from '@mui/material/Alert';
 import Fade from '@mui/material/Fade';
 import LZString from "lz-string";
+import { SearchPropsContext } from "../../../context/props";
 
 export interface SearchFilters {
   filters: SearchState["facetFilters"];
@@ -90,10 +91,10 @@ const SavedSearches = (props: {
   savedSearches: ReturnType<typeof useSavedSearches>[0];
   saveSearch: ReturnType<typeof useSavedSearches>[1];
 }) => {
-  const [name, setName] = React.useState<string>();
+  const [name, setName] = useState<string>();
   const { t } = useTranslation("views");
 
-  const save = React.useCallback(async () => {
+  const save = useCallback(async () => {
     if (props.hash == null) return;
 
     props.saveSearch({
@@ -132,9 +133,9 @@ const SavedSearches = (props: {
 };
 
 function useHash(activeFilters: SearchFilters | undefined) {
-  const [hash, setHash] = React.useState<string>();
+  const [hash, setHash] = useState<string>();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (activeFilters == null) return;
     const activeFilterString = serializeObject(activeFilters);
     const hash = md5(activeFilterString);
@@ -149,9 +150,10 @@ const ShareDialog = ({open, setOpen, activeFilters}: {
   setOpen: (arg: boolean) => void;
   activeFilters?: SearchFilters;
 }) => {
+  const { shareRoutes } = useContext(SearchPropsContext);
   const searchString = `?search=${LZString.compressToEncodedURIComponent(serializeObject(activeFilters))}`
-  const [facetValue] = useState(`${window.location.origin}/search${searchString}`);
-  const [dashboardValue] = useState(`${window.location.origin}${searchString}`);
+  const [facetValue] = useState(`${window.location.origin}${shareRoutes?.results}${searchString}`);
+  const [dashboardValue] = useState(`${window.location.origin}${shareRoutes?.dashboard}${searchString}`);
   const [copy, setCopy] = useState("");
   const { t } = useTranslation("views");
   const close = () => {
@@ -182,7 +184,7 @@ const ShareDialog = ({open, setOpen, activeFilters}: {
         <Typography gutterBottom>{t('dashboardView')}</Typography>
         <Stack direction="row" mb={2}>
           <TextField
-            id="shareUrl"
+            id="shareDashUrl"
             fullWidth
             size="small"
             disabled
@@ -197,7 +199,7 @@ const ShareDialog = ({open, setOpen, activeFilters}: {
         <Typography gutterBottom>{t('facetView')}</Typography>
         <Stack direction="row">
           <TextField
-            id="shareUrl"
+            id="shareResultUrl"
             fullWidth
             size="small"
             disabled

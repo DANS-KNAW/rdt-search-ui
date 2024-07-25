@@ -77,6 +77,10 @@ export function FacetedSearch(props: ExternalSearchProps) {
         ...defaultSearchProps.style,
         ...props.style,
       },
+      shareRoutes: {
+        dashboard: "/",
+        results: "/search"
+      }
     };
 
     Object.keys(sp.style).forEach((key) => {
@@ -120,7 +124,6 @@ function AppLoader({
   // Check to see if there's a search query present in the url
   const queryParams = Object.fromEntries(new URLSearchParams(window.location.search).entries());
   const searchParams = queryParams.search && LZString.decompressFromEncodedURIComponent(queryParams.search);
-  console.log(searchParams)
   // Get the state from session storage or search params if available. Search params has priority
   const storageState = deserializeObject(
     searchParams ||
@@ -253,7 +256,7 @@ function camelCaseToKebabCase(str: string) {
 }
 
 /* Wrapper for the faceted search that makes multiple endpoint selection possible */
-export const FacetedWrapper = ({ dashboard }: { dashboard?: boolean; }) => {
+export const FacetedWrapper = ({ dashboard, dashRoute, resultRoute }: { dashboard?: boolean; dashRoute?: string; resultRoute?: string;}) => {
   const { config, endpoint } = React.useContext(FacetedSearchContext);
   const navigate = useNavigate();
   const currentConfig = config.find( e => e.url === endpoint ) as EndpointProps;
@@ -279,6 +282,10 @@ export const FacetedWrapper = ({ dashboard }: { dashboard?: boolean; }) => {
               onClickResult={(result: Result) => navigate(`/${currentConfig.onClickResultPath}/${result.id}`)}
               ResultBodyComponent={currentConfig.resultBodyComponent}
               url={currentConfig.url}
+              shareRoutes={{
+                results: resultRoute,
+                dashboard: dashRoute,
+              }}
             >
               {currentConfig?.dashboard.map( (node, i) => 
                 React.cloneElement(node, { key: i })

@@ -50,6 +50,10 @@ interface OptionalWithDefaultsSearchProps {
 interface OptionalSearchProps {
   className?: string /* className prop is used by StyledComponents */;
   dashboard?: boolean;
+  shareRoutes?: {
+    results?: string;
+    dashboard?: string;
+  };
 
   // Fields to search full text. The field names are passed to
   // ElasticSearch so boosters can be applied to the fields.
