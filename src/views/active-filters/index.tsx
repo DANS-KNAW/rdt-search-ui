@@ -65,13 +65,15 @@ export function ActiveFilters() {
             ))}
           </ActiveFilterItem>
         ))}
-        <Stack direction="row" flexWrap="wrap" sx={{pt: 1}} spacing={1} useFlexGap >
-          <Box sx={{flex: 5, textAlign: "right"}}>
-            <Button
-              variant="contained"
-              onClick={reset}
-              size="small"
-            >
+        <Stack
+          direction="row"
+          flexWrap="wrap"
+          sx={{ pt: 1 }}
+          spacing={1}
+          useFlexGap
+        >
+          <Box sx={{ flex: 5, textAlign: "right" }}>
+            <Button variant="contained" onClick={reset} size="small">
               {t("clearSearch")}
             </Button>
           </Box>

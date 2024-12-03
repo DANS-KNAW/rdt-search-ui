@@ -10,15 +10,15 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { useTranslation } from "react-i18next";
-import IconButton from '@mui/material/IconButton';
-import ShareIcon from '@mui/icons-material/Share';
-import CloseIcon from '@mui/icons-material/Close';
-import Tooltip from '@mui/material/Tooltip';
-import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import Alert from '@mui/material/Alert';
-import Fade from '@mui/material/Fade';
+import IconButton from "@mui/material/IconButton";
+import ShareIcon from "@mui/icons-material/Share";
+import CloseIcon from "@mui/icons-material/Close";
+import Tooltip from "@mui/material/Tooltip";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import Alert from "@mui/material/Alert";
+import Fade from "@mui/material/Fade";
 import LZString from "lz-string";
 import { SearchPropsContext } from "../../../context/props";
 
@@ -40,31 +40,38 @@ export function SaveSearch(props: {
 
   if (savedSearch) {
     return (
-      <Box sx={{ flex: 1, width: "100%"}}>
-        <Stack 
+      <Box sx={{ flex: 1, width: "100%" }}>
+        <Stack
           direction="row"
-          display="flex" 
-          alignItems="center" 
+          display="flex"
+          alignItems="center"
           justifyContent="space-between"
         >
           <Box sx={{ maxWidth: "80%" }}>
             <Typography variant="body2" sx={{ color: "neutral.dark" }}>
               {t("savedAs")}
             </Typography>
-            <Typography variant="body2" sx={{ color: "neutral.dark", overflow: "hidden", textOverflow: "ellipsis" }}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: "neutral.dark",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
               {savedSearch.name || savedSearch.hash}
             </Typography>
           </Box>
-          <Tooltip title={t('shareSearch')}>
+          <Tooltip title={t("shareSearch")}>
             <IconButton aria-label="delete" onClick={() => setOpen(true)}>
               <ShareIcon />
             </IconButton>
           </Tooltip>
         </Stack>
-        <ShareDialog 
-          open={open} 
-          setOpen={setOpen} 
-          activeFilters={props.activeFilters} 
+        <ShareDialog
+          open={open}
+          setOpen={setOpen}
+          activeFilters={props.activeFilters}
         />
       </Box>
     );
@@ -122,7 +129,7 @@ const SavedSearches = (props: {
           size="small"
         />
         <Button variant="contained" onClick={save} size="small">
-          {t('save')}
+          {t("save")}
         </Button>
       </Stack>
     </Box>
@@ -142,8 +149,12 @@ function useHash(activeFilters: SearchFilters | undefined) {
   return hash;
 }
 
-const ShareDialog = ({open, setOpen, activeFilters}: {
-  open: boolean; 
+const ShareDialog = ({
+  open,
+  setOpen,
+  activeFilters,
+}: {
+  open: boolean;
   setOpen: (arg: boolean) => void;
   activeFilters: SearchFilters;
 }) => {
@@ -152,38 +163,39 @@ const ShareDialog = ({open, setOpen, activeFilters}: {
   const formattedFilters = {
     ...rest,
     facetFilters: filters,
-  }
-  const searchString = `?search=${LZString.compressToEncodedURIComponent(serializeObject(formattedFilters))}`
-  const [facetValue] = useState(`${window.location.origin}${shareRoutes?.results}${searchString}`);
-  const [dashboardValue] = useState(`${window.location.origin}${shareRoutes?.dashboard}${searchString}`);
+  };
+  const searchString = `?search=${LZString.compressToEncodedURIComponent(
+    serializeObject(formattedFilters),
+  )}`;
+  const [facetValue] = useState(
+    `${window.location.origin}${shareRoutes?.results}${searchString}`,
+  );
+  const [dashboardValue] = useState(
+    `${window.location.origin}${shareRoutes?.dashboard}${searchString}`,
+  );
   const [copy, setCopy] = useState("");
   const { t } = useTranslation("views");
   const close = () => {
     setOpen(false);
     setCopy("");
-  }
+  };
 
   return (
-    <Dialog
-      open={open}
-      onClose={close}
-      fullWidth
-      maxWidth="sm"
-    >
+    <Dialog open={open} onClose={close} fullWidth maxWidth="sm">
       <IconButton
         aria-label="close"
         onClick={close}
         sx={{
-          position: 'absolute',
+          position: "absolute",
           right: 8,
           top: 8,
         }}
       >
         <CloseIcon />
       </IconButton>
-      <DialogTitle>{t('shareSearch')}</DialogTitle>
+      <DialogTitle>{t("shareSearch")}</DialogTitle>
       <DialogContent>
-        <Typography gutterBottom>{t('dashboardView')}</Typography>
+        <Typography gutterBottom>{t("dashboardView")}</Typography>
         <Stack direction="row" mb={2}>
           <TextField
             id="shareDashUrl"
@@ -191,14 +203,19 @@ const ShareDialog = ({open, setOpen, activeFilters}: {
             size="small"
             disabled
             value={dashboardValue}
-            sx={{mr: 1}}
+            sx={{ mr: 1 }}
           />
-          <Button variant="contained" onClick={() => {
-            navigator.clipboard.writeText(dashboardValue);
-            setCopy('dashboardView');
-          }}>Copy</Button>
+          <Button
+            variant="contained"
+            onClick={() => {
+              navigator.clipboard.writeText(dashboardValue);
+              setCopy("dashboardView");
+            }}
+          >
+            Copy
+          </Button>
         </Stack>
-        <Typography gutterBottom>{t('facetView')}</Typography>
+        <Typography gutterBottom>{t("facetView")}</Typography>
         <Stack direction="row">
           <TextField
             id="shareResultUrl"
@@ -206,21 +223,26 @@ const ShareDialog = ({open, setOpen, activeFilters}: {
             size="small"
             disabled
             value={facetValue}
-            sx={{mr: 1}}
+            sx={{ mr: 1 }}
           />
-          <Button variant="contained" onClick={() => {
-            navigator.clipboard.writeText(facetValue);
-            setCopy('facetView');
-          }}>Copy</Button>
+          <Button
+            variant="contained"
+            onClick={() => {
+              navigator.clipboard.writeText(facetValue);
+              setCopy("facetView");
+            }}
+          >
+            Copy
+          </Button>
         </Stack>
       </DialogContent>
-      {copy && 
+      {copy && (
         <Fade in={copy !== ""}>
           <Alert severity="success">
-            {t('copiedShareUrl', {value: t(copy)})}
+            {t("copiedShareUrl", { value: t(copy) })}
           </Alert>
         </Fade>
-      }
+      )}
     </Dialog>
   );
-}
+};

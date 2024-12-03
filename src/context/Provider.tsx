@@ -8,24 +8,27 @@ interface FCProps {
 }
 export const FacetedSearchContext = createContext<FCProps>({
   config: [],
-  endpoint: '',
+  endpoint: "",
   setEndpoint: () => null,
 });
-export const FacetedSearchProvider = ({config, children}: {
+export const FacetedSearchProvider = ({
+  config,
+  children,
+}: {
   config: EndpointProps[];
   children: any;
 }) => {
-  const [ endpoint, setEndpoint ] = useState<string>(config[0].url);
+  const [endpoint, setEndpoint] = useState<string>(config[0].url);
   return (
     <FacetedSearchContext.Provider value={{ config, endpoint, setEndpoint }}>
       {children}
     </FacetedSearchContext.Provider>
   );
-}
+};
 const useFacedtedContext = () => {
   return useContext(FacetedSearchContext);
-}
+};
 export const getCurrentEndpoint = () => {
   const { endpoint } = useFacedtedContext();
   return endpoint;
-}
+};

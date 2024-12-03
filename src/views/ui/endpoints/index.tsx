@@ -9,27 +9,20 @@ import { useTranslation } from "react-i18next";
 import { FacetedSearchContext } from "../../../context/Provider";
 
 export const EndpointSelector = () => {
-  const { t } = useTranslation("views"); 
+  const { t } = useTranslation("views");
   const { config, endpoint, setEndpoint } = useContext(FacetedSearchContext);
 
   const handleSelect = (e: SelectChangeEvent) => {
     setEndpoint(e.target.value);
-  }
+  };
 
   return (
-    <Stack
-      direction="row"
-      justifyContent="flex-end"
-      alignItems="center"
-      mb={2}
-    >
+    <Stack direction="row" justifyContent="flex-end" alignItems="center" mb={2}>
       <Typography variant="h6" sx={{ mr: 2, mb: 0 }}>
         {t("selectDataset")}
       </Typography>
       <FormControl sx={{ width: "20rem" }}>
-        <InputLabel id="dataset-select-label">
-          {t("dataset")}
-        </InputLabel>
+        <InputLabel id="dataset-select-label">{t("dataset")}</InputLabel>
         <Select
           labelId="dataset-select-label"
           id="dataset-select"
@@ -45,5 +38,5 @@ export const EndpointSelector = () => {
         </Select>
       </FormControl>
     </Stack>
-  )
-}
+  );
+};

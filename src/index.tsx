@@ -36,7 +36,7 @@ import { EndpointSelector } from "./views/ui/endpoints";
 import { useNavigate } from "react-router-dom";
 import type { Result } from "./context/state/use-search/types";
 import { motion, AnimatePresence } from "framer-motion";
-import { FacetedSearchContext } from './context/Provider';
+import { FacetedSearchContext } from "./context/Provider";
 import LZString from "lz-string";
 
 export function FacetedSearch(props: ExternalSearchProps) {
@@ -79,8 +79,8 @@ export function FacetedSearch(props: ExternalSearchProps) {
       },
       shareRoutes: {
         dashboard: "/",
-        results: "/search"
-      }
+        results: "/search",
+      },
     };
 
     Object.keys(sp.style).forEach((key) => {
@@ -100,10 +100,7 @@ export function FacetedSearch(props: ExternalSearchProps) {
 
   return (
     <SearchPropsContext.Provider value={searchProps}>
-      <AppLoader
-        searchProps={searchProps}
-        controllers={controllers}
-      >
+      <AppLoader searchProps={searchProps} controllers={controllers}>
         {children}
       </AppLoader>
     </SearchPropsContext.Provider>
@@ -116,20 +113,20 @@ interface AppLoaderProps {
   searchProps: SearchProps;
 }
 
-function AppLoader({
-  children,
-  controllers,
-  searchProps,
-}: AppLoaderProps) {
+function AppLoader({ children, controllers, searchProps }: AppLoaderProps) {
   // Check to see if there's a search query present in the url
-  const queryParams = Object.fromEntries(new URLSearchParams(window.location.search).entries());
-  const searchParams = queryParams.search && LZString.decompressFromEncodedURIComponent(queryParams.search);
+  const queryParams = Object.fromEntries(
+    new URLSearchParams(window.location.search).entries(),
+  );
+  const searchParams =
+    queryParams.search &&
+    LZString.decompressFromEncodedURIComponent(queryParams.search);
   // Get the state from session storage or search params if available. Search params has priority
   const storageState = deserializeObject(
     searchParams ||
-    sessionStorage.getItem(
-      `rdt-search-state-${window.location.origin}-${searchProps.url}`,
-    ) as string,
+      (sessionStorage.getItem(
+        `rdt-search-state-${window.location.origin}-${searchProps.url}`,
+      ) as string),
   );
   const [state, dispatch] = React.useReducer(
     searchStateReducer(controllers),
@@ -161,8 +158,8 @@ function AppLoader({
 
     // clear uri search string
     const url = new URL(window.location.href);
-    url.search = '';
-    history.replaceState(null, '', url);
+    url.search = "";
+    history.replaceState(null, "", url);
   }, [controllers]);
 
   React.useEffect(() => {
@@ -256,30 +253,40 @@ function camelCaseToKebabCase(str: string) {
 }
 
 /* Wrapper for the faceted search that makes multiple endpoint selection possible */
-export const FacetedWrapper = ({ dashboard, dashRoute, resultRoute }: { dashboard?: boolean; dashRoute?: string; resultRoute?: string;}) => {
+export const FacetedWrapper = ({
+  dashboard,
+  dashRoute,
+  resultRoute,
+}: {
+  dashboard?: boolean;
+  dashRoute?: string;
+  resultRoute?: string;
+}) => {
   const { config, endpoint } = React.useContext(FacetedSearchContext);
   const navigate = useNavigate();
-  const currentConfig = config.find( e => e.url === endpoint ) as EndpointProps;
+  const currentConfig = config.find((e) => e.url === endpoint) as EndpointProps;
 
   return (
     <I18nextProvider i18n={i18nProvider}>
       <Container sx={{ pt: 4 }}>
-        {config.length > 1 && 
+        {config.length > 1 && (
           // show selector if there's more than 1 endpoint
           <EndpointSelector />
-        }
+        )}
         <AnimatePresence mode="wait" initial={false}>
-          <motion.div 
+          <motion.div
             key={currentConfig.url}
-            initial={{opacity: 0}}
-            animate={{opacity: 1}}
-            exit={{opacity: 0}}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
           >
             <FacetedSearch
               dashboard={dashboard}
               fullTextFields={currentConfig.fullTextFields}
               fullTextHighlight={currentConfig.fullTextHighlight}
-              onClickResult={(result: Result) => navigate(`/${currentConfig.onClickResultPath}/${result.id}`)}
+              onClickResult={(result: Result) =>
+                navigate(`/${currentConfig.onClickResultPath}/${result.id}`)
+              }
               ResultBodyComponent={currentConfig.resultBodyComponent}
               url={currentConfig.url}
               shareRoutes={{
@@ -287,8 +294,8 @@ export const FacetedWrapper = ({ dashboard, dashRoute, resultRoute }: { dashboar
                 dashboard: dashRoute,
               }}
             >
-              {currentConfig?.dashboard.map( (node, i) => 
-                React.cloneElement(node, { key: i })
+              {currentConfig?.dashboard.map((node, i) =>
+                React.cloneElement(node, { key: i }),
               )}
             </FacetedSearch>
           </motion.div>
@@ -296,4 +303,4 @@ export const FacetedWrapper = ({ dashboard, dashRoute, resultRoute }: { dashboar
       </Container>
     </I18nextProvider>
   );
-}
+};

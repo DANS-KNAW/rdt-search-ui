@@ -24,14 +24,13 @@ const LoadSearches = (props: { savedSearches: SavedSearch[] }) => {
   const dispatch = React.useContext(SearchStateDispatchContext);
 
   const loadSearch = (savedSearch: SavedSearch) => {
-  console.log(savedSearch)
+    console.log(savedSearch);
     dispatch({
       type: "LOAD_SEARCH",
       filters: savedSearch.filters,
       query: savedSearch.query,
     });
   };
-
 
   return props.savedSearches.map((savedSearch, i) => (
     <MenuItem key={i} onClick={() => loadSearch(savedSearch)}>
